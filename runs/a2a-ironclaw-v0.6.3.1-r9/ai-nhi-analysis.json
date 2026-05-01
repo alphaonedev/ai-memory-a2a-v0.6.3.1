@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r9",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run demonstrates a clean bill of health for production readiness, with zero failures in core memory sharing under mTLS, reducing risk of data inconsistency in customer deployments. All 42 scenarios passed, validating claims of robust agent-to-agent memory federation. Compared to prior runs, this confirms stability post-patch without regressions.",
+  "for_non_technical": "In this test, AI agents successfully shared and remembered information with each other every time. No memories were lost or mixed up across the network. This means the system works reliably for agents to keep track of shared experiences.",
+  "for_sme": "All scenarios (S1-S42) passed without reasons or skips, covering primitives like hybrid recall (S18), consolidation (S5), contradiction detection (S6), bulk writes (S40), and mTLS enforcement (S21 rejecting anonymous curl). No failure modes observed; capabilities probe (S30) shows consistent hybrid mode active and embedder loaded across nodes. Probable root cause of prior issues resolved in v0.6.3.1 patch.",
+  "headline": "Ironclaw v0.6.3.1 achieves full pass on 42 scenarios with mTLS.",
+  "next_run_change": "none \u2014 keep cadence",
+  "verdict": "PASS \u2014 42/42 scenarios green, no failures or skips.",
+  "what_it_proved": "The system reliably stores, propagates, and recalls agent memories across peers with 100% success, including edge cases like anonymous access rejection, payload validation, and partition recovery.",
+  "what_it_tested": "Exercised 42 scenarios covering multi-agent memory sharing, deletion, linking, hybrid recall, permissions, bulk operations, and diagnostics across mTLS transport, federation framework, and primitives like embedding, consolidation, and pubsub in a 4-node mesh."
+}
