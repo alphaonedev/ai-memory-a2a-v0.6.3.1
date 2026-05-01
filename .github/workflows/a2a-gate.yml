@@ -812,14 +812,15 @@ jobs:
       - name: Phase 2 — scripted orchestration dry run
         if: steps.phase0.outputs.phase0_ok == 'true'
         env:
-          NODE1_IP: ${{ env.NODE1_IP }}
-          NODE2_IP: ${{ env.NODE2_IP }}
-          NODE3_IP: ${{ env.NODE3_IP }}
-          NODE4_IP: ${{ env.NODE4_IP }}
-          NODE1_PRIV: ${{ env.NODE1_PRIV }}
-          NODE2_PRIV: ${{ env.NODE2_PRIV }}
-          NODE3_PRIV: ${{ env.NODE3_PRIV }}
-          MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
+          NODE1_IP: ${{ steps.wait.outputs.node1_ip }}
+          NODE2_IP: ${{ steps.wait.outputs.node2_ip }}
+          NODE3_IP: ${{ steps.wait.outputs.node3_ip }}
+          NODE4_IP: ${{ steps.wait.outputs.memory_ip }}
+          MEMORY_NODE_IP: ${{ steps.wait.outputs.memory_ip }}
+          NODE1_PRIV: ${{ steps.wait.outputs.node1_priv }}
+          NODE2_PRIV: ${{ steps.wait.outputs.node2_priv }}
+          NODE3_PRIV: ${{ steps.wait.outputs.node3_priv }}
+          MEMORY_PRIV: ${{ steps.wait.outputs.memory_priv }}
           AGENT_GROUP: ${{ github.event.inputs.agent_group }}
           TLS_MODE: ${{ github.event.inputs.tls_mode }}
           CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
@@ -838,14 +839,15 @@ jobs:
       - name: Phase 3 — autonomous NHI playbook (4 scenarios × 4 arms × n=3)
         if: steps.phase0.outputs.phase0_ok == 'true'
         env:
-          NODE1_IP: ${{ env.NODE1_IP }}
-          NODE2_IP: ${{ env.NODE2_IP }}
-          NODE3_IP: ${{ env.NODE3_IP }}
-          NODE4_IP: ${{ env.NODE4_IP }}
-          NODE1_PRIV: ${{ env.NODE1_PRIV }}
-          NODE2_PRIV: ${{ env.NODE2_PRIV }}
-          NODE3_PRIV: ${{ env.NODE3_PRIV }}
-          MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
+          NODE1_IP: ${{ steps.wait.outputs.node1_ip }}
+          NODE2_IP: ${{ steps.wait.outputs.node2_ip }}
+          NODE3_IP: ${{ steps.wait.outputs.node3_ip }}
+          NODE4_IP: ${{ steps.wait.outputs.memory_ip }}
+          MEMORY_NODE_IP: ${{ steps.wait.outputs.memory_ip }}
+          NODE1_PRIV: ${{ steps.wait.outputs.node1_priv }}
+          NODE2_PRIV: ${{ steps.wait.outputs.node2_priv }}
+          NODE3_PRIV: ${{ steps.wait.outputs.node3_priv }}
+          MEMORY_PRIV: ${{ steps.wait.outputs.memory_priv }}
           AGENT_GROUP: ${{ github.event.inputs.agent_group }}
           TLS_MODE: ${{ github.event.inputs.tls_mode }}
           CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
