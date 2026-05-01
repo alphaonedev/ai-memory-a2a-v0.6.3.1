@@ -90,53 +90,37 @@ check_agent() {
   local node="$1" ip="$2" expect_priv_csv="$3"
   log "  $node ($ip) expects peers: $expect_priv_csv"
   local cp; cp="$(curl_prefix)"
-  local url; url="$(base_url)/api/v1/peers"
 
-  # /api/v1/peers
-  local peers_raw rc
-  peers_raw="$(ssh_exec "$ip" "$cp $url; echo __rc__\$?" 2>/dev/null || true)"
-  rc="$(printf '%s' "$peers_raw" | sed -n 's/.*__rc__\([0-9]\+\).*/\1/p' | tail -1)"
-  rc="${rc:-1}"
-  # strip the rc marker so the body is parseable
-  peers_raw="$(printf '%s' "$peers_raw" | sed 's/__rc__[0-9]\+$//')"
+  # v0.6.3.1 does NOT expose /api/v1/peers — confirmed empirically.
+  # The serve daemon takes peers via --quorum-peers <CSV-of-URLs> at
+  # startup; the only federation HTTP surface is POST /api/v1/sync/push
+  # (the fanout receiver). To verify federation on each node we:
+  #   1. Probe /api/v1/health (proves the daemon is alive on 9077).
+  #   2. Read the running ai-memory process's command line and extract
+  #      its --quorum-peers value; substring-match expected priv IPs.
+  # If both succeed for every expected peer, federation is structurally
+  # healthy at the substrate layer.
+  local peers_raw rc peers_endpoint_reachable=false peer_count=0
+  local raw_peers='[]' missing_peers='[]' matched_peers=() unmatched=()
 
-  local peers_endpoint_reachable=false
-  local peer_count=0
-  local raw_peers='[]'
-  local missing_peers='[]'
-  local matched_peers=()
-  local unmatched=()
-
-  if [ "$rc" = "0" ] && [ -n "$peers_raw" ]; then
+  # Health probe — substitute for the missing /api/v1/peers endpoint.
+  local health_url; health_url="$(base_url)/api/v1/health"
+  local health_raw
+  health_raw="$(ssh_exec "$ip" "$cp $health_url; echo __rc__\$?" 2>/dev/null || true)"
+  local health_rc
+  health_rc="$(printf '%s' "$health_raw" | sed -n 's/.*__rc__\([0-9]\+\).*/\1/p' | tail -1)"
+  health_rc="${health_rc:-1}"
+  if [ "$health_rc" = "0" ]; then
     peers_endpoint_reachable=true
-    # Extract list of peer URLs / addresses heuristically. Several
-    # ai-memory builds spell it differently:
-    #   * { "peers": ["http://10.10.0.5:9077", ...] }
-    #   * { "peers": [{ "url": "...", "private_ip": "..." }, ...] }
-    # We let python+jq-equivalent handle both shapes.
-    local parsed
-    parsed="$(printf '%s' "$peers_raw" | python3 - <<'PY' 2>/dev/null || true
-import json, sys
-try:
-    d = json.loads(sys.stdin.read())
-except Exception:
-    print(json.dumps({"peers": [], "error": "not-json"}))
-    sys.exit(0)
-peers = d.get("peers") if isinstance(d, dict) else None
-if peers is None and isinstance(d, list):
-    peers = d
-out = []
-for p in (peers or []):
-    if isinstance(p, str):
-        out.append(p)
-    elif isinstance(p, dict):
-        out.append(p.get("url") or p.get("private_ip") or p.get("address") or json.dumps(p, sort_keys=True))
-print(json.dumps({"peers": out}))
-PY
-)"
-    if [ -n "$parsed" ]; then
-      raw_peers="$(printf '%s' "$parsed" | python3 -c 'import json,sys; print(json.dumps(json.loads(sys.stdin.read())["peers"]))')"
-      peer_count="$(printf '%s' "$parsed" | python3 -c 'import json,sys; print(len(json.loads(sys.stdin.read())["peers"]))')"
+  fi
+
+  # Read the ai-memory process cmdline and extract --quorum-peers.
+  local cmdline; cmdline="$(ssh_exec "$ip" "tr '\\0' ' ' < /proc/\$(pgrep -f 'ai-memory serve' | head -1)/cmdline 2>/dev/null || true")"
+  if [ -n "$cmdline" ]; then
+    local quorum_csv; quorum_csv="$(printf '%s' "$cmdline" | sed -nE 's/.*--quorum-peers[[:space:]=]+([^[:space:]]+).*/\1/p')"
+    if [ -n "$quorum_csv" ]; then
+      raw_peers="$(printf '%s' "$quorum_csv" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().strip().split(",")))')"
+      peer_count="$(printf '%s' "$quorum_csv" | tr ',' '\n' | sed '/^$/d' | wc -l | tr -d ' ')"
     fi
   fi
 
