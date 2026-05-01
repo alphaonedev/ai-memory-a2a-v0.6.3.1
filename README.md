@@ -1,14 +1,27 @@
 # ai-memory A2A campaign — v0.6.3.1
 
-Per-release **agent-to-agent (A2A) integration certification** campaign for [`ai-memory v0.6.3.1`](https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1). 4-node DigitalOcean mesh + local-docker mesh fallback.
+Per-release **agent-to-agent (A2A) integration certification** campaign for [`ai-memory v0.6.3.1`](https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1) (tag cut 2026-04-30, schema v19). 4-node DigitalOcean mesh.
 
 | Verdict | Run | Cell | Last updated |
 |---|---|---|---|
-| `PENDING` | r0 | ironclaw / mTLS (cert) | — |
+| `PENDING` | r2 | ironclaw / mTLS (cert) | — |
 
-> **Status.** Repo scaffolding. First campaign run pending.
+> **Status.** First-Principles refactor in flight. Prior r1 archived under `runs/_archive/r1-pre-governance/`.
 > **Subject under test.** ai-memory `v0.6.3.1` (tag pinned).
-> **Funnel.** Findings roll into [**Patch 2** (`v0.6.3.2`)](https://github.com/alphaonedev/ai-memory-mcp/issues/507) via the umbrella tracking issue.
+> **Agent scope.** IronClaw + Hermes (OpenClaw runs in a separate campaign per Principle 6).
+> **Authoritative governance.** [`docs/governance.md`](docs/governance.md) — overrides any conflicting stale convention.
+> **Funnel.** Findings roll into [**Patch 2** (`v0.6.3.2`)](https://github.com/alphaonedev/ai-memory-mcp/issues/511) via the umbrella tracking issue.
+
+## Phase structure (per [governance.md](docs/governance.md) §3)
+
+| Phase | Name | Entry gate | Exit artifact |
+|---|---|---|---|
+| 0 | Pre-flight | Accesses confirmed | `a2a-baseline.json` |
+| 1 | Substrate cert (S1–S24) | Phase 0 GREEN | `releases/v0.6.3.1/summary.json` (verdict `PARTIAL — pending Patch 2`) |
+| 2 | AI Orchestration Test (scripted dry run) | Phase 1 verdict matches Principle 2 | `phase2-orchestration.json` |
+| 3 | Autonomous NHI Playbook (4 scenarios × 4 arms × n=3 = 48 runs) | Phase 2 GREEN | `phase3-<scenario>-<arm>-run<n>.json` |
+| 4 | Meta-analysis (third Claude instance, no namespace access) | Phase 3 logs valid per [§7 schema](scripts/schema/phase-log.schema.json) | `phase4-analysis.json` + cross-layer consistency table |
+| 5 | Verdict commit + findings sync | Phase 4 signed | Updated #511 Patch 2 candidate list |
 
 ## Why this repo exists
 
@@ -28,8 +41,8 @@ Eight base scenarios from the umbrella's testbook (S1 per-agent write+read, S2 s
 |---|---|---|---|
 | **ironclaw** | regression | regression | **CERT cell** (target 48 / 48) |
 | **hermes** | regression | regression | regression |
-| **openclaw** | regression | regression | regression |
-| mixed (ironclaw↔hermes, ironclaw↔openclaw, hermes↔openclaw) | regression | regression | stretch |
+| **openclaw** | _out of scope_ | _out of scope_ | _out of scope (separate campaign)_ |
+| mixed (ironclaw↔hermes) | regression | regression | stretch |
 
 ### Class B — v0.6.3.1-specific (new surfaces)
 

@@ -1,0 +1,220 @@
+{
+  "__schema__": "Per-campaign narrative + bug-to-fix lineage. Authored by AI NHI (Claude Opus 4.7). When a new campaign lands, append a block keyed by campaign_id. Fields: headline, verdict, what_it_tested, what_it_proved, for_non_technical, for_c_level, for_sme, bugs[{title, impact, root_cause, fixed_in}], next_run_change.",
+  "__links__": {
+    "ai_memory_mcp": "https://github.com/alphaonedev/ai-memory-mcp",
+    "ship_gate": "https://github.com/alphaonedev/ai-memory-ship-gate",
+    "a2a_gate": "https://github.com/alphaonedev/ai-memory-ai2ai-gate"
+  },
+  "__audience_framing__": {
+    "non_technical": "Plain language analogies. What the run means for someone who relies on AI agents working together through ai-memory but doesn't read code.",
+    "c_level": "Risk, cost, compliance, audit, velocity. What business outcome does this run buy down or expose? What decision should leadership make?",
+    "sme": "Invariants proven, file paths, specific mechanisms, why the test measured what it measured. No hand-waving."
+  },
+  "__campaign_window__": {
+    "release": "v0.6.0",
+    "started_at": "2026-04-20T21:41:00Z",
+    "iterations": ["r2", "r3", "r4", "r5"],
+    "iteration_style": "Each failure surfaces one new bug in the provisioning stack. Fix lands, next dispatch reaches one step further. Classic ship-gate pattern: the run IS the diagnostic. Every red teaches something; the green-path work is still to come."
+  },
+
+  "a2a-openclaw-v0.6.0-r2": {
+    "headline": "First grok-CLI dispatch — VPC CIDR typo blocked terraform apply",
+    "verdict": "RED at Terraform init + apply in 12 s. No droplets provisioned, $0 spent.",
+    "what_it_tested": "First genuine attempt at a grok-CLI-backed OpenClaw campaign after wiring xAI Grok + ai-memory MCP into setup_node.sh. DIGITALOCEAN secrets fresh; XAI_API_KEY secret freshly added.",
+    "what_it_proved": "GitHub Actions dispatch path, DO API auth, and SSH-key secret wiring are correct \u2014 Terraform got far enough to validate the VPC resource shape, which is why the CIDR failure surfaced.",
+    "for_non_technical": "Think of the VPC CIDR as the street address for a private neighbourhood we're about to build. Someone wrote \"123 Maple Street, suite 260\" when the building only has suites 0 through 255 \u2014 the mail courier just returned the envelope. Zero houses were built, zero money was spent. The typo was obvious as soon as we looked.",
+    "for_c_level": "Controlled failure with zero cloud spend. Fail-fast design worked exactly as intended: an invalid input killed the campaign before any infrastructure was created. No cleanup debt, no orphan resources. The iteration cost is bounded by how fast the fix lands (minutes), not by what was provisioned (nothing).",
+    "for_sme": "terraform/main.tf:90 had ip_range \"10.260.0.0/24\" \u2014 invalid IPv4 because the second octet caps at 255. DO's VPC API rejected it at plan time. One-character-class fix: replaced with 10.251.0.0/24 (adjacent to ship-gate's 10.250.0.0/24). The next iteration exposed a second, latent bug in the firewall rules that referenced the same stale CIDR literally \u2014 proving the value of fail-fast staged discovery over trying to audit the whole file manually.",
+    "bugs": [
+      {
+        "title": "VPC ip_range was invalid IPv4",
+        "impact": "Terraform apply rejected; zero droplets created.",
+        "root_cause": "Copy-paste typo when partitioning CIDRs away from ship-gate's 10.250.0.0/24 \u2014 intended 10.251, typed 10.260 which has no valid /24 representation.",
+        "fixed_in": "commit 18f05d2 (terraform/main.tf:90)"
+      }
+    ],
+    "next_run_change": "Redispatch as r3 after CIDR fix + add XAI_API_KEY plumbing to workflow env + setup_node.sh."
+  },
+
+  "a2a-hermes-v0.6.0-r2": {
+    "headline": "Hermes group hit the same CIDR blocker \u2014 identical failure mode, identical fix",
+    "verdict": "RED at Terraform init + apply in 13 s.",
+    "what_it_tested": "Hermes campaign dispatched concurrently with openclaw-r2 to confirm the two-VPC concurrent-dispatch model.",
+    "what_it_proved": "Workflow concurrency key (group=a2a-gate-${agent_group}) correctly scoped \u2014 both campaigns executed in parallel. Both failed identically on the same CIDR, so the blocker is in the shared terraform module, not in anything agent-group-specific.",
+    "for_non_technical": "Same bad address, same returned envelope, but on the Hermes delivery truck this time. The mail system is fair \u2014 it rejects both identically.",
+    "for_c_level": "Confirms cross-campaign fault isolation: a bug in shared infra breaks both groups in the same way, so we see the whole shape of the problem in one dispatch rather than discovering it later with one group already green.",
+    "for_sme": "Same root cause as r2-openclaw (ip_range 10.260.0.0/24). The DO-side error surfaced at VPC create, not firewall \u2014 different from r3-hermes where the VPC succeeded but firewall failed, confirming DO validates each resource in isolation rather than doing a global pre-flight.",
+    "bugs": [
+      {
+        "title": "Same CIDR typo reached Hermes via shared module",
+        "impact": "Both campaigns RED at first-resource validation.",
+        "root_cause": "Single source file shared across agent_group values.",
+        "fixed_in": "commit 18f05d2"
+      }
+    ],
+    "next_run_change": "Dispatch r3 with CIDR fix."
+  },
+
+  "a2a-openclaw-v0.6.0-r3": {
+    "headline": "VPC create raced Hermes \u2014 same CIDR, second campaign lost the race",
+    "verdict": "RED at Terraform init + apply in 12 s. Hermes created 10.251.0.0/24 first; OpenClaw's identical request was 422-rejected with overlap.",
+    "what_it_tested": "Whether the CIDR fix alone was sufficient. It was \u2014 for whichever campaign won the dispatch race.",
+    "what_it_proved": "The two campaigns must have distinct CIDRs because they're intended to run concurrently. Picking the same /24 creates a distributed system of one: whichever terraform calls CreateVPC first wins, the other blows up.",
+    "for_non_technical": "Two teams tried to reserve the same block of houses at the same time. The first team got them; the second team was told \"sorry, already taken.\" We need to give each team a distinct block.",
+    "for_c_level": "Surfaces the concurrent-dispatch requirement as a first-class constraint in the infra design. Two-campaign-per-release is the intended cadence; resource naming + addressing must be orthogonal across agent_group values.",
+    "for_sme": "DO API: POST /v2/vpcs returns 422 \"This range/size overlaps with another VPC network in your account: aim-a2a-hermes-...\" when the CIDR is already allocated. Fix introduced local.vpc_cidr map: openclaw \u2192 10.251.0.0/24, hermes \u2192 10.252.0.0/24. Firewall rules that previously hardcoded 10.260.0.0/24 now reference digitalocean_vpc.a2a.ip_range so there's one source of truth and the partition works for both.",
+    "bugs": [
+      {
+        "title": "Concurrent VPC CIDR collision",
+        "impact": "One of two concurrent campaigns always lost the race.",
+        "root_cause": "Single shared CIDR constant didn't partition by agent_type.",
+        "fixed_in": "commit 82d9fe2 (local.vpc_cidr map)"
+      },
+      {
+        "title": "campaign_id dots invalid in DO tags",
+        "impact": "Would have blocked even a single campaign had the CIDR fix been clean.",
+        "root_cause": "DO tags permit lowercase + digits + : - _ only; campaign_id like v0.6.0-r3 contains dots.",
+        "fixed_in": "commit 4998ae2 (replace(var.campaign_id, \".\", \"-\") in both tag lists)"
+      }
+    ],
+    "next_run_change": "Partition CIDR by agent_type; dispatch r4."
+  },
+
+  "a2a-hermes-v0.6.0-r3": {
+    "headline": "VPC succeeded but stale 10.260 CIDR in firewall killed the plan",
+    "verdict": "RED at Terraform init + apply in 1 m 5 s (longer because VPC create succeeded before firewall create failed).",
+    "what_it_tested": "Whether the VPC CIDR fix alone was sufficient.",
+    "what_it_proved": "Post-VPC firewall creation exposed a SECOND hardcoded 10.260.0.0/24 that the first fix missed \u2014 two firewall inbound_rules used it as source_addresses. Iteration-style debugging surfaced the second bug that would have been easy to miss in a one-shot manual audit.",
+    "for_non_technical": "We fixed the street address on the house plans but forgot that the security camera installer was ALSO using the old address as the \"who's allowed to ring the doorbell\" list. Building permit passed. Camera install failed.",
+    "for_c_level": "Demonstrates why staged real-infrastructure testing exposes bugs that static analysis wouldn't \u2014 the second CIDR was in a different resource that only gets created if VPC creation succeeds. The fail-fast pattern naturally walks the dependency graph.",
+    "for_sme": "DO firewall POST returned 422 \"invalid address: 10.260.0.0/24\" on the inbound_rule blocks for port 9077 and icmp. Fix swapped the hardcoded strings for digitalocean_vpc.a2a.ip_range \u2014 one source of truth, eliminates the entire class of drift bugs between VPC CIDR and downstream CIDR references.",
+    "bugs": [
+      {
+        "title": "Firewall rules had stale 10.260 hardcodes",
+        "impact": "Firewall create failed after VPC already existed \u2014 teardown had to destroy the orphan VPC (it did; 6 resources cleaned).",
+        "root_cause": "Incomplete sweep when the VPC CIDR was first changed \u2014 firewall inbound_rule source_addresses weren't updated.",
+        "fixed_in": "commit c7bffef (source_addresses = [digitalocean_vpc.a2a.ip_range])"
+      }
+    ],
+    "next_run_change": "Link firewall CIDR to VPC CIDR via reference; dispatch r4."
+  },
+
+  "a2a-openclaw-v0.6.0-r4": {
+    "headline": "Droplets booted but SSH auth silently failed \u2014 wrong private-key half in the secret",
+    "verdict": "RED at Wait for SSH after 2 m 44 s of retries against the memory-only node.",
+    "what_it_tested": "First campaign where all 4 droplets actually booted with a valid firewall. SSH auth was the next untested surface.",
+    "what_it_proved": "Terraform is fully green. All four droplets provisioned, public IPs assigned, firewall rules accepted inbound 22. The blocker moved one step deeper into the provisioning flow. Teardown cleanly destroyed all 6 resources (4 droplets + VPC + firewall), confirming the if: always() teardown guard works even when a mid-run step fails.",
+    "for_non_technical": "The building got built, the front door got installed, the keypad got mounted \u2014 but the building manager handed the wrong spare key to the cleaning crew. They stood at the door for two and a half minutes trying their key, gave up, and left. Nothing broken, just can't get in.",
+    "for_c_level": "Mature failure: infrastructure costs were paid (~2 minutes of droplet compute, well under $0.05 total for both campaigns), teardown ran automatically, and the diagnostic message was precise enough to root-cause in one step. The iteration loop continues to burn down one bug per dispatch.",
+    "for_sme": "ssh -o BatchMode=yes -o ConnectTimeout=3 failed silently for 30x5s on node-4 (memory-only, first in the wait loop). Root cause: the /root/.ssh/id_ed25519.pub file on the operator workstation was out of sync with its own private key. `ssh-keygen -y -f /root/.ssh/id_ed25519` derived a DIFFERENT public key than what /root/.ssh/id_ed25519.pub claimed. The claimed .pub matched DO-registered key 'AO1' (fingerprint b5:bf:33:9d:...), so DO installed AO1's public half on every droplet. But the actual private key on disk (and therefore in the uploaded DIGITALOCEAN_SSH_PRIVATE_KEY secret) derives to fingerprint bf:0b:e1:92:... \u2014 unregistered at DO. Fix: derive actual pub, register at DO via POST /v2/account/keys, update DIGITALOCEAN_SSH_KEY_FINGERPRINT secret to the new fingerprint.",
+    "bugs": [
+      {
+        "title": "Stale .pub file led to wrong key fingerprint in secret",
+        "impact": "Every SSH attempt silently denied by authorized_keys mismatch; campaign timed out at SSH wait.",
+        "root_cause": "id_ed25519.pub on operator workstation was not generated from the matching id_ed25519 private \u2014 likely a key rotation where the .pub file wasn't refreshed. Trust-the-.pub-file default broke.",
+        "fixed_in": "Registered the actually-matching public key as DO key 'ai-memory-ai2ai-gate' (id 55757076, fingerprint bf:0b:e1:92:6f:ea:0d:1d:e4:96:ee:ac:71:73:ed:4e). Updated repo secret + /root/.env."
+      }
+    ],
+    "next_run_change": "Redispatch r5 with corrected fingerprint \u2014 SSH should now succeed and the run should reach Provision for the first time."
+  },
+
+  "a2a-hermes-v0.6.0-r4": {
+    "headline": "Same SSH key mismatch \u2014 identical diagnosis, shared fix lineage",
+    "verdict": "RED at Wait for SSH after 2 m 38 s.",
+    "what_it_tested": "Hermes-side SSH path \u2014 same key, same secret, same blocker.",
+    "what_it_proved": "Confirmed the SSH fingerprint bug is campaign-agnostic (shared secret scope), so fixing it once on the ai2ai-gate repo secret fixes both groups simultaneously. Also confirmed teardown ran clean on Hermes (6 resources destroyed).",
+    "for_non_technical": "Hermes had the same wrong-key problem OpenClaw did. One fix solves both.",
+    "for_c_level": "Good economy of failure: the bug was repo-scoped, not agent-group-scoped, so a single secret rotation resolves it for all future dispatches of either group. No 2x fix cost.",
+    "for_sme": "Since DIGITALOCEAN_SSH_PRIVATE_KEY and DIGITALOCEAN_SSH_KEY_FINGERPRINT are repo-level secrets, both agent_group campaigns consume the same values. Updating the fingerprint secret once makes every future campaign dispatch land on droplets with the correct authorized_keys.",
+    "bugs": [],
+    "next_run_change": "Same fingerprint rotation resolves both; redispatch r5 for both groups."
+  },
+
+  "a2a-openclaw-v0.6.0-r5": {
+    "headline": "First end-to-end run \u2014 infra GREEN, MCP writes succeeded on all 3 agents, scenario script had two measurement bugs",
+    "verdict": "MIXED \u2014 15 m 23 s wall. Terraform green, SSH green, Provision green on all 4 nodes, Phase A writes succeeded (9 MCP writes observed per agent, HNSW index grew 1\u21929). Phase B row-count crashed on shell arithmetic over multi-line ssh stdout. Phase C crashed because the runner tried to reach node-4:9077 over the public IP, which the firewall (by design) blocks.",
+    "what_it_tested": "The full end-to-end provisioning flow for the first time: four DO droplets, ai-memory v0.6.0 binary install with federation mesh (W=2 / N=4), agent-specific grok-CLI installation from the grok-dev@1.6.0 release, MCP config at ~/.grok/user-settings.json pointing at local ai-memory with agent_id stamped, scenario 1 writes + reads through the agent MCP path.",
+    "what_it_proved": "(1) The infrastructure stack is correct \u2014 DO provisioning, SSH, ai-memory federation bootstrap, MCP config wiring, agent install. (2) The agent-driven MCP write path works: on every agent node, the grok-CLI binary accepted a prompt, chose the ai-memory memory_store tool, invoked it over MCP stdio, and ai-memory rebuilt its HNSW semantic index after each successful store. (3) The measurement bugs in phases B + C are in the scenario harness, NOT in the memory substrate or the agent path.",
+    "for_non_technical": "First end-to-end working run on live cloud. Three AI agents on three DigitalOcean servers each wrote memories through the shared memory system. Every write landed. The index rebuilt itself each time a memory came in. The only failures were in the scoring script that counts rows \u2014 the agents and the memory did their jobs correctly; the scoreboard just had some formatting bugs.",
+    "for_c_level": "First concrete evidence that heterogeneous A2A works end-to-end on AlphaOne's memory substrate with a real LLM-backed agent (xAI Grok via grok-CLI) on disposable cloud infrastructure. Five iterations of controlled failure delivered this in under 2 hours of wall clock and under $0.30 of DO spend. The remaining work is harness polish, not product correctness. Green scoreboard is within 1\u20132 iterations.",
+    "for_sme": "Provision step is sequential (node-4 memory-only \u2192 node-1/2/3 agents). On each node: apt-get install base packages, UFW off (ship-gate lesson), shutdown -P +480 dead-man switch, curl ai-memory release tarball \u2192 /usr/local/bin, serve with --quorum-writes 2 --quorum-peers <other-3> on 0.0.0.0:9077, wait for /api/v1/health 200 OK. On agent nodes additionally: MCP config JSON at /etc/ai-memory-a2a/mcp-config/config.json, grok-CLI binary install, symlink /usr/local/bin/openclaw \u2192 grok, /root/.grok/user-settings.json with xAI key + ai-memory stdio MCP + AI_MEMORY_AGENT_ID env. Scenario 1 Phase A invoked grok -p \"Store a memory in namespace scenario1-<agent> titled w<i>-<agent>...\" via drive_agent.sh; each invocation spawned ai-memory mcp as a stdio child, handled one JSON-RPC call, persisted to /var/lib/ai-memory/a2a.db, rebuilt HNSW, exited. Phase B failure: ssh reader-node drive_agent.sh list <ns> | jq '.memories | length' produced newline-joined digits from the LLM's response formatting rather than a single int; shell arith $((sum + count)) crashed. Phase C failure: firewall source_addresses = digitalocean_vpc.a2a.ip_range blocks port 9077 from the runner's public IP.",
+    "bugs": [
+      {
+        "title": "Phase B row count parses multi-line agent output as a single integer",
+        "impact": "Scenario never emits a pass/fail JSON \u2014 the Aggregate step produces an empty summary.",
+        "root_cause": "drive_agent.sh list drives the agent LLM to return row counts; agent output is natural-language JSON, not a deterministic int.",
+        "fixed_in": "Follow-up commit \u2014 Phase B now hits local ai-memory HTTP (127.0.0.1:9077) via ssh, jq | tail -1 to guard."
+      },
+      {
+        "title": "Phase C hits node-4 over public IP",
+        "impact": "curl timeout 134s, cross-cluster identity check never runs.",
+        "root_cause": "Firewall correctly blocks port 9077 from the internet; the scenario assumed public reachability.",
+        "fixed_in": "Follow-up commit \u2014 Phase C SSH-hops to node-4 and curls 127.0.0.1:9077 there."
+      }
+    ],
+    "next_run_change": "Dispatch r6 with scenario-1 harness fixes; scenario 1 should emit a clean pass/fail summary and evidence HTML should render with tri-audience blocks populated."
+  },
+
+  "a2a-hermes-v0.6.0-r6": {
+    "headline": "Hermes install missing python-dotenv — `hermes` CLI crashes at import before ever reaching the MCP path",
+    "verdict": "INFRA GREEN / SCENARIO RED — all 4 droplets provisioned, SSH landed, setup_node.sh ran to completion, but every invocation of `hermes chat -q ...` exits with `ModuleNotFoundError: No module named 'dotenv'` at import time. Zero writes landed; scenario never reached its jq emit, so the scenario-1.json produced is stderr-only (now correctly captured as scenario-1.log once we re-dispatch with the split-stream workflow).",
+    "what_it_tested": "Hermes-side end-to-end run after r5's `hermes chat -q` + native xAI provider fix. This was the first dispatch that actually invoked the hermes CLI against a real prompt.",
+    "what_it_proved": "(1) The CLI-name correction (r5→r6 fix) was necessary and is now compiling/loading far enough to expose the NEXT latent bug. (2) The next bug is a dependency-installation gap: hermes-agent's env_loader.py imports `from dotenv import load_dotenv` unconditionally at import time, and the Nous Research install.sh does not install python-dotenv into the venv it provisions. Every Hermes invocation on a clean Ubuntu 24.04 DO droplet blows up at module import before any MCP traffic happens. (3) The a2a-gate's iteration loop continues to walk one bug deeper per dispatch — classic ship-gate diagnostic chain pattern.",
+    "for_non_technical": "Hermes' front-door receptionist asked to see an ID card (dotenv) before letting anyone through. The installer forgot to give the receptionist that card. So every visitor — no matter what they're trying to do — gets turned away at the lobby. None of the actual work was attempted. One-line install fix; re-dispatch should get Hermes actually running for the first time.",
+    "for_c_level": "Another controlled, inexpensive failure that surfaces a real onboarding gap for Hermes on fresh infrastructure. The cost is under $0.10 of DO compute for this diagnostic. The fix is a single `pip install python-dotenv` line in setup_node.sh. This kind of surface-the-gap-early-and-cheap cadence is exactly what the gate is designed to deliver — and because OpenClaw and Hermes are dispatched independently, OpenClaw's parallel progress isn't blocked by the Hermes issue.",
+    "for_sme": "Root cause: scripts/setup_node.sh runs `bash /root/.hermes/install.sh` (the upstream Nous Research installer) which creates /root/.hermes/hermes-agent/ and its entrypoint shim /usr/local/bin/hermes → python3 -m hermes_cli. The install.sh does NOT run `pip install python-dotenv` (nor does hermes-agent ship a requirements.txt that includes it), yet hermes_cli/env_loader.py line 8 has a top-of-file `from dotenv import load_dotenv`. Import fails before argparse, before `chat` subcommand dispatch, before any MCP initialisation. Fix: append `python3 -m pip install --break-system-packages python-dotenv` to setup_node.sh's hermes install branch, or use pipx to install hermes-agent into an isolated env that pulls the full dep set. Tracking upstream fix request to Nous Research install.sh so future releases don't need this patch.",
+    "bugs": [
+      {
+        "title": "Missing python-dotenv — hermes-agent install.sh skips a transitive dep",
+        "impact": "Every Hermes invocation on a fresh droplet crashes at import. Scenario 1 phase A never writes a memory via Hermes.",
+        "root_cause": "Upstream install.sh doesn't install python-dotenv; env_loader.py imports it unconditionally.",
+        "fixed_in": "Follow-up commit — setup_node.sh `pip install python-dotenv` in the hermes branch + report upstream."
+      }
+    ],
+    "next_run_change": "Dispatch r7-hermes after dotenv patch lands. Expect Phase A to succeed on Hermes and — because scenario-1 now reaches Phase B/C — the SAME MCP-stdio-bypasses-federation substrate finding that openclaw-r6 surfaced will also appear on the Hermes side. That parity will be diagnostic evidence that the substrate gap is framework-independent."
+  },
+
+  "a2a-openclaw-v0.6.0-r6": {
+    "headline": "First harness-clean run — substrate finding: MCP stdio writes bypass federation fanout",
+    "verdict": "INFRA GREEN / SCENARIO RED — all 30 agent-driven writes landed to LOCAL sqlite on each node; 0 rows replicated to peers. Phase B recall from other agents' namespaces returned 0; Phase C at node-4 memory-only aggregator returned 0 across all three namespaces. This is a real substrate-level interaction gap, not a harness bug — the scoreboard is honest.",
+    "what_it_tested": "First end-to-end run after r5 harness fixes (Phase B via local HTTP + tail -1 guard, Phase C via SSH-hop to node-4:127.0.0.1:9077). Scenario 1 Phase A: each of ai:alice / ai:bob / ai:charlie drives 10 memory_store calls through the agent-framework-natural MCP stdio path (grok-CLI → MCP stdio → ai-memory). Phase B: each agent reads the OTHER two agents' namespaces via local ai-memory HTTP. Phase C: SSH-hop into node-4 (memory-only aggregator) and query its local ai-memory for each agent's namespace, asserting 10 rows per namespace with metadata.agent_id correctly stamped.",
+    "what_it_proved": "(1) Agent-driven MCP writes succeed end-to-end — grok-CLI accepts the natural-language prompt, selects the memory_store tool, the stdio ai-memory process writes to /var/lib/ai-memory/a2a.db, rebuilds HNSW from 1→9 entries across the session sequence. All 10 writes per agent completed without error. (2) The harness is clean — no shell arithmetic crashes, no public-IP firewall blocks, JSON emit reaches stdout correctly (and now that the workflow split stdout from stderr, scenario-1.json is pure JSON). (3) Substrate finding: the MCP stdio path and the federation serve daemon are SEPARATE processes on each node. MCP writes go through the local DB driver and exit; they never publish to the serve daemon's quorum-write coordinator, so the W=2/N=4 fanout never fires. Memory-only node-4 saw zero of the 30 writes.",
+    "for_non_technical": "Three librarians each stamped every book they received into their own local catalog — all thirty stamps landed perfectly. But the shared library union catalog never got updated because the stamping process was a temp worker who went home before signing the \"send to HQ\" form. Each local catalog is correct. The union catalog is empty. The test caught a real gap in how the libraries talk to each other, not a bug in the stamps.",
+    "for_c_level": "A2A gate just surfaced a concrete interaction gap between two interfaces of our own product — the one-shot MCP stdio path doesn't coordinate with the always-on federation daemon on the same node. This is exactly the class of bug that only shows up under real agent → MCP → federation → peer exercise; it's invisible to unit tests and invisible to the ship-gate's API-only harness. Product-level fix, tracks as a v0.6.0.1 candidate in ai-memory-mcp. DO spend for this finding: under $0.30. The a2a-gate is paying for itself on its first green-infra dispatch.",
+    "for_sme": "drive_agent.sh store invokes `grok --no-sandbox --format json --max-tool-rounds 20 -p \"Store a memory in namespace scenario1-<agent> titled w<i>-<agent>...\"`. Grok binds to MCP via /root/.grok/user-settings.json which points at `ai-memory mcp` as a stdio server. The stdio server is a short-lived child: it accepts one JSON-RPC memory_store request, writes to /var/lib/ai-memory/a2a.db through the local DB driver, emits 'ai-memory: building HNSW index (N vectors)...' on next-session startup (proves the write persisted to sqlite), and exits. The sibling `ai-memory serve --quorum-writes 2 --quorum-peers <other-3>` daemon on 0.0.0.0:9077 is a DIFFERENT process with its own write-pending queue + fanout worker — it never observes the MCP-path write and therefore never quorum-writes to peers. Phase B reports 0 (local serve DB has no replicated rows for other agents' namespaces); Phase C reports 0 at node-4 (memory-only node never received any fanout). Both are correct — the federation layer is genuinely empty. Fix candidates: (a) MCP stdio tool dispatch should call the local serve daemon's HTTP API (POST /api/v1/memories) rather than writing directly to sqlite, so the fanout coordinator sees every write uniformly regardless of ingress path. (b) ai-memory serve could host MCP as an in-process tool rather than spawning a separate stdio child. Option (a) is the smaller patch.",
+    "bugs": [
+      {
+        "title": "MCP stdio writes bypass the federation serve daemon's fanout coordinator",
+        "impact": "Any agent using the MCP stdio integration (every MCP-native agent framework — OpenClaw, Hermes, Claude Desktop, VS Code, etc.) writes only to the local node. W=N quorum semantics aren't exercised, cross-agent reads return empty, federated-read consumers see an inconsistent substrate.",
+        "root_cause": "Architectural: the MCP stdio server and the federation serve daemon share a sqlite file but not a write path. The federation fanout is triggered by the serve daemon's POST /api/v1/memories handler, not by sqlite-level inserts.",
+        "fixed_in": "TRACK as ai-memory-mcp issue (new). Proposed fix: MCP tool dispatch for memory_store/update/delete calls local serve HTTP API rather than direct DB writes. Candidate for v0.6.0.1."
+      }
+    ],
+    "next_run_change": "Two parallel tracks. (1) File the substrate issue in ai-memory-mcp and target v0.6.0.1. (2) For the next a2a-gate dispatch (r7), add a scenario-1 variant or a scenario-1b that exercises the FEDERATION-AWARE write path: drive_agent.sh acquires the agent token and POSTs to http://127.0.0.1:9077/api/v1/memories on the local serve daemon. This split preserves scenario-1's MCP-native exercise (still important for agent-framework compatibility evidence) while giving us a green-path federation run in parallel — so when the substrate fix lands, scenario-1 converges on green without losing the paired framework-compatibility signal."
+  },
+
+  "a2a-hermes-v0.6.0-r5": {
+    "headline": "Hermes installs and runs \u2014 but `hermes -p` is PROFILE NAME, not prompt. Scenario Phase A rejected every write.",
+    "verdict": "INFRA GREEN / SCENARIO RED \u2014 27 m 34 s wall (longer than openclaw\u2019s 15 m because the hermes-agent Python install is heavier than the single-binary grok). Terraform + SSH + Provision all green. Scenario crashed on first invocation with `Error: Invalid profile name 'Store a memory: ...'. Must match [a-z0-9][a-z0-9_-]{0,63}`. Every write attempt failed identically. Zero memories stored on the Hermes side.",
+    "what_it_tested": "End-to-end Hermes provisioning + first Hermes prompt invocation from drive_agent.sh.",
+    "what_it_proved": "(1) Nous Research hermes-agent installs cleanly from the official install.sh on a fresh Ubuntu 24.04 DO droplet. (2) The MCP config at ~/.hermes/config.yaml is accepted by the agent process (no YAML schema errors). (3) The grok-CLI assumption that `-p` means prompt was WRONG for Hermes \u2014 it\u2019s a global flag for `--profile <name>`. This is the kind of framework-mismatch bug that only surfaces on a real dispatch because the docs said `hermes chat` but drive_agent.sh was calling `hermes -p`.",
+    "for_non_technical": "Good news: Hermes installed correctly on the cloud server. Bad news: we gave it the wrong kind of instruction. It was waiting for a short username, we gave it a sentence. Every memo got returned before it was even read. Same kind of bug as when a form asks for 'Last name' and you type your full sentence in the box \u2014 instant validation error. Quick fix: use the correct command.",
+    "for_c_level": "The install surface works. The invocation bug is one line in a shell driver and costs under a minute to fix; next dispatch should produce the first Hermes-side scenario data. Cost of this detection: under $0.10 of DO compute. No product correctness issue \u2014 the memory substrate was never even touched by the Hermes side in this run. Framework-independence story still intact; this is a harness bug, not a substrate bug.",
+    "for_sme": "Root cause: scripts/drive_agent.sh called `hermes -p \"<natural language prompt>\"`. Per hermes-agent v0.10.0 CLI reference, `-p` is a GLOBAL flag aliasing `--profile <name>` with strict regex [a-z0-9][a-z0-9_-]{0,63} on the argument. The one-shot prompt flag is `hermes chat -q \"<prompt>\"` or `-Q` (programmatic/quiet mode). Hermes also supports xAI natively via `--provider xai` (alias grok) so the OpenAI-compatible shim isn't needed; XAI_API_KEY env is sufficient. Fix in this commit: drive_agent.sh now invokes `hermes chat -Q --provider xai --model grok-4-fast-non-reasoning -q \"$prompt\"`, setup_node.sh writes hermes.env with XAI_API_KEY only (drops OPENAI_API_BASE and friends).",
+    "bugs": [
+      {
+        "title": "drive_agent.sh used `hermes -p` which is --profile, not --prompt",
+        "impact": "Phase A never wrote a single memory on the Hermes side; scenario crashed on first invocation.",
+        "root_cause": "Assumed grok-CLI's -p prompt flag applied to hermes-agent; it doesn't. Hermes uses `hermes chat -q` for one-shot.",
+        "fixed_in": "Follow-up commit \u2014 drive_agent.sh uses `hermes chat -Q --provider xai --model grok-4-fast-non-reasoning -q \"$1\"`."
+      },
+      {
+        "title": "hermes.env had OpenAI-compatible envs, not native XAI_API_KEY",
+        "impact": "Irrelevant here because the bug above killed the run before the provider was consulted; but would have blocked on next iteration.",
+        "root_cause": "Over-indexed on the README's mention of OpenAI-compatible providers; Hermes has first-class xAI support.",
+        "fixed_in": "Follow-up commit \u2014 hermes.env now contains XAI_API_KEY only."
+      }
+    ],
+    "next_run_change": "Dispatch r6 with correct `hermes chat -q` invocation + native xAI provider; expect Hermes Phase A to succeed and full parity with openclaw\u2019s write path."
+  }
+}
