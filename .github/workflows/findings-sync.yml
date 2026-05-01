@@ -4,10 +4,9 @@
 # opens or updates issues on alphaonedev/ai-memory-mcp under the v0.6.3.2-candidate
 # label, parent-linked to the umbrella tracking issue.
 #
-# NOTE: secrets.AI_MEMORY_MCP_FINDINGS_TOKEN has not yet been provisioned.
-# The first run after this workflow lands will fail at the gh issue list/create
-# step with a 401 — that is expected. Provision the token (a fine-grained PAT
-# with issues:write on alphaonedev/ai-memory-mcp) to unblock subsequent runs.
+# Auth: secrets.AI_MEMORY_MCP_FINDINGS_TOKEN provisioned on the repo
+# (alphaonedev's PAT, has issues:write on alphaonedev/ai-memory-mcp).
+# The empty-token guard in the sync step is preserved as defense-in-depth.
 
 name: Findings sync
 
