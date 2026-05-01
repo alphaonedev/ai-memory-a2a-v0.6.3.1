@@ -1,0 +1,84 @@
+site_name: ai-memory A2A v0.6.3.1 campaign
+site_description: >-
+  Per-release agent-to-agent (A2A) certification campaign for
+  ai-memory-mcp v0.6.3.1 (tag cut 2026-04-30, schema v19). 4-node
+  DigitalOcean mesh. Scope: IronClaw + Hermes (OpenClaw runs in a
+  separate campaign per Principle 6). Governed by docs/governance.md.
+site_url: https://alphaonedev.github.io/ai-memory-a2a-v0.6.3.1/
+repo_url: https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1
+repo_name: alphaonedev/ai-memory-a2a-v0.6.3.1
+copyright: "Copyright &copy; 2026 AlphaOne LLC. Apache-2.0."
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.instant
+    - navigation.sections
+    - navigation.indexes
+    - toc.integrate
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+
+nav:
+  - Home: index.md
+  - Governance (authoritative):
+      - First-Principles governance: governance.md
+      - Scope (v0.6.3.1 specifics): scope.md
+      - Verdict matrix: matrix.md
+      - Findings funnel: findings.md
+  - Campaign runs: runs/
+  - Reproducing:
+      - Reproducing (DO): reproducing.md
+      - Local Docker mesh: local-docker-mesh.md
+  - Specification (inherited from gate):
+      - Baseline configuration: baseline.md
+      - Test book: testbook.md
+      - Every test performed: tests.md
+      - v1.0 GA criteria: v1-ga-criteria.md
+  - Agents (in scope: IronClaw, Hermes):
+      - IronClaw: agents/ironclaw.md
+      - Hermes: agents/hermes.md
+      - OpenClaw (out of scope): agents/openclaw.md
+  - Scenarios:
+      - Carry-forward S1–S8: scenarios.md
+      - 1. Per-agent write + read: scenarios/1-write-read.md
+      - 2. Shared-context handoff: scenarios/2-handoff.md
+      - 3. Targeted share: scenarios/3-targeted-share.md
+      - 4. Federation-aware agents: scenarios/4-federation.md
+      - 5. Consolidation + curation: scenarios/5-consolidation.md
+      - 6. Contradiction detection: scenarios/6-contradiction.md
+      - 7. Scoping visibility: scenarios/7-scoping.md
+      - 8. Auto-tagging: scenarios/8-auto-tagging.md
+  - Architecture:
+      - Architecture: architecture.md
+      - Topology: topology.md
+      - Methodology: methodology.md
+      - ai-memory integration: ai-memory-integration.md
+      - Infrastructure versions: infrastructure.md
+  - Operations:
+      - Runbook: runbook.md
+      - Incidents: incidents.md
+      - Security: security.md
+  - AI NHI insights: insights.md
+
+plugins:
+  - search
+  - macros:
+      module_name: main
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true

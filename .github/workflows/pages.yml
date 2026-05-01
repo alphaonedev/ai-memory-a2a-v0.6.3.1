@@ -1,0 +1,213 @@
+name: Publish GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "runs/**"
+      - "releases/**"
+      - "analysis/**"
+      - "main.py"
+      - "mkdocs.yml"
+      - ".github/workflows/pages.yml"
+  workflow_run:
+    workflows: ["A2A gate campaign"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Install mkdocs-material
+        run: pip install mkdocs-material mkdocs-macros-plugin
+
+      - name: Build a landing page for runs/
+        run: |
+          set -euo pipefail
+          mkdir -p docs/runs
+          # Build a sort key per run: "<completed_at_rfc3339>|<dir>"
+          # When summary is absent or completed_at is missing, fall back
+          # to the directory's most-recent mtime. Reverse sort = newest first.
+          keyed=$(
+            for dir in $(ls -1d runs/*/ 2>/dev/null); do
+              summary="${dir}a2a-summary.json"
+              key=""
+              if [ -f "$summary" ]; then
+                key=$(jq -r '.completed_at // empty' "$summary" 2>/dev/null)
+              fi
+              if [ -z "$key" ] || [ "$key" = "null" ]; then
+                key=$(date -u -d @"$(stat -c %Y "$dir" 2>/dev/null || echo 0)" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "1970-01-01T00:00:00Z")
+              fi
+              printf '%s|%s\n' "$key" "$dir"
+            done | sort -r
+          )
+          # Bucket rows by agent group into separate files so we can emit
+          # one section per framework (IronClaw primary, Hermes primary,
+          # OpenClaw legacy — retained per docs/baseline.md §4).
+          rows_ironclaw=$(mktemp)
+          rows_hermes=$(mktemp)
+          rows_openclaw=$(mktemp)
+          while IFS='|' read -r _ts dir; do
+            [ -z "$dir" ] && continue
+            name=$(basename "$dir")
+            summary="$dir/a2a-summary.json"
+            meta="$dir/campaign.meta.json"
+            if [ -f "$summary" ]; then
+              ref=$(jq -r '.ai_memory_git_ref // "?"' "$summary")
+              completed=$(jq -r '.completed_at // "?"' "$summary")
+              pass=$(jq -r '.overall_pass // false' "$summary")
+              group=$(jq -r '.agent_group // (.scenarios[0].agent_group // "?")' "$summary")
+              if [ "$pass" = "true" ]; then outcome="✅ PASS"; else outcome="❌ FAIL"; fi
+              scen_pass=$(jq -r '[.scenarios[]? | select(.pass == true)] | length' "$summary")
+              scen_total=$(jq -r '.scenarios | length' "$summary" 2>/dev/null || echo "?")
+              scen_cell="${scen_pass}/${scen_total}"
+            else
+              ref="?"; completed="?"; group="?"; outcome="⚠️ NO SUMMARY"
+              scen_json_count=$(ls "$dir"/scenario-*.json 2>/dev/null | wc -l | tr -d ' ')
+              scen_cell="—/${scen_json_count}"
+            fi
+            if [ -f "$meta" ]; then
+              actor=$(jq -r '.ci.actor // "?"' "$meta")
+              wurl=$(jq -r '.ci.workflow_url // ""' "$meta")
+              ref=$(jq -r '.ai_memory_git_ref // "?"' "$meta")
+              group=$(jq -r '.agent_group // "?"' "$meta")
+            else
+              actor="—"; wurl=""
+            fi
+            actor_cell=$([ -n "$wurl" ] && echo "[${actor}](${wurl})" || echo "$actor")
+            baseline="$dir/a2a-baseline.json"
+            if [ -f "$baseline" ]; then
+              bp=$(jq -r '.baseline_pass' "$baseline")
+              if [ "$bp" = "true" ]; then base_cell="✅ OK"; else base_cell="❌ VIOLATION"; fi
+            else
+              base_cell="—"
+            fi
+            f3="$dir/f3-peer-a2a.json"
+            if [ -f "$f3" ]; then
+              fp=$(jq -r '.pass' "$f3")
+              if [ "$fp" = "true" ]; then f3_cell="✅ OK"; else f3_cell="❌ FAIL"; fi
+            else
+              f3_cell="—"
+            fi
+            spec_cell="—"
+            if [ -f "$baseline" ]; then
+              sv=$(jq -r '.per_node[0].spec_version // empty' "$baseline" 2>/dev/null)
+              [ -n "$sv" ] && spec_cell="$sv"
+            fi
+            evidence="[offline HTML](../evidence/${name}/index.html)"
+            # Note: the per-section tables drop the Group column since it's
+            # implied by the section heading. Keep the column count at 10.
+            row="| ${name} | ${outcome} | ${base_cell} | ${f3_cell} | ${scen_cell} | ${ref} | ${spec_cell} | ${completed} | ${actor_cell} | ${evidence} |"
+            # Bucket by campaign_id prefix (authoritative — matches terraform
+            # naming + campaign.meta.json), fall back to $group if prefix
+            # doesn't match a known framework.
+            case "$name" in
+              a2a-ironclaw-*) echo "$row" >> "$rows_ironclaw" ;;
+              a2a-hermes-*)   echo "$row" >> "$rows_hermes" ;;
+              a2a-openclaw-*) echo "$row" >> "$rows_openclaw" ;;
+              *)
+                case "$group" in
+                  ironclaw) echo "$row" >> "$rows_ironclaw" ;;
+                  hermes)   echo "$row" >> "$rows_hermes" ;;
+                  openclaw) echo "$row" >> "$rows_openclaw" ;;
+                  *)        echo "$row" >> "$rows_openclaw" ;;
+                esac
+                ;;
+            esac
+          done <<< "$keyed"
+          emit_section() {
+            local heading="$1" subtitle="$2" file="$3"
+            echo "## ${heading}"
+            echo
+            echo "${subtitle}"
+            echo
+            if [ -s "$file" ]; then
+              echo "| Campaign | Verdict | Baseline | F3 peer A2A | Scenarios | ai-memory ref | Baseline spec | Completed | Dispatched by | Evidence |"
+              echo "|---|---|---|---|---|---|---|---|---|---|"
+              cat "$file"
+            else
+              echo "*No campaigns in this section yet.*"
+            fi
+            echo
+          }
+          {
+            echo "# Campaign runs"
+            echo
+            echo "Every A2A campaign run commits its scenario artifacts +"
+            echo "generated evidence HTML here. Rows sort newest-first by"
+            echo "\`completed_at\` from \`a2a-summary.json\` (absent/legacy"
+            echo "runs fall back to the directory mtime). \`PASS\` / \`FAIL\`"
+            echo "reflect \`overall_pass\`; \`NO SUMMARY\` means the campaign"
+            echo "ran but the aggregator couldn't recover any scenario JSON"
+            echo "— open the evidence page for the raw trace."
+            echo
+            echo "Runs are grouped by agent framework. **IronClaw** (Rust,"
+            echo "AlphaOne), **Hermes** (Python, NousResearch), and"
+            echo "**OpenClaw** (Python, openclaw.ai) are all first-class"
+            echo "agents in active per-release campaigns. OpenClaw runs"
+            echo "labelled \`*-local-docker-*\` use the local Docker mesh"
+            echo "(see [docs/local-docker-mesh.md](../local-docker-mesh/))"
+            echo "which allocates 16 GB per container on a single"
+            echo "workstation — no DO General Purpose tier required."
+            echo
+            emit_section "IronClaw campaigns" \
+              "All agent droplets in each campaign run IronClaw (Rust). Primary agent." \
+              "$rows_ironclaw"
+            emit_section "Hermes campaigns" \
+              "All agent droplets in each campaign run Hermes (Python). Primary agent." \
+              "$rows_hermes"
+            if [ -s "$rows_openclaw" ]; then
+              emit_section "OpenClaw campaigns" \
+                "All agent droplets / containers in each campaign run OpenClaw (Python). First-class as of 2026-04-24.<br/><br/>**⚠ Infrastructure note:** campaigns suffixed \`-local-docker-*\` were run on a **4-node Docker mesh on a single workstation** (3 openclaw containers + 1 memory-only aggregator, 16 GB per openclaw container). **No DigitalOcean infrastructure was provisioned for these runs** — they are fully local and reproducible per [docs/local-docker-mesh.md](../local-docker-mesh/). Other openclaw campaigns use DO General Purpose tier droplets." \
+                "$rows_openclaw"
+            fi
+          } > docs/runs/index.md
+          rm -f "$rows_ironclaw" "$rows_hermes" "$rows_openclaw"
+
+      - name: Regenerate per-run index.html (pick up generator upgrades)
+        run: |
+          set -euo pipefail
+          for dir in runs/*/; do
+            [ -d "$dir" ] || continue
+            bash scripts/generate_run_html.sh "$dir" || true
+          done
+
+      - name: Build site
+        run: mkdocs build
+
+      - name: Mirror runs/ to site/evidence/
+        run: |
+          set -euo pipefail
+          mkdir -p site/evidence
+          if [ -d runs ] && [ "$(ls -A runs 2>/dev/null)" ]; then
+            cp -r runs/. site/evidence/
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment
