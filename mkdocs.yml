@@ -7,25 +7,58 @@ site_description: >-
 site_url: https://alphaonedev.github.io/ai-memory-a2a-v0.6.3.1/
 repo_url: https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1
 repo_name: alphaonedev/ai-memory-a2a-v0.6.3.1
-copyright: "Copyright &copy; 2026 AlphaOne LLC. Apache-2.0."
+copyright: >-
+  Copyright &copy; 2026 <a href="https://github.com/alphaonedev/alphaone-website" rel="noopener" style="color:inherit">AlphaOne LLC</a>. Apache-2.0.
 
 theme:
   name: material
+  logo: assets/a1-mark.svg
+  favicon: assets/a1-mark.svg
+  font:
+    text: Inter
+    code: JetBrains Mono
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.instant
+    - navigation.instant.progress
     - navigation.sections
     - navigation.indexes
-    - toc.integrate
+    - navigation.top
+    - navigation.footer
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
     - content.code.copy
     - content.code.annotate
+    - content.tooltips
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
+    # Default = slate (dark), matching alphaone-website's primary mode.
     - scheme: slate
       primary: indigo
-      accent: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - scheme: default
+      primary: indigo
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/alphaone.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/alphaonedev
+      name: alphaonedev on GitHub
+  generator: false   # drop the "Made with Material for MkDocs" line
 
 nav:
   - Home: index.md
@@ -76,9 +109,23 @@ plugins:
 
 markdown_extensions:
   - admonition
-  - pymdownx.highlight
+  - attr_list
+  - md_in_html
+  - footnotes
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.tilde
+  - pymdownx.tasklist:
+      custom_checkbox: true
   - toc:
       permalink: true
+      permalink_title: "Anchor link to this section"
