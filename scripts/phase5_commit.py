@@ -181,8 +181,12 @@ def update_summary_json(summary: dict, phase4: dict, campaign_id: str,
 
     nhi = summary.setdefault("nhi_verdict", {})
     nhi["value"] = nhi_v
-    nhi["phase4_analysis_path"] = str(
-        (run_out_dir / "phase4-analysis.json").relative_to(REPO_ROOT))
+    p4_path = run_out_dir / "phase4-analysis.json"
+    try:
+        nhi["phase4_analysis_path"] = str(p4_path.resolve().relative_to(REPO_ROOT))
+    except ValueError:
+        # RUN_OUT_DIR outside repo root (e.g. /tmp); record the absolute path.
+        nhi["phase4_analysis_path"] = str(p4_path)
     effects = phase4.get("treatment_effects", {})
     for s, e in effects.items():
         if s not in nhi.get("scenarios", {}):
