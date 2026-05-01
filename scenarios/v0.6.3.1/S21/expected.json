@@ -1,0 +1,14 @@
+{
+  "scenario": "S21",
+  "title": "G13 endianness magic byte cross-arch",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "mixed_arch_mtls",
+  "outputs": {
+    "arch_per_node": "object<node_id, string>",
+    "magic_byte_present_per_arch": "object<arch, boolean>",
+    "cross_arch_cosine_ok": "boolean",
+    "wrong_endian_handled": "string",
+    "recall_determinism": "boolean"
+  }
+}

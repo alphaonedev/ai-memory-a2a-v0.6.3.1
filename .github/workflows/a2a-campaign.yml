@@ -1,0 +1,505 @@
+# A2A campaign — v0.6.3.1
+#
+# Spins up the 4-node mesh, runs Class A (S1-S8) and Class B (S9-S24) scenarios,
+# emits runs/<run-id>/summary.json + scenario JSON, updates releases/v0.6.3.1/summary.json,
+# and triggers findings-sync.yml.
+
+name: A2A campaign
+
+on:
+  workflow_dispatch:
+    inputs:
+      framework:
+        description: "Framework cell to run (ironclaw | hermes | openclaw | all)"
+        required: true
+        default: "all"
+        type: choice
+        options: [ironclaw, hermes, openclaw, all]
+      transport:
+        description: "Transport (off | tls | mtls | all)"
+        required: true
+        default: "mtls"
+        type: choice
+        options: [off, tls, mtls, all]
+      harness:
+        description: "Harness (docker | terraform)"
+        required: true
+        default: "docker"
+        type: choice
+        options: [docker, terraform]
+  schedule:
+    # 04:30 UTC nightly — 30 min after ship-gate's 04:00 cron
+    - cron: "30 4 * * *"
+
+permissions:
+  contents: write          # commit runs/<id>/ artifacts
+  issues: write            # findings-sync downstream
+  pull-requests: read
+
+jobs:
+  carry-forward:
+    name: Class A — S1-S8 carry-forward
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.runid.outputs.run_id }}
+      count: ${{ steps.runid.outputs.count }}
+      short_sha: ${{ steps.runid.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Compute run id
+        id: runid
+        shell: bash
+        run: |
+          set -euo pipefail
+          framework="${{ inputs.framework || 'all' }}"
+          short_sha="$(git rev-parse --short HEAD)"
+          # count = number of existing run dirs + 1
+          if [ -d runs ]; then
+            count="$(find runs -maxdepth 1 -mindepth 1 -type d | wc -l | tr -d ' ')"
+          else
+            count="0"
+          fi
+          count="$((count + 1))"
+          run_id="a2a-${framework}-v0.6.3.1-r${count}-${short_sha}"
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+          echo "count=${count}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${short_sha}" >> "$GITHUB_OUTPUT"
+          mkdir -p "runs/${run_id}/scenarios" "runs/${run_id}/logs"
+
+      - name: Set up Docker Buildx
+        if: ${{ (inputs.harness || 'docker') == 'docker' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Terraform (DigitalOcean) — placeholder
+        if: ${{ (inputs.harness || 'docker') == 'terraform' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "deferred: DO terraform provisioning — no DO secrets in scaffolding pass"
+          echo "deferred: terraform init/apply against harness/terraform/digitalocean"
+
+      - name: Bring up the mesh (docker)
+        if: ${{ (inputs.harness || 'docker') == 'docker' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f harness/docker-compose.local.yml ]; then
+            docker compose -f harness/docker-compose.local.yml up -d
+          else
+            echo "deferred: harness/docker-compose.local.yml not present yet"
+          fi
+          sleep 10
+          for port in 8080 8081 8082 8083; do
+            for attempt in 1 2 3 4 5 6; do
+              if curl -fsS "http://localhost:${port}/healthz" >/dev/null 2>&1; then
+                echo "node on :${port} healthy"
+                break
+              fi
+              echo "waiting for :${port} (attempt ${attempt})"
+              sleep 5
+            done
+          done
+
+      - name: Export node env (docker)
+        if: ${{ (inputs.harness || 'docker') == 'docker' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "A2A_NODE_A=localhost:8080"
+            echo "A2A_NODE_B=localhost:8081"
+            echo "A2A_NODE_C=localhost:8082"
+            echo "A2A_NODE_D=localhost:8083"
+          } >> "$GITHUB_ENV"
+
+      - name: Export node env (terraform)
+        if: ${{ (inputs.harness || 'docker') == 'terraform' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "deferred: read terraform outputs node_a..node_d"
+          {
+            echo "A2A_NODE_A=tf-node-a.invalid:8080"
+            echo "A2A_NODE_B=tf-node-b.invalid:8080"
+            echo "A2A_NODE_C=tf-node-c.invalid:8080"
+            echo "A2A_NODE_D=tf-node-d.invalid:8080"
+          } >> "$GITHUB_ENV"
+
+      - name: Run Class A scenarios (S1-S8)
+        shell: bash
+        env:
+          RUN_ID: ${{ steps.runid.outputs.run_id }}
+        run: |
+          set -euo pipefail
+          pass=0
+          fail=0
+          declare -a results=()
+          if [ ! -d scenarios/carry-forward ]; then
+            echo "deferred: scenarios/carry-forward not yet authored"
+          else
+            for runner in scenarios/carry-forward/S*/runner.sh; do
+              [ -e "$runner" ] || continue
+              sdir="$(dirname "$runner")"
+              sid="$(basename "$sdir")"
+              chmod +x "$runner"
+              out="runs/${RUN_ID}/scenarios/${sid}.json"
+              err="runs/${RUN_ID}/logs/${sid}.stderr"
+              echo "::group::${sid}"
+              if bash "$runner" 1>"$out" 2>"$err"; then
+                verdict="$(jq -r '.verdict // "UNKNOWN"' "$out" 2>/dev/null || echo UNKNOWN)"
+              else
+                verdict="ERROR"
+              fi
+              echo "${sid} -> ${verdict}"
+              echo "::endgroup::"
+              if [ "$verdict" = "GREEN" ]; then
+                pass=$((pass + 1))
+              else
+                fail=$((fail + 1))
+              fi
+              results+=("{\"id\":\"${sid}\",\"verdict\":\"${verdict}\"}")
+            done
+          fi
+          jq -n \
+            --arg run_id "${RUN_ID}" \
+            --argjson pass "${pass}" \
+            --argjson fail "${fail}" \
+            --argjson results "[$(IFS=,; echo "${results[*]:-}")]" \
+            '{class:"carry-forward", run_id:$run_id, pass:$pass, fail:$fail, scenarios:$results}' \
+            > "runs/${RUN_ID}/carry-forward.summary.json"
+          cat "runs/${RUN_ID}/carry-forward.summary.json"
+
+      - name: Upload Class A artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-forward-${{ steps.runid.outputs.run_id }}
+          path: runs/${{ steps.runid.outputs.run_id }}
+          if-no-files-found: warn
+          retention-days: 30
+
+  v063_1_specific:
+    name: Class B — S9-S24 v0.6.3.1-specific
+    runs-on: ubuntu-latest
+    needs: carry-forward
+    env:
+      RUN_ID: ${{ needs.carry-forward.outputs.run_id }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Restore Class A artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: carry-forward-${{ needs.carry-forward.outputs.run_id }}
+          path: runs/${{ needs.carry-forward.outputs.run_id }}
+
+      - name: Set up Docker Buildx
+        if: ${{ (inputs.harness || 'docker') == 'docker' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Re-attach to mesh / export node env
+        shell: bash
+        run: |
+          set -euo pipefail
+          # In CI, the previous job's docker daemon is gone — bring the mesh
+          # back up here against the same compose file. For terraform, the
+          # already-provisioned cluster is reachable via outputs.
+          harness="${{ inputs.harness || 'docker' }}"
+          if [ "${harness}" = "docker" ]; then
+            if [ -f harness/docker-compose.local.yml ]; then
+              docker compose -f harness/docker-compose.local.yml up -d
+              sleep 10
+              for port in 8080 8081 8082 8083; do
+                for attempt in 1 2 3 4 5 6; do
+                  if curl -fsS "http://localhost:${port}/healthz" >/dev/null 2>&1; then
+                    break
+                  fi
+                  sleep 5
+                done
+              done
+            else
+              echo "deferred: harness/docker-compose.local.yml not present yet"
+            fi
+            {
+              echo "A2A_NODE_A=localhost:8080"
+              echo "A2A_NODE_B=localhost:8081"
+              echo "A2A_NODE_C=localhost:8082"
+              echo "A2A_NODE_D=localhost:8083"
+            } >> "$GITHUB_ENV"
+          else
+            echo "deferred: read terraform outputs node_a..node_d"
+            {
+              echo "A2A_NODE_A=tf-node-a.invalid:8080"
+              echo "A2A_NODE_B=tf-node-b.invalid:8080"
+              echo "A2A_NODE_C=tf-node-c.invalid:8080"
+              echo "A2A_NODE_D=tf-node-d.invalid:8080"
+            } >> "$GITHUB_ENV"
+          fi
+
+      - name: Run Class B scenarios (S9-S24) with expected-verdict assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "runs/${RUN_ID}/scenarios" "runs/${RUN_ID}/logs"
+          pass=0
+          fail=0
+          harness_broken=0
+          unexpected_red=0
+          declare -a results=()
+          if [ ! -d scenarios/v0.6.3.1 ]; then
+            echo "deferred: scenarios/v0.6.3.1 not yet authored"
+          else
+            for runner in scenarios/v0.6.3.1/S*/runner.sh; do
+              [ -e "$runner" ] || continue
+              sdir="$(dirname "$runner")"
+              sid="$(basename "$sdir")"
+              expected_file="${sdir}/expected.json"
+              expected_verdict="UNKNOWN"
+              if [ -f "$expected_file" ]; then
+                expected_verdict="$(jq -r '.expected_verdict // "GREEN"' "$expected_file" 2>/dev/null || echo GREEN)"
+              fi
+              chmod +x "$runner"
+              out="runs/${RUN_ID}/scenarios/${sid}.json"
+              err="runs/${RUN_ID}/logs/${sid}.stderr"
+              echo "::group::${sid} (expected=${expected_verdict})"
+              if bash "$runner" 1>"$out" 2>"$err"; then
+                actual_verdict="$(jq -r '.verdict // "UNKNOWN"' "$out" 2>/dev/null || echo UNKNOWN)"
+              else
+                actual_verdict="ERROR"
+              fi
+              echo "${sid}: expected=${expected_verdict} actual=${actual_verdict}"
+              echo "::endgroup::"
+
+              # Critical assertion: S23 / S24 are *expected* RED. If they pass,
+              # the harness is wrong — not the bug fix.
+              case "${sid}" in
+                S23|S24)
+                  if [ "${actual_verdict}" = "GREEN" ]; then
+                    echo "::error::${sid} unexpectedly GREEN — harness is broken (S23/S24 must be RED on v0.6.3.1)"
+                    harness_broken=1
+                  fi
+                  ;;
+                *)
+                  # S9-S22: any RED that isn't expected is a workflow failure.
+                  if [ "${actual_verdict}" = "RED" ] && [ "${expected_verdict}" != "RED" ]; then
+                    echo "::error::${sid} unexpectedly RED"
+                    unexpected_red=1
+                  fi
+                  ;;
+              esac
+
+              if [ "${actual_verdict}" = "${expected_verdict}" ]; then
+                pass=$((pass + 1))
+              else
+                fail=$((fail + 1))
+              fi
+              results+=("{\"id\":\"${sid}\",\"expected\":\"${expected_verdict}\",\"verdict\":\"${actual_verdict}\"}")
+            done
+          fi
+          jq -n \
+            --arg run_id "${RUN_ID}" \
+            --argjson pass "${pass}" \
+            --argjson fail "${fail}" \
+            --argjson results "[$(IFS=,; echo "${results[*]:-}")]" \
+            '{class:"v0.6.3.1", run_id:$run_id, pass:$pass, fail:$fail, scenarios:$results}' \
+            > "runs/${RUN_ID}/v0.6.3.1.summary.json"
+          cat "runs/${RUN_ID}/v0.6.3.1.summary.json"
+
+          if [ "${harness_broken}" -ne 0 ]; then
+            echo "::error::Harness broken: S23 or S24 passed when they were expected RED"
+            exit 1
+          fi
+          if [ "${unexpected_red}" -ne 0 ]; then
+            echo "::error::Unexpected RED in S9-S22"
+            exit 1
+          fi
+
+      - name: Upload Class B artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: v063_1-${{ env.RUN_ID }}
+          path: runs/${{ env.RUN_ID }}
+          if-no-files-found: warn
+          retention-days: 30
+
+  emit:
+    name: Emit summary + commit artifacts
+    runs-on: ubuntu-latest
+    needs: [carry-forward, v063_1_specific]
+    if: ${{ always() && needs.carry-forward.result == 'success' }}
+    env:
+      RUN_ID: ${{ needs.carry-forward.outputs.run_id }}
+      RUN_COUNT: ${{ needs.carry-forward.outputs.count }}
+      SHORT_SHA: ${{ needs.carry-forward.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ github.token }}
+          fetch-depth: 0
+
+      - name: Restore Class A artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: carry-forward-${{ env.RUN_ID }}
+          path: runs/${{ env.RUN_ID }}
+
+      - name: Restore Class B artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: v063_1-${{ env.RUN_ID }}
+          path: runs/${{ env.RUN_ID }}
+
+      - name: Aggregate runs/${{ env.RUN_ID }}/summary.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_dir="runs/${RUN_ID}"
+          cf_summary="${run_dir}/carry-forward.summary.json"
+          v6_summary="${run_dir}/v0.6.3.1.summary.json"
+          [ -f "${cf_summary}" ] || echo '{"class":"carry-forward","scenarios":[]}' > "${cf_summary}"
+          [ -f "${v6_summary}" ] || echo '{"class":"v0.6.3.1","scenarios":[]}' > "${v6_summary}"
+
+          framework="${{ inputs.framework || 'all' }}"
+          transport="${{ inputs.transport || 'mtls' }}"
+
+          # Build merged scenarios object {S1: "GREEN"|"RED"|...}
+          scenarios_obj="$(jq -n \
+            --slurpfile cf "${cf_summary}" \
+            --slurpfile v6 "${v6_summary}" \
+            '
+              ($cf[0].scenarios // []) + ($v6[0].scenarios // [])
+              | map({(.id): (.verdict // "PENDING")})
+              | add // {}
+            ')"
+
+          # Compute matrix cell for the framework/transport combo we just ran.
+          # When framework or transport == "all", we leave PENDING for cells we
+          # did not actually exercise this run.
+          existing_matrix="$(jq '.matrix' releases/v0.6.3.1/summary.json)"
+          updated_matrix="${existing_matrix}"
+          frameworks_to_set=()
+          transports_to_set=()
+          if [ "${framework}" = "all" ]; then
+            frameworks_to_set=(ironclaw hermes openclaw)
+          else
+            frameworks_to_set=("${framework}")
+          fi
+          if [ "${transport}" = "all" ]; then
+            transports_to_set=(off tls mtls)
+          else
+            transports_to_set=("${transport}")
+          fi
+          # Cell verdict: GREEN if all carry-forward GREEN AND S9-S22 GREEN AND S23,S24 RED;
+          # else FAIL; if any scenario PENDING (because deferred), keep PENDING.
+          cell_verdict="$(jq -n --argjson s "${scenarios_obj}" '
+            def vget(k): $s[k] // "PENDING";
+            def all_green(ids): ids | all(. as $i | $s[$i] == "GREEN");
+            def all_red(ids): ids | all(. as $i | $s[$i] == "RED");
+            def any_pending(ids): ids | any(. as $i | ($s[$i] // "PENDING") == "PENDING");
+            ([range(1;9)] | map("S\(.)")) as $cf
+            | ([range(9;23)] | map("S\(.)")) as $green_zone
+            | (["S23","S24"]) as $red_zone
+            | if any_pending($cf + $green_zone + $red_zone) then "PENDING"
+              elif all_green($cf) and all_green($green_zone) and all_red($red_zone) then "GREEN"
+              else "FAIL" end
+          ')"
+
+          for fw in "${frameworks_to_set[@]}"; do
+            for tr in "${transports_to_set[@]}"; do
+              key="${fw}_${tr}"
+              updated_matrix="$(jq --arg k "${key}" --argjson v "${cell_verdict}" '.[$k] = $v' <<<"${updated_matrix}")"
+            done
+          done
+
+          # Overall verdict per spec.
+          overall="$(jq -n --argjson s "${scenarios_obj}" '
+            def vget(k): $s[k] // "PENDING";
+            ([range(1;9)] | map("S\(.)")) as $cf
+            | ([range(9;23)] | map("S\(.)")) as $green_zone
+            | (["S23","S24"]) as $red_zone
+            | def all_green(ids): ids | all(. as $i | $s[$i] == "GREEN");
+              def all_red(ids): ids | all(. as $i | $s[$i] == "RED");
+              def any_pending(ids): ids | any(. as $i | ($s[$i] // "PENDING") == "PENDING");
+              if any_pending($cf + $green_zone + $red_zone) then
+                {verdict:"PENDING", qualifier:"scenarios-not-yet-authored"}
+              elif all_green($cf) and all_green($green_zone) and all_red($red_zone) then
+                {verdict:"PARTIAL", qualifier:"pending Patch 2"}
+              elif all_green($cf) and all_green($green_zone) and all_green($red_zone) then
+                {verdict:"CERT", qualifier:"all-scenarios-green"}
+              else
+                {verdict:"FAIL", qualifier:"see scenario verdicts"}
+              end
+          ')"
+
+          updated_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          jq -n \
+            --arg run_id "${RUN_ID}" \
+            --arg updated_at "${updated_at}" \
+            --arg framework "${framework}" \
+            --arg transport "${transport}" \
+            --argjson scenarios "${scenarios_obj}" \
+            --argjson matrix "${updated_matrix}" \
+            --argjson overall "${overall}" \
+            '{
+              schema_version: 1,
+              subject: {repo:"alphaonedev/ai-memory-mcp", tag:"v0.6.3.1", schema:"v19"},
+              campaign: {
+                repo: "alphaonedev/ai-memory-a2a-v0.6.3.1",
+                verdict: $overall.verdict,
+                verdict_qualifier: $overall.qualifier,
+                last_run_id: $run_id,
+                updated_at: $updated_at,
+                framework: $framework,
+                transport: $transport
+              },
+              matrix: $matrix,
+              scenarios: $scenarios,
+              expected_red: ["S23","S24"]
+            }' > "${run_dir}/summary.json"
+          cat "${run_dir}/summary.json"
+
+      - name: Atomically update releases/v0.6.3.1/summary.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_summary="runs/${RUN_ID}/summary.json"
+          target="releases/v0.6.3.1/summary.json"
+          tmp="$(mktemp)"
+          jq -n \
+            --slurpfile run "${run_summary}" \
+            --slurpfile cur "${target}" \
+            '
+              ($cur[0]) as $base
+              | ($run[0]) as $r
+              | $base
+                | .campaign.verdict = $r.campaign.verdict
+                | .campaign.verdict_qualifier = $r.campaign.verdict_qualifier
+                | .campaign.last_run_id = $r.campaign.last_run_id
+                | .campaign.updated_at = $r.campaign.updated_at
+                | .matrix = (.matrix * $r.matrix)
+                | .scenarios = (.scenarios * $r.scenarios)
+                | .expected_red = $r.expected_red
+            ' > "${tmp}"
+          mv "${tmp}" "${target}"
+          cat "${target}"
+
+      - name: Commit + push artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          verdict="$(jq -r '.campaign.verdict' releases/v0.6.3.1/summary.json)"
+          git add "runs/${RUN_ID}" "releases/v0.6.3.1/summary.json"
+          if git diff --cached --quiet; then
+            echo "no artifact changes to commit"
+            exit 0
+          fi
+          git \
+            -c user.email=alphaonedev@users.noreply.github.com \
+            -c user.name=alphaonedev \
+            commit -am "campaign: r${RUN_COUNT} verdict=${verdict}"
+          git push origin HEAD:main

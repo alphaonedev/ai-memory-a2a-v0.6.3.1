@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "subject": {
+    "repo": "alphaonedev/ai-memory-mcp",
+    "tag": "v0.6.3.1",
+    "schema": "v19"
+  },
+  "campaign": {
+    "repo": "alphaonedev/ai-memory-a2a-v0.6.3.1",
+    "verdict": "PENDING",
+    "verdict_qualifier": "no-runs-yet",
+    "last_run_id": null,
+    "updated_at": "2026-04-30T22:00:00Z"
+  },
+  "matrix": {
+    "ironclaw_off": "PENDING",
+    "ironclaw_tls": "PENDING",
+    "ironclaw_mtls": "PENDING",
+    "hermes_off": "PENDING",
+    "hermes_tls": "PENDING",
+    "hermes_mtls": "PENDING",
+    "openclaw_off": "PENDING",
+    "openclaw_tls": "PENDING",
+    "openclaw_mtls": "PENDING"
+  },
+  "scenarios": {
+    "S1": "PENDING",
+    "S2": "PENDING",
+    "S3": "PENDING",
+    "S4": "PENDING",
+    "S5": "PENDING",
+    "S6": "PENDING",
+    "S7": "PENDING",
+    "S8": "PENDING",
+    "S9": "PENDING",
+    "S10": "PENDING",
+    "S11": "PENDING",
+    "S12": "PENDING",
+    "S13": "PENDING",
+    "S14": "PENDING",
+    "S15": "PENDING",
+    "S16": "PENDING",
+    "S17": "PENDING",
+    "S18": "PENDING",
+    "S19": "PENDING",
+    "S20": "PENDING",
+    "S21": "PENDING",
+    "S22": "PENDING",
+    "S23": "PENDING",
+    "S24": "PENDING"
+  },
+  "expected_red": ["S23", "S24"],
+  "funnel": {
+    "umbrella_issue": null,
+    "patch_2_branch": "release/v0.6.3.2",
+    "seed_issue": "https://github.com/alphaonedev/ai-memory-mcp/issues/507"
+  }
+}

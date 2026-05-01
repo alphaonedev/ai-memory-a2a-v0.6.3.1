@@ -1,0 +1,15 @@
+{
+  "scenario": "S23",
+  "title": "Issue #507 — config.toml ~ expansion in db field",
+  "expected_verdict": "RED",
+  "expected_red_reason": "Issue #507 — config.toml ~ expansion (closes in Patch 2)",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "tilde_boot_status_per_node": "object<node_id, string>",
+    "tilde_db_field_literal_tilde_per_node": "object<node_id, boolean>",
+    "absolute_boot_status_per_node": "object<node_id, string>",
+    "tilde_doctor_storage_per_node": "object<node_id, string>",
+    "absolute_doctor_storage_per_node": "object<node_id, string>",
+    "interchange_holds": "boolean"
+  }
+}

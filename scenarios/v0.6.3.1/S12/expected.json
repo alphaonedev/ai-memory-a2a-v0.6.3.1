@@ -1,0 +1,15 @@
+{
+  "scenario": "S12",
+  "title": "ai-memory wrap <agent> cross-vendor consistency",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "vendors": "array<string>",
+    "vendor_payload_hashes": "object<vendor, sha256>",
+    "vendor_strategies": "object<vendor, string>",
+    "single_distinct_payload_hash": "boolean",
+    "cross_node_payload_match": "boolean",
+    "exit_propagation_ok": "boolean"
+  }
+}

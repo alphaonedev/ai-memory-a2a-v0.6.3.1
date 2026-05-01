@@ -1,0 +1,14 @@
+{
+  "scenario": "S19",
+  "title": "G5 archive/restore preserves embeddings cross-agent",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "embedding_byte_equal_per_id": "object<memory_id, boolean>",
+    "tier_preserved_per_id": "object<memory_id, boolean>",
+    "expires_at_preserved_per_id": "object<memory_id, boolean>",
+    "recall_hit_post_restore": "boolean",
+    "stats_mesh_consistent": "boolean"
+  }
+}

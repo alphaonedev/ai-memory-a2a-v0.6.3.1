@@ -1,0 +1,204 @@
+# Findings sync
+#
+# Triggered after a2a-campaign run completes. Parses runs/<id>/summary.json,
+# opens or updates issues on alphaonedev/ai-memory-mcp under the v0.6.3.2-candidate
+# label, parent-linked to the umbrella tracking issue.
+#
+# NOTE: secrets.AI_MEMORY_MCP_FINDINGS_TOKEN has not yet been provisioned.
+# The first run after this workflow lands will fail at the gh issue list/create
+# step with a 401 — that is expected. Provision the token (a fine-grained PAT
+# with issues:write on alphaonedev/ai-memory-mcp) to unblock subsequent runs.
+
+name: Findings sync
+
+on:
+  workflow_run:
+    workflows: ["A2A campaign"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Open / update findings on ai-memory-mcp
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download upstream campaign artifacts
+        uses: actions/download-artifact@v4
+        with:
+          # The upstream a2a-campaign workflow uploads class artifacts named
+          # carry-forward-<run_id> and v063_1-<run_id>. We pull whatever
+          # artifacts the triggering run produced so we can locate summary.json.
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          path: _artifacts
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Locate summary.json from latest run
+        id: locate
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary_path=""
+          # First try downloaded artifacts
+          if [ -d _artifacts ]; then
+            cand="$(find _artifacts -type f -name summary.json | head -n1 || true)"
+            if [ -n "${cand}" ]; then
+              summary_path="${cand}"
+            fi
+          fi
+          # Fallback: try checked-out runs/ (campaign commits artifacts to main)
+          if [ -z "${summary_path}" ] && [ -d runs ]; then
+            cand="$(ls -1dt runs/*/summary.json 2>/dev/null | head -n1 || true)"
+            if [ -n "${cand}" ]; then
+              summary_path="${cand}"
+            fi
+          fi
+          if [ -z "${summary_path}" ]; then
+            echo "::warning::no summary.json found — nothing to sync"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "summary_path=${summary_path}" >> "$GITHUB_OUTPUT"
+          run_id="$(jq -r '.campaign.last_run_id // "unknown"' "${summary_path}")"
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+          echo "run_dir=$(dirname "${summary_path}")" >> "$GITHUB_OUTPUT"
+
+      - name: Sync unexpected reds + confirm expected reds
+        if: ${{ steps.locate.outputs.found == 'true' }}
+        env:
+          # Token has not yet been provisioned. First run will 401; provision
+          # a fine-grained PAT with issues:write on alphaonedev/ai-memory-mcp
+          # and store it as AI_MEMORY_MCP_FINDINGS_TOKEN to unblock.
+          GH_TOKEN: ${{ secrets.AI_MEMORY_MCP_FINDINGS_TOKEN }}
+          SUMMARY_PATH: ${{ steps.locate.outputs.summary_path }}
+          RUN_ID: ${{ steps.locate.outputs.run_id }}
+          RUN_DIR: ${{ steps.locate.outputs.run_dir }}
+          UPSTREAM_REPO: alphaonedev/ai-memory-mcp
+          UMBRELLA_ISSUE: ""    # set when umbrella issue is opened
+          S23_TRACKING: "507"
+          S24_TRACKING: "318"
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
+            echo "::warning::AI_MEMORY_MCP_FINDINGS_TOKEN not provisioned yet — exiting cleanly"
+            echo "deferred: provision fine-grained PAT (issues:write on ${UPSTREAM_REPO})"
+            exit 0
+          fi
+
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${{ github.event.workflow_run.id || github.run_id }}"
+          ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+          # Build per-scenario reason map. Each runs/<id>/scenarios/<sid>.json
+          # is the runner's stdout JSON; reasons[] is the canonical signature
+          # source. Missing reasons -> empty array (still hashable).
+          extract_reasons() {
+            local sid="$1"
+            local f="${RUN_DIR}/scenarios/${sid}.json"
+            if [ -f "$f" ]; then
+              jq -c '.reasons // []' "$f" 2>/dev/null || echo "[]"
+            else
+              echo "[]"
+            fi
+          }
+
+          # Iterate scenarios from the summary.
+          mapfile -t scenarios < <(jq -r '.scenarios | keys[]' "${SUMMARY_PATH}")
+          expected_red_set="$(jq -r '.expected_red[]' "${SUMMARY_PATH}" | tr '\n' ' ')"
+
+          for sid in "${scenarios[@]}"; do
+            verdict="$(jq -r --arg s "$sid" '.scenarios[$s]' "${SUMMARY_PATH}")"
+            expected="GREEN"
+            for er in ${expected_red_set}; do
+              if [ "${er}" = "${sid}" ]; then expected="RED"; fi
+            done
+
+            # Expected reds: don't open new issues; just confirm on tracking issue.
+            if [ "${expected}" = "RED" ]; then
+              if [ "${verdict}" = "RED" ]; then
+                tracking=""
+                case "${sid}" in
+                  S23) tracking="${S23_TRACKING}" ;;
+                  S24) tracking="${S24_TRACKING}" ;;
+                esac
+                if [ -n "${tracking}" ]; then
+                  body="Run ${RUN_ID} at ${ts}: ${sid} expected RED persisted (campaign: ${run_url})."
+                  echo "commenting on #${tracking} for expected-red ${sid}"
+                  gh issue comment "${tracking}" \
+                    --repo "${UPSTREAM_REPO}" \
+                    --body "${body}" || echo "::warning::failed to comment on #${tracking}"
+                fi
+              else
+                echo "::notice::${sid} was expected RED but verdict=${verdict} — handled in campaign job, skipping issue sync"
+              fi
+              continue
+            fi
+
+            # S9-S22 (and S1-S8): only act on RED.
+            if [ "${verdict}" != "RED" ]; then
+              continue
+            fi
+
+            signature="$(extract_reasons "${sid}")"
+            dedup_key="$(printf '%s:%s' "${sid}" "${signature}" | sha256sum | awk '{print $1}')"
+
+            existing="$(gh issue list \
+              --repo "${UPSTREAM_REPO}" \
+              --label v0.6.3.2-candidate \
+              --search "${dedup_key}" \
+              --state all \
+              --json number,body,state \
+              --limit 5 || echo '[]')"
+            match_number="$(jq -r --arg k "${dedup_key}" '
+              map(select(.body | test($k; "i"))) | (.[0].number // "")
+            ' <<<"${existing}")"
+
+            if [ -n "${match_number}" ]; then
+              echo "appending comment to existing issue #${match_number} for ${sid}"
+              gh issue comment "${match_number}" \
+                --repo "${UPSTREAM_REPO}" \
+                --body "Run ${RUN_ID} at ${ts}: ${sid} still RED. Campaign: ${run_url}. dedup_key: \`${dedup_key}\`." \
+                || echo "::warning::failed to comment on #${match_number}"
+            else
+              contract_link="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/main/scenarios/v0.6.3.1/${sid}/contract.md"
+              summary_link="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/blob/main/${SUMMARY_PATH}"
+              umbrella_ref=""
+              if [ -n "${UMBRELLA_ISSUE}" ]; then
+                umbrella_ref="Parent umbrella: ${UMBRELLA_ISSUE}"
+              else
+                umbrella_ref="Parent umbrella: (not yet filed)"
+              fi
+              body_file="$(mktemp)"
+              {
+                printf '**Scenario:** %s\n' "${sid}"
+                printf '**Campaign run:** %s\n' "${RUN_ID}"
+                printf '**Verdict:** RED (unexpected — expected GREEN on v0.6.3.1)\n'
+                printf '**dedup_key:** `%s`\n\n' "${dedup_key}"
+                printf '**Contract:** %s\n' "${contract_link}"
+                printf '**Run summary:** %s\n' "${summary_link}"
+                printf '**Campaign workflow run:** %s\n\n' "${run_url}"
+                printf '%s\n\n' "${umbrella_ref}"
+                printf 'Reasons (signature):\n'
+                printf '```json\n%s\n```\n\n' "${signature}"
+                printf '_Filed automatically by .github/workflows/findings-sync.yml. Re-runs append a comment instead of duplicating, keyed on `dedup_key`._\n'
+              } > "${body_file}"
+              body="$(cat "${body_file}")"
+              echo "creating new finding for ${sid}"
+              gh issue create \
+                --repo "${UPSTREAM_REPO}" \
+                --title "v0.6.3.1 A2A — ${sid} regression" \
+                --label bug \
+                --label v0.6.3.2-candidate \
+                --milestone v0.6.3.2 \
+                --body "${body}" \
+                || echo "::warning::failed to create issue for ${sid}"
+            fi
+          done

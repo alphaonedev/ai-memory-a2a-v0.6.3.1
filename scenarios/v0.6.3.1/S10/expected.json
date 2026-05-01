@@ -1,0 +1,14 @@
+{
+  "scenario": "S10",
+  "title": "ai-memory doctor cross-node section agreement",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "section_table": "object<node_id, object<section_name, severity>>",
+    "section_count_per_node": "integer",
+    "categorical_agreement": "object<section_name, boolean>",
+    "asymmetric_warning_surfaced": "boolean",
+    "exit_codes": "object<node_id, integer>"
+  }
+}

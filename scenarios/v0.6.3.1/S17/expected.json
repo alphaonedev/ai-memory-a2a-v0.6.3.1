@@ -1,0 +1,14 @@
+{
+  "scenario": "S17",
+  "title": "G9 webhook fanout on link / promote / delete / consolidate",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "events_fired": "object<event_name, integer>",
+    "hmac_all_valid": "boolean",
+    "ssrf_guard_held": "boolean",
+    "no_duplicates": "boolean",
+    "originating_node_per_event": "object<event_name, string>"
+  }
+}

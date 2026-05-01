@@ -1,0 +1,15 @@
+{
+  "scenario": "S18",
+  "title": "G4 embedding-dim integrity under cross-agent writes",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "good_dim_accepted": "boolean",
+    "bad_dim_refused_per_node": "object<node_id, boolean>",
+    "error_code_returned": "string",
+    "dim_violations_per_node": "object<node_id, integer>",
+    "federation_view_matches": "boolean",
+    "no_silent_leak": "boolean"
+  }
+}

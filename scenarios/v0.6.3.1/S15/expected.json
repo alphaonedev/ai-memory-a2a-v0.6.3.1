@@ -1,0 +1,15 @@
+{
+  "scenario": "S15",
+  "title": "R1 budget_tokens recall determinism across the federation",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "case_count": "integer",
+    "head_match_per_case": "object<case_key, boolean>",
+    "budget_respected_per_case": "object<case_key, boolean>",
+    "score_agreement_per_case": "object<case_key, boolean>",
+    "edge_below_ok": "boolean",
+    "edge_above_ok": "boolean"
+  }
+}

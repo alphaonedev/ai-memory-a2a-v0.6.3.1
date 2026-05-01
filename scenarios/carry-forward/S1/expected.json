@@ -1,0 +1,13 @@
+{
+  "scenario": "S1",
+  "title": "per-agent write + read",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "writes_ok": "boolean",
+    "recalls_ok": "boolean",
+    "agent_id_preserved": "boolean",
+    "records_per_agent": "integer"
+  }
+}

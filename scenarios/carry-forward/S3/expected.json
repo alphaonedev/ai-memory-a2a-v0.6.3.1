@@ -1,0 +1,13 @@
+{
+  "scenario": "S3",
+  "title": "targeted share",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "shared_count": "integer",
+    "received_count": "integer",
+    "id_set_matches": "boolean",
+    "over_share": "boolean"
+  }
+}

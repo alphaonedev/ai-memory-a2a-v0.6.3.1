@@ -1,0 +1,12 @@
+{
+  "scenario": "S7",
+  "title": "scoping visibility",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "matrix_mismatches": "integer",
+    "private_leak": "boolean",
+    "http_mcp_agree": "boolean"
+  }
+}

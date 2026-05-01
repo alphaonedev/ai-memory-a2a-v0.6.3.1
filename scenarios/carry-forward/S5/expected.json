@@ -1,0 +1,12 @@
+{
+  "scenario": "S5",
+  "title": "consolidation + curation",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "consolidated_records": "integer",
+    "contributing_agents": "array",
+    "set_preserved": "boolean"
+  }
+}

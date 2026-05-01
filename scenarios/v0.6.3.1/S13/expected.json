@@ -1,0 +1,14 @@
+{
+  "scenario": "S13",
+  "title": "ai-memory audit verify tamper-evident hash chain",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "pre_tamper_exit_codes": "object<node_id, integer>",
+    "tampered_node_exit_code": "integer",
+    "tampered_sequence_reported": "integer | null",
+    "peer_exit_codes_post_tamper": "object<node_id, integer>",
+    "post_restore_exit_code": "integer"
+  }
+}

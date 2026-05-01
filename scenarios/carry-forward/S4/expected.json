@@ -1,0 +1,12 @@
+{
+  "scenario": "S4",
+  "title": "federation-aware agents",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "pairings_passed": "integer",
+    "max_settle_ms": "integer",
+    "quorum_not_met_count": "integer"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scenario": "S20",
+  "title": "G6 on_conflict policy under concurrent writes",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "error_policy_ok": "boolean",
+    "merge_policy_ok": "boolean",
+    "version_policy_ok": "boolean",
+    "default_is_error": "boolean",
+    "race_trials": "integer",
+    "race_exactly_one_winner_per_trial": "boolean",
+    "win_distribution": "object<node_id, integer>"
+  }
+}

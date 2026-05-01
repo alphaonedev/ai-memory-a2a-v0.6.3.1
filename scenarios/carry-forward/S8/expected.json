@@ -1,0 +1,13 @@
+{
+  "scenario": "S8",
+  "title": "auto-tagging",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "tags_applied": "integer",
+    "tags_in_taxonomy": "boolean",
+    "recall_by_auto_tag_ok": "boolean",
+    "taxonomy_size": "integer"
+  }
+}

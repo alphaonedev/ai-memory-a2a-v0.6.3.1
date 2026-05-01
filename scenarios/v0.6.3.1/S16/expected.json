@@ -1,0 +1,16 @@
+{
+  "scenario": "S16",
+  "title": "Capabilities v2 honesty cross-mesh",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "v2_schema_present": "boolean",
+    "v1_theater_fields_absent": "boolean",
+    "self_reports_degraded": "boolean",
+    "peer_view_surfaces_degraded": "boolean",
+    "permissions_mode_advisory": "boolean",
+    "round_trip_clean": "boolean",
+    "phase_capabilities": "object<phase_id, object<node_id, capabilities_doc>>"
+  }
+}

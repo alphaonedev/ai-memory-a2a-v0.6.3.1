@@ -1,0 +1,12 @@
+{
+  "scenario": "S2",
+  "title": "shared-context handoff",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "handoff_observed": "boolean",
+    "settle_ms": "integer",
+    "scope_leak_to_c": "boolean"
+  }
+}

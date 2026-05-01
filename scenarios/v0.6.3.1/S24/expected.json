@@ -1,0 +1,14 @@
+{
+  "scenario": "S24",
+  "title": "Issue #318 — MCP stdio writes fan out",
+  "expected_verdict": "RED",
+  "expected_red_reason": "Issue #318 — MCP stdio writes bypass federation fanout (closes in Patch 2)",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "phase1_http_replication_ok": "boolean",
+    "phase2_mcp_replication_per_tool": "object<tool_name, integer>",
+    "phase2_local_audit_present": "boolean",
+    "peer_serve_logs_silent": "boolean",
+    "tools_probed": "array<string>"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scenario": "S14",
+  "title": "ai-memory logs operator surface",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "phase1_default_off_clean": "boolean",
+    "phase1_no_log_file_present": "boolean",
+    "phase2_envelope_keys": "array<string>",
+    "phase2_envelope_uniform": "boolean",
+    "phase2_filter_subsets_ok": "boolean",
+    "phase3_partial_optin_ok": "boolean",
+    "env_precedence_ok": "boolean"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "scenario": "S6",
+  "title": "contradiction detection",
+  "source": "umbrella-testbook",
+  "expected_verdict": "GREEN",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "contradictions_found": "integer",
+    "yes_no_match": "boolean",
+    "link_present": "boolean",
+    "both_records_in_c_recall": "boolean"
+  }
+}

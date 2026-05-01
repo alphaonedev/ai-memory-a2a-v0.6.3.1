@@ -1,0 +1,18 @@
+{
+  "scenario": "S11",
+  "title": "ai-memory install <agent> recipe handoff across mesh",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "recipe": "string",
+    "node_a_managed_keys": "array<string>",
+    "node_b_managed_keys": "array<string>",
+    "managed_block_match": "boolean",
+    "idempotent": "boolean",
+    "backup_artefact_present": "boolean",
+    "world_writable_refused": "boolean",
+    "uninstall_roundtrip_clean": "boolean",
+    "boot_manifest_equiv_after_sync": "boolean"
+  }
+}

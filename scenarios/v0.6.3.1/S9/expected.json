@@ -1,0 +1,15 @@
+{
+  "scenario": "S9",
+  "title": "ai-memory boot multi-node manifest agreement",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "manifests": "object<node_id, boot_manifest>",
+    "agreement.version": "boolean",
+    "agreement.schema_version": "boolean",
+    "agreement.tier": "boolean",
+    "any_warn_variant": "boolean",
+    "exit_codes": "object<node_id, integer>"
+  }
+}

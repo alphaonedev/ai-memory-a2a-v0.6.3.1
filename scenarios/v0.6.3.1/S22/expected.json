@@ -1,0 +1,17 @@
+{
+  "scenario": "S22",
+  "title": "Schema v19 migration on heterogeneous mesh",
+  "expected_verdict": "GREEN",
+  "expected_red_reason": null,
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "phase1_warn_on_v15": "boolean",
+    "phase1_ok_on_v19": "boolean",
+    "phase1_asymmetry_surfaced": "boolean",
+    "ladder_steps_observed": "array<string>",
+    "pre_migration_row_count": "integer",
+    "post_migration_row_count": "integer",
+    "row_count_preserved": "boolean",
+    "phase2_mesh_agreement": "boolean"
+  }
+}
