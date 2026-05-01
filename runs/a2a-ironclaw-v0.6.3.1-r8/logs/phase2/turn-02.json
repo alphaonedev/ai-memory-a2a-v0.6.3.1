@@ -1,0 +1,49 @@
+{
+  "agent_framework": "ironclaw",
+  "agent_id": "ai:bob",
+  "ai_memory_ops": [
+    {
+      "duration_ms": 450,
+      "key_or_query": "phase2-rt-1",
+      "namespace": "phase2/team",
+      "ok": true,
+      "op": "recall",
+      "payload_sha256": "71c71fdeb9540f03706791b9442473b2a381a6171199a237ffd69bc6a8b472bf",
+      "returned_records": 1,
+      "scope": "team",
+      "transport": "http"
+    }
+  ],
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r8",
+  "claims_grounded": [
+    {
+      "claim_id": "ex2-cross-agent-recall",
+      "grounded_in_op_index": 0,
+      "grounding_strength": "exact"
+    }
+  ],
+  "claims_made": [
+    {
+      "category": "factual",
+      "claim_id": "ex2-cross-agent-recall",
+      "text_sha256": "71c71fdeb9540f03706791b9442473b2a381a6171199a237ffd69bc6a8b472bf"
+    }
+  ],
+  "control_arm": "phase2",
+  "llm_model_sku": "grok-4-fast-non-reasoning",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "notes": "",
+  "phase": 2,
+  "prompt_sha256": "dc6e5aea9590b5e36bfa4abf62e4072eff306dfb03a5b5ba4517bc3848d58b71",
+  "refusals": [],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "phase2",
+  "schema_version": "v0.6.3.1-a2a-nhi-1",
+  "self_confidence": 1.0,
+  "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "termination_reason": "task_complete",
+  "timestamp_utc": "2026-05-01T19:00:34Z",
+  "tools_called": [],
+  "turn_id": "phase2-phase2-r1-t2"
+}

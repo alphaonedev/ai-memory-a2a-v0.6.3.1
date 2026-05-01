@@ -1,0 +1,1003 @@
+{
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r8",
+  "agent_group": "ironclaw",
+  "ai_memory_git_ref": "v0.6.3.1",
+  "completed_at": "2026-05-01T19:00:31Z",
+  "overall_pass": true,
+  "scenarios": [
+    {
+      "agent_group": "ironclaw",
+      "expected_per_reader": 20,
+      "pass": true,
+      "per_agent": {
+        "ai:alice": {
+          "recall": 20
+        },
+        "ai:bob": {
+          "recall": 20
+        },
+        "ai:charlie": {
+          "recall": 20
+        }
+      },
+      "per_namespace_node4": {
+        "scenario1-ai:alice": {
+          "count": 10,
+          "wrong_agent_id": 0
+        },
+        "scenario1-ai:bob": {
+          "count": 10,
+          "wrong_agent_id": 0
+        },
+        "scenario1-ai:charlie": {
+          "count": 10,
+          "wrong_agent_id": 0
+        }
+      },
+      "reasons": [],
+      "scenario": "1",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "delete_http_code": 200,
+      "m1_id": "9e859c22-d7c6-4722-850f-95088ce71163",
+      "pass": true,
+      "post_delete_hits": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "post_delete_still_visible_peers": 0,
+      "pre_delete_visible_peers": 3,
+      "reasons": [],
+      "scenario": "10",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "uuid": "d-c2520286cbae4fab9c2b797d32fc9530"
+    },
+    {
+      "agent_group": "ironclaw",
+      "charlie_sees_link": 1,
+      "link_http_code": 201,
+      "m1_id": "509c2d7e-520a-4189-8c2a-6491ebbdde91",
+      "m2_id": "3d91bba7-8620-4c1d-ad6e-0ba48ab79387",
+      "pass": true,
+      "reasons": [],
+      "relation": "related_to",
+      "scenario": "11",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "peers_see": {
+        "node_2": 1,
+        "node_3": 1,
+        "node_4": 1
+      },
+      "reasons": [],
+      "register_http_code": 201,
+      "registered_agent": "ai:dave-probe-bf85ef82",
+      "scenario": "12",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "m1_id": "f21da2ae-0cf8-4c0b-a06d-1d0b1d6c696d",
+      "pass": true,
+      "peer_view": {
+        "node_1": "vb-6c8d9c144d154d9b90b5ad75cb2e9d28",
+        "node_2": "vb-6c8d9c144d154d9b90b5ad75cb2e9d28",
+        "node_3": "vb-6c8d9c144d154d9b90b5ad75cb2e9d28",
+        "node_4": "vb-6c8d9c144d154d9b90b5ad75cb2e9d28"
+      },
+      "reasons": [],
+      "scenario": "13",
+      "skipped": false,
+      "submitted": {
+        "v0": "v0-8defda4c8d8f458482b43503a754d32b",
+        "vA_alice": "va-1d192f2205e244218725179cbb4609a7",
+        "vB_bob": "vb-6c8d9c144d154d9b90b5ad75cb2e9d28"
+      },
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "expected_post_recovery": 20,
+      "node3_saw": 20,
+      "partition_target": "node-3",
+      "pass": true,
+      "reasons": [],
+      "scenario": "14",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "reasons": [],
+      "scenario": "15",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "uuid": "ryw-6791946c2f684c2983fb569c3c12f970",
+      "writer_sees_own_write": 1
+    },
+    {
+      "agent_group": "ironclaw",
+      "bob_sees_tier": "long",
+      "m1_id": "21fa8e3f-adc6-483d-9bb0-88729d359e68",
+      "pass": true,
+      "promote_http_code": 200,
+      "reasons": [],
+      "scenario": "16",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "expected_count": 15,
+      "pass": true,
+      "per_peer": {
+        "node_1": 15,
+        "node_2": 15,
+        "node_3": 15,
+        "node_4": 15
+      },
+      "reasons": [],
+      "scenario": "17",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "diag_list_alice_present": 1,
+      "diag_list_bob_present": 1,
+      "diag_node3_embedding_probe": "dawn-walk|1537|BYTES | ridge-strides|1537|BYTES",
+      "pass": true,
+      "query": "morning outdoor exercise routine",
+      "reasons": [],
+      "recall_mode": "hybrid",
+      "rows_in_recall": 2,
+      "scenario": "18",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "writers": [
+        {
+          "agent": "ai:alice",
+          "marker": "alice-sunrise-1e0681c9",
+          "seen_by_charlie": 1
+        },
+        {
+          "agent": "ai:bob",
+          "marker": "bob-daybreak-90b7cca9",
+          "seen_by_charlie": 1
+        }
+      ]
+    },
+    {
+      "agent_group": "ironclaw",
+      "expected_per_reader": 20,
+      "pass": true,
+      "path": "serve-http",
+      "per_agent": {
+        "ai:alice": {
+          "recall": 20
+        },
+        "ai:bob": {
+          "recall": 20
+        },
+        "ai:charlie": {
+          "recall": 20
+        }
+      },
+      "per_namespace_node4": {
+        "scenario1b-ai:alice": {
+          "count": 10,
+          "wrong_agent_id": 0
+        },
+        "scenario1b-ai:bob": {
+          "count": 10,
+          "wrong_agent_id": 0
+        },
+        "scenario1b-ai:charlie": {
+          "count": 10,
+          "wrong_agent_id": 0
+        }
+      },
+      "reasons": [],
+      "scenario": "1b",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "ack_uuid": "a-6da69917d71e487995e94b208ee2faa9",
+      "agent_group": "ironclaw",
+      "handoff_uuid": "h-6083af0435014af7b57054a1c51b1311",
+      "pass": true,
+      "path": "serve-http",
+      "per_agent": {
+        "ai:alice": {
+          "sees_ack": 1
+        },
+        "ai:bob": {
+          "sees_handoff": 1
+        }
+      },
+      "reasons": [],
+      "scenario": "2",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "marker": "mtls-c39303b03e2c416299e504902b2ef133",
+      "pass": true,
+      "peers_see": {
+        "node_2": 1,
+        "node_3": 1
+      },
+      "reasons": [],
+      "scenario": "20",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "write_http_code": 201
+    },
+    {
+      "agent_group": "ironclaw",
+      "anonymous_probe": {
+        "curl_message": "OpenSSL SSL_read: OpenSSL/3.0.13: error:0A00045C:SSL routines::tlsv13 alert certificate required, errno 0",
+        "http_code": "curl: (56) OpenSSL SSL_read: OpenSSL/3.0.13: error:0A00045C:SSL routines::tlsv13 alert certificate required, errno 0\n000"
+      },
+      "namespace_count_after_attempt": 0,
+      "pass": true,
+      "reasons": [],
+      "scenario": "21",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "reasons": [],
+      "scenario": "22",
+      "skipped": false,
+      "tests": {
+        "body_vs_header_conflict": {
+          "acceptable": [
+            "ai:body-wins",
+            "ai:attacker"
+          ],
+          "stored_agent_id": "ai:attacker"
+        },
+        "header_only": {
+          "expected": "ai:alice",
+          "stored_agent_id": "ai:alice"
+        }
+      },
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "payloads": {
+        "html": {
+          "input_bytes": 66,
+          "roundtrip_bytes": 66,
+          "write_http": 201
+        },
+        "oversize": {
+          "input_bytes": 1048576,
+          "roundtrip_bytes": 0,
+          "write_http": 400
+        },
+        "sql": {
+          "input_bytes": 61,
+          "roundtrip_bytes": 61,
+          "write_http": 201
+        },
+        "unicode": {
+          "input_bytes": 19,
+          "roundtrip_bytes": 19,
+          "write_http": 201
+        }
+      },
+      "payloads_note": "accept+faithful OR 4xx reject both acceptable for oversize",
+      "reasons": [],
+      "scenario": "23",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "byzantine_marker": "bz-5922497452fe4022809402aac6b64134",
+      "pass": true,
+      "reasons": [],
+      "scenario": "24",
+      "skipped": false,
+      "stored_metadata_agent_id": "REJECTED_BY_SERVER",
+      "sync_push_http_code": "422",
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "clock_offset_seconds": 300,
+      "marker": "ck-1d2e586587ef4cbb943039f2ee5b19f3",
+      "pass": true,
+      "reasons": [],
+      "scenario": "25",
+      "seen_on": {
+        "node_1": 1,
+        "node_3": 1
+      },
+      "skipped": false,
+      "target_node": "node-3",
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "peer_hits": {
+        "node_2": 1,
+        "node_3": 1
+      },
+      "reasons": [],
+      "scenario": "28",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "token": "kwsearch3af9d29752"
+    },
+    {
+      "agent_group": "ironclaw",
+      "archive_http_code": 200,
+      "bob_sees_archived": true,
+      "m1_id": "aaef7b91-3e18-4f15-82f8-3e05d85cb6e9",
+      "node4_active_rows": 1,
+      "pass": true,
+      "reasons": [],
+      "restore_http_code": 200,
+      "scenario": "29",
+      "skipped": false,
+      "stats_shape_ok": true,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "peer_views": {
+        "node_1": {
+          "_path": "/api/v1/capabilities",
+          "approval": {
+            "pending_requests": 0
+          },
+          "compaction": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.8+"
+          },
+          "features": {
+            "auto_consolidation": false,
+            "auto_tagging": false,
+            "contradiction_analysis": false,
+            "cross_encoder_reranking": false,
+            "embedder_loaded": true,
+            "hybrid_recall": true,
+            "keyword_search": true,
+            "memory_reflection": {
+              "enabled": false,
+              "planned": true,
+              "version": "v0.7+"
+            },
+            "query_expansion": false,
+            "recall_mode_active": "hybrid",
+            "reranker_active": "off",
+            "semantic_search": true
+          },
+          "hnsw": {
+            "evicted_recently": false,
+            "evictions_total": 0
+          },
+          "hooks": {
+            "registered_count": 0,
+            "webhook_events": [
+              "memory_store",
+              "memory_promote",
+              "memory_delete",
+              "memory_link_created",
+              "memory_consolidated"
+            ]
+          },
+          "models": {
+            "cross_encoder": "none",
+            "embedding": "sentence-transformers/all-MiniLM-L6-v2",
+            "embedding_dim": 384,
+            "llm": "none"
+          },
+          "permissions": {
+            "active_rules": 0,
+            "inheritance": "enforced",
+            "mode": "advisory"
+          },
+          "schema_version": "2",
+          "tier": "semantic",
+          "transcripts": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.7+"
+          },
+          "version": "0.6.3+patch.1"
+        },
+        "node_2": {
+          "_path": "/api/v1/capabilities",
+          "approval": {
+            "pending_requests": 0
+          },
+          "compaction": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.8+"
+          },
+          "features": {
+            "auto_consolidation": false,
+            "auto_tagging": false,
+            "contradiction_analysis": false,
+            "cross_encoder_reranking": false,
+            "embedder_loaded": true,
+            "hybrid_recall": true,
+            "keyword_search": true,
+            "memory_reflection": {
+              "enabled": false,
+              "planned": true,
+              "version": "v0.7+"
+            },
+            "query_expansion": false,
+            "recall_mode_active": "hybrid",
+            "reranker_active": "off",
+            "semantic_search": true
+          },
+          "hnsw": {
+            "evicted_recently": false,
+            "evictions_total": 0
+          },
+          "hooks": {
+            "registered_count": 0,
+            "webhook_events": [
+              "memory_store",
+              "memory_promote",
+              "memory_delete",
+              "memory_link_created",
+              "memory_consolidated"
+            ]
+          },
+          "models": {
+            "cross_encoder": "none",
+            "embedding": "sentence-transformers/all-MiniLM-L6-v2",
+            "embedding_dim": 384,
+            "llm": "none"
+          },
+          "permissions": {
+            "active_rules": 0,
+            "inheritance": "enforced",
+            "mode": "advisory"
+          },
+          "schema_version": "2",
+          "tier": "semantic",
+          "transcripts": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.7+"
+          },
+          "version": "0.6.3+patch.1"
+        },
+        "node_3": {
+          "_path": "/api/v1/capabilities",
+          "approval": {
+            "pending_requests": 0
+          },
+          "compaction": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.8+"
+          },
+          "features": {
+            "auto_consolidation": false,
+            "auto_tagging": false,
+            "contradiction_analysis": false,
+            "cross_encoder_reranking": false,
+            "embedder_loaded": true,
+            "hybrid_recall": true,
+            "keyword_search": true,
+            "memory_reflection": {
+              "enabled": false,
+              "planned": true,
+              "version": "v0.7+"
+            },
+            "query_expansion": false,
+            "recall_mode_active": "hybrid",
+            "reranker_active": "off",
+            "semantic_search": true
+          },
+          "hnsw": {
+            "evicted_recently": false,
+            "evictions_total": 0
+          },
+          "hooks": {
+            "registered_count": 0,
+            "webhook_events": [
+              "memory_store",
+              "memory_promote",
+              "memory_delete",
+              "memory_link_created",
+              "memory_consolidated"
+            ]
+          },
+          "models": {
+            "cross_encoder": "none",
+            "embedding": "sentence-transformers/all-MiniLM-L6-v2",
+            "embedding_dim": 384,
+            "llm": "none"
+          },
+          "permissions": {
+            "active_rules": 0,
+            "inheritance": "enforced",
+            "mode": "advisory"
+          },
+          "schema_version": "2",
+          "tier": "semantic",
+          "transcripts": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.7+"
+          },
+          "version": "0.6.3+patch.1"
+        },
+        "node_4": {
+          "_path": "/api/v1/capabilities",
+          "approval": {
+            "pending_requests": 0
+          },
+          "compaction": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.8+"
+          },
+          "features": {
+            "auto_consolidation": false,
+            "auto_tagging": false,
+            "contradiction_analysis": false,
+            "cross_encoder_reranking": false,
+            "embedder_loaded": true,
+            "hybrid_recall": true,
+            "keyword_search": true,
+            "memory_reflection": {
+              "enabled": false,
+              "planned": true,
+              "version": "v0.7+"
+            },
+            "query_expansion": false,
+            "recall_mode_active": "hybrid",
+            "reranker_active": "off",
+            "semantic_search": true
+          },
+          "hnsw": {
+            "evicted_recently": false,
+            "evictions_total": 0
+          },
+          "hooks": {
+            "registered_count": 0,
+            "webhook_events": [
+              "memory_store",
+              "memory_promote",
+              "memory_delete",
+              "memory_link_created",
+              "memory_consolidated"
+            ]
+          },
+          "models": {
+            "cross_encoder": "none",
+            "embedding": "sentence-transformers/all-MiniLM-L6-v2",
+            "embedding_dim": 384,
+            "llm": "none"
+          },
+          "permissions": {
+            "active_rules": 0,
+            "inheritance": "enforced",
+            "mode": "advisory"
+          },
+          "schema_version": "2",
+          "tier": "semantic",
+          "transcripts": {
+            "enabled": false,
+            "planned": true,
+            "version": "v0.7+"
+          },
+          "version": "0.6.3+patch.1"
+        }
+      },
+      "reasons": [],
+      "scenario": "30",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "expected_live": 2,
+      "forget_http_code": 400,
+      "gc_http_code": 200,
+      "live_markers_per_peer": {
+        "node_1": 2,
+        "node_2": 2,
+        "node_3": 2,
+        "node_4": 2
+      },
+      "pass": true,
+      "reasons": [],
+      "scenario": "31",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "bob_inbox_count": 1,
+      "bob_sees_marker": true,
+      "charlie_inbox_count": 0,
+      "charlie_sees_marker": false,
+      "marker": "inb-f45c80f437e94226a2c3dbad398b5a52",
+      "notify_http_code": 201,
+      "pass": true,
+      "reasons": [],
+      "scenario": "32",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "m1_delivered": 1,
+      "namespace": "scenario33-pubsub-cfeb7f",
+      "ns_in_subs_after": false,
+      "ns_in_subs_before": true,
+      "pass": true,
+      "reasons": [],
+      "scenario": "33",
+      "skipped": false,
+      "subscribe_http_code": 201,
+      "subscriptions_after_count": 0,
+      "subscriptions_before_count": 1,
+      "tls_mode": "mtls",
+      "unsubscribe_http_code": 200
+    },
+    {
+      "agent_group": "ironclaw",
+      "approve_http_code": 200,
+      "charlie_sees": {
+        "approved": 1,
+        "rejected": 0
+      },
+      "namespace": "scenario34-pending-6d54f5",
+      "pass": true,
+      "pending_queue_count": 2,
+      "reasons": [],
+      "reject_http_code": 200,
+      "scenario": "34",
+      "set_standard_http_code": 201,
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "child_ns": "scenario35-parent-050970/child",
+      "clear_http_code": 200,
+      "get_standard_http_code": 200,
+      "parent_ns": "scenario35-parent-050970",
+      "pass": true,
+      "post_clear_has_child_rule": false,
+      "reasons": [],
+      "scenario": "35",
+      "sees_child_rule": true,
+      "sees_parent_rule": true,
+      "set_child_http_code": 201,
+      "set_parent_http_code": 201,
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "pass": true,
+      "reasons": [],
+      "scenario": "36",
+      "session_id": "2b5b1977-76b3-4e90-bcc3-cf088898800e",
+      "session_tagged_rows_on_bob": 2,
+      "skipped": false,
+      "start_http_code": 200,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "forward_has_target": true,
+      "m1": "e63f24ef-cb22-42a0-a15a-b906b5ec14ce",
+      "m2": "4ae3496c-b4c9-4290-92c0-4d44d5319cde",
+      "pass": true,
+      "reasons": [],
+      "reverse_has_source": true,
+      "scenario": "37",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "dst_ns": "scenario38-dst-5bd5be",
+      "expected_rows": 5,
+      "export_http_code": 200,
+      "import_http_code": 200,
+      "markers_preserved": 5,
+      "pass": true,
+      "reasons": [],
+      "rows_exported": 5,
+      "rows_in_destination": 5,
+      "scenario": "38",
+      "skipped": false,
+      "src_ns": "scenario38-src-5bd5be",
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "checkpoint": "2026-05-01T18:58:02+00:00",
+      "diag_curl_body_head": "{\"count\":6,\"earliest_updated_at\":\"2026-05-01T18:58:35.346057091+00:00\",\"latest_updated_at\":\"2026-05-01T18:58:37.833728841+00:00\",\"limit\":500,\"memories\":[{\"access_count\":0,\"confidence\":1.0,\"content\":\"marker=delta-0-d3f780fb43454cc89c54204fc3e1c23c\",\"created_at\":\"2026-05-01T18:58:35.346057091+00:00\",\"",
+      "diag_curl_exit": 0,
+      "diag_curl_http_code": 200,
+      "diag_curl_stderr": "",
+      "diag_earliest_updated_at": "2026-05-01T18:58:35.346057091+00:00",
+      "diag_latest_updated_at": "2026-05-01T18:58:37.833728841+00:00",
+      "diag_node3_health_reachable": true,
+      "diag_updated_since": "2026-05-01T18:58:02+00:00",
+      "expected_markers": 6,
+      "markers_present": 6,
+      "namespace": "scenario39-delta-7ef808",
+      "pass": true,
+      "reasons": [],
+      "rows_returned": 6,
+      "rows_returned_raw": 6,
+      "scenario": "39",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "expected_per_agent": 30,
+      "pass": true,
+      "per_agent": {
+        "ai:alice": {
+          "count": 30,
+          "wrong_agent_id": 0
+        },
+        "ai:bob": {
+          "count": 30,
+          "wrong_agent_id": 0
+        },
+        "ai:charlie": {
+          "count": 30,
+          "wrong_agent_id": 0
+        }
+      },
+      "reasons": [],
+      "scenario": "4",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "bulk_http_code": "200",
+      "bulk_size": 500,
+      "namespace": "scenario40-bulk-03e81c",
+      "pass": true,
+      "per_peer_count": {
+        "node_2": 500,
+        "node_3": 500,
+        "node_4": 500
+      },
+      "reasons": [],
+      "scenario": "40",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "activity_namespace": "scenario41-activity-354513",
+      "agent_group": "ironclaw",
+      "pass": true,
+      "per_peer": {
+        "node_1": {
+          "counters_t0": 10,
+          "counters_t1": 10,
+          "regressed_keys": 0
+        },
+        "node_2": {
+          "counters_t0": 10,
+          "counters_t1": 10,
+          "regressed_keys": 0
+        },
+        "node_3": {
+          "counters_t0": 7,
+          "counters_t1": 7,
+          "regressed_keys": 0
+        }
+      },
+      "reasons": [],
+      "scenario": "41",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "namespaces": [
+        "scenario42-7f91c1-0",
+        "scenario42-7f91c1-1",
+        "scenario42-7f91c1-2"
+      ],
+      "pass": true,
+      "per_peer": {
+        "node_1": {
+          "scenario42-7f91c1-0": 2,
+          "scenario42-7f91c1-1": 2,
+          "scenario42-7f91c1-2": 2
+        },
+        "node_2": {
+          "scenario42-7f91c1-0": 2,
+          "scenario42-7f91c1-1": 2,
+          "scenario42-7f91c1-2": 2
+        },
+        "node_3": {
+          "scenario42-7f91c1-0": 2,
+          "scenario42-7f91c1-1": 2,
+          "scenario42-7f91c1-2": 2
+        },
+        "node_4": {
+          "scenario42-7f91c1-0": 2,
+          "scenario42-7f91c1-1": 2,
+          "scenario42-7f91c1-2": 2
+        }
+      },
+      "reasons": [],
+      "scenario": "42",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "consolidate_http_code": 201,
+      "consolidated_from_agents": [
+        "ai:charlie",
+        "ai:bob",
+        "ai:alice"
+      ],
+      "consolidated_id": "2a4cc62a-bc2f-47df-9670-288a7f8319be",
+      "pass": true,
+      "reasons": [],
+      "scenario": "5",
+      "skipped": false,
+      "tls_mode": "mtls"
+    },
+    {
+      "agent_group": "ironclaw",
+      "alice_id": "ac25c38a-c10f-4de2-b90c-a3f5cf24bd82",
+      "bob_id": "8fe71348-fc3d-4868-890a-6a8102f875a1",
+      "charlie_sees_both_memories": true,
+      "charlie_sees_contradicts_link": true,
+      "detect_http_code": 200,
+      "pass": true,
+      "reasons": [],
+      "scenario": "6",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "topic": "sky-color-93ab242f"
+    },
+    {
+      "agent_group": "ironclaw",
+      "charlie_view": {
+        "agent_id": "ai:alice",
+        "content": "v2-65d9bac4050744b2b3bf88803fb48e74"
+      },
+      "m1_id": "8a29c9b5-d6bf-4e0e-b526-e9514808de9a",
+      "pass": true,
+      "put_http_code": 200,
+      "reasons": [],
+      "scenario": "9",
+      "skipped": false,
+      "tls_mode": "mtls",
+      "v1_uuid": "v1-df8df9c593a14e4687e766ad022d5bad",
+      "v2_uuid": "v2-65d9bac4050744b2b3bf88803fb48e74"
+    }
+  ],
+  "reasons": [],
+  "meta": {
+    "campaign_id": "a2a-ironclaw-v0.6.3.1-r8",
+    "agent_group": "ironclaw",
+    "ai_memory_git_ref": "v0.6.3.1",
+    "infra": {
+      "provider": "digitalocean",
+      "region": "nyc3",
+      "droplet_size": "s-2vcpu-4gb",
+      "topology": "4-node federation mesh (W=2/N=4)",
+      "nodes": [
+        {
+          "index": 1,
+          "role": "agent",
+          "agent_id": "ai:alice",
+          "public_ip": "138.197.112.231",
+          "private_ip": "10.10.2.5"
+        },
+        {
+          "index": 2,
+          "role": "agent",
+          "agent_id": "ai:bob",
+          "public_ip": "104.131.53.196",
+          "private_ip": "10.10.2.4"
+        },
+        {
+          "index": 3,
+          "role": "agent",
+          "agent_id": "ai:charlie",
+          "public_ip": "159.203.109.216",
+          "private_ip": "10.10.2.2"
+        },
+        {
+          "index": 4,
+          "role": "memory-only",
+          "agent_id": null,
+          "public_ip": "159.203.92.134",
+          "private_ip": "10.10.2.3"
+        }
+      ]
+    },
+    "scenarios_requested": [
+      "1",
+      "1b",
+      "2",
+      "4",
+      "5",
+      "6",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "22",
+      "23",
+      "24",
+      "25",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42"
+    ],
+    "timing": {
+      "started_at": "2026-05-01T18:49:17Z",
+      "ended_at": "2026-05-01T19:00:30Z"
+    },
+    "ci": {
+      "actor": "alphaonedev",
+      "workflow_url": "https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25227770384",
+      "harness_sha": "0ae8a195c6ebba7cafe84cfc55cf59c8b47add0a",
+      "runner_os": "Linux"
+    }
+  },
+  "skipped_reports": []
+}

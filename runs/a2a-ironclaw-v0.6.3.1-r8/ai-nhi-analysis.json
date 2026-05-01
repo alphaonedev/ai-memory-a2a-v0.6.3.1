@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r8",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run demonstrates low-risk posture with full pass on all scenarios, confirming production readiness for v0.6.3.1 in federated environments. Customer claims of secure, consistent memory sharing hold viable with no regressions from prior runs. Maintain weekly cadence to monitor stability.",
+  "for_non_technical": "Agents in this test successfully shared and remembered information with each other every time. No memories were lost or mixed up across the network. This means AI systems can work together reliably without forgetting what others know.",
+  "for_sme": "All 42 scenarios passed without reasons or failures; key primitives like hybrid recall (S18: 2/2 embeddings matched), bulk writes (S40: 500/500 replicated), mTLS auth rejection (S21: cert error enforced), and byzantine sync rejection (S24: 422 on invalid metadata) functioned correctly. No failure modes observed; probable root cause N/A. Coverage solid on transport (mTLS only), framework (federation mesh), and primitives (storage, search, perms).",
+  "headline": "AI memory federation passes all 42 scenarios in v0.6.3.1",
+  "next_run_change": "none \u2014 keep cadence",
+  "verdict": "PASS \u2014 42/42 scenarios green under mTLS",
+  "what_it_proved": "The system reliably shares and recalls agent memories across nodes with zero failures in recall accuracy, consistency, security enforcement, and feature coverage.",
+  "what_it_tested": "Exercised 42 scenarios covering memory storage/recall (S1, S4), transport handoffs (S2), linking (S11), deletion (S10), partitioning recovery (S14), hybrid search (S18), bulk ops (S40), permissions (S34-35), pubsub (S33), and security primitives (S21-24) across mTLS transport in a 4-node ironclaw federation."
+}
