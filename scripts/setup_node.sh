@@ -173,14 +173,259 @@ elif [ "$AI_MEMORY_SOURCE_BUILD" = "true" ]; then
   install -m 0755 target/release/ai-memory /usr/local/bin/ai-memory
   popd >/dev/null
 else
-  log "installing ai-memory v${AI_MEMORY_VERSION} (release tarball)"
-  cd /tmp
-  curl -sSL -o amem.tgz \
-    "https://github.com/alphaonedev/ai-memory-mcp/releases/download/v${AI_MEMORY_VERSION}/ai-memory-x86_64-unknown-linux-gnu.tar.gz"
-  tar xzf amem.tgz
-  install -m 0755 ai-memory /usr/local/bin/ai-memory
+  # ---- v0.6.3.1 binary-tarball install path ------------------------
+  # When AI_MEMORY_GIT_REF looks like a release tag (^v[0-9]+\.), try to
+  # download the prebuilt asset for this droplet's arch from the GitHub
+  # release. We try `.deb` first (cleanest — dpkg-tracked), then fall
+  # back to the tarball (extract + install to /usr/local/bin), then to
+  # source-build (slow path). At every step we verify the SHA-256 of
+  # the downloaded asset and capture the install method + asset name +
+  # SHA in /etc/ai-memory-a2a/install-manifest.json so Phase 0 preflight
+  # can attest the binary provenance without re-querying GitHub.
+  #
+  # SHA-256 verification: the v0.6.3.1 release ships a SHA256SUMS file
+  # but at cut-time it only enumerated one asset (darwin-aarch64). When
+  # the asset we downloaded is NOT covered by SHA256SUMS we still
+  # compute and record the local SHA — install-manifest.json marks
+  # `sha256_verified: false` and Phase 0 surfaces that as a soft warn.
+  AI_MEMORY_INSTALL_METHOD=""
+  AI_MEMORY_ASSET=""
+  AI_MEMORY_ASSET_SHA256=""
+  AI_MEMORY_SHA_VERIFIED="false"
+  AI_MEMORY_RELEASE_BASE="https://github.com/alphaonedev/ai-memory-mcp/releases/download/${AI_MEMORY_GIT_REF}"
+
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64|amd64)   deb_asset="ai-memory_${AI_MEMORY_VERSION}_amd64.deb"
+                    tar_asset="ai-memory-x86_64-unknown-linux-gnu.tar.gz" ;;
+    aarch64|arm64)  deb_asset="ai-memory_${AI_MEMORY_VERSION}_arm64.deb"
+                    tar_asset="ai-memory-aarch64-unknown-linux-gnu.tar.gz" ;;
+    *)              deb_asset=""
+                    tar_asset="" ;;
+  esac
+
+  release_tag_re='^v[0-9]+\.[0-9]+'
+  use_release_assets="false"
+  if [[ "$AI_MEMORY_GIT_REF" =~ $release_tag_re ]] && [ -n "$tar_asset" ]; then
+    use_release_assets="true"
+  fi
+
+  if [ "$use_release_assets" = "true" ]; then
+    log "installing ai-memory ${AI_MEMORY_GIT_REF} from release assets (arch=$arch)"
+    mkdir -p /etc/ai-memory-a2a
+    cd /tmp
+    rm -f SHA256SUMS amem.deb amem.tgz ai-memory
+
+    # Pull SHA256SUMS once; tolerate absence (older releases may not
+    # publish one).
+    have_sha_file="false"
+    if curl -fsSL --retry 3 --retry-delay 2 --max-time 60 \
+         -o SHA256SUMS "${AI_MEMORY_RELEASE_BASE}/SHA256SUMS"; then
+      have_sha_file="true"
+      log "  SHA256SUMS fetched ($(wc -l < SHA256SUMS) line(s))"
+    else
+      log "  SHA256SUMS not available at ${AI_MEMORY_RELEASE_BASE}/SHA256SUMS — will record local sha only"
+    fi
+
+    # Helper: verify $1 (path) against SHA256SUMS where possible. Sets
+    # AI_MEMORY_ASSET_SHA256 (always) and AI_MEMORY_SHA_VERIFIED (true
+    # only when the asset name appears in SHA256SUMS and matches).
+    _aim_verify_sha() {
+      local path="$1" name expected actual
+      name="$(basename "$path")"
+      actual="$(sha256sum "$path" | awk '{print $1}')"
+      AI_MEMORY_ASSET_SHA256="$actual"
+      AI_MEMORY_SHA_VERIFIED="false"
+      if [ "$have_sha_file" = "true" ]; then
+        expected="$(awk -v n="$name" '$2==n || $2=="*"n {print $1; exit}' SHA256SUMS || true)"
+        if [ -n "$expected" ]; then
+          if [ "$expected" = "$actual" ]; then
+            AI_MEMORY_SHA_VERIFIED="true"
+            log "  SHA-256 verified for $name ($actual)"
+            return 0
+          else
+            log "  SHA-256 MISMATCH for $name: expected=$expected got=$actual"
+            return 1
+          fi
+        else
+          log "  SHA-256 for $name not listed in SHA256SUMS — recording local sha only ($actual)"
+        fi
+      else
+        log "  SHA-256 for $name (no SHA256SUMS): $actual"
+      fi
+      return 0
+    }
+
+    install_ok="false"
+
+    # Path A: .deb (preferred — dpkg-tracked, clean uninstall, signed
+    # postinst hooks if/when the release adds them). Skip if dpkg isn't
+    # available (non-debian droplets).
+    if [ "$install_ok" = "false" ] && [ -n "$deb_asset" ] && command -v dpkg >/dev/null 2>&1; then
+      if curl -fsSL --retry 3 --retry-delay 2 --max-time 180 \
+           -o amem.deb "${AI_MEMORY_RELEASE_BASE}/${deb_asset}"; then
+        if _aim_verify_sha amem.deb; then
+          if DEBIAN_FRONTEND=noninteractive dpkg -i amem.deb 2>&1 | sed 's/^/[dpkg] /'; then
+            AI_MEMORY_INSTALL_METHOD="release-deb"
+            AI_MEMORY_ASSET="$deb_asset"
+            install_ok="true"
+            log "  installed via dpkg -i $deb_asset"
+          else
+            log "  dpkg -i $deb_asset failed — falling through to tarball"
+          fi
+        else
+          log "  $deb_asset failed sha verify — falling through to tarball"
+        fi
+      else
+        log "  could not download $deb_asset (404/timeout) — falling through to tarball"
+      fi
+    fi
+
+    # Path B: tarball (single binary at root: ./ai-memory).
+    if [ "$install_ok" = "false" ] && [ -n "$tar_asset" ]; then
+      if curl -fsSL --retry 3 --retry-delay 2 --max-time 180 \
+           -o amem.tgz "${AI_MEMORY_RELEASE_BASE}/${tar_asset}"; then
+        if _aim_verify_sha amem.tgz; then
+          rm -f ai-memory
+          if tar xzf amem.tgz && [ -f ai-memory ]; then
+            install -m 0755 ai-memory /usr/local/bin/ai-memory
+            AI_MEMORY_INSTALL_METHOD="release-tarball"
+            AI_MEMORY_ASSET="$tar_asset"
+            install_ok="true"
+            log "  installed via tarball $tar_asset → /usr/local/bin/ai-memory"
+          else
+            log "  tarball $tar_asset extracted but ./ai-memory not found — falling through to source build"
+          fi
+        else
+          log "  $tar_asset failed sha verify — falling through to source build"
+        fi
+      else
+        log "  could not download $tar_asset (404/timeout) — falling through to source build"
+      fi
+    fi
+
+    # Path C: verify --version matches the expected ref. The v0.6.3.x
+    # series prints `ai-memory <version>` on `--version`; if the strict
+    # match fails (e.g. release ships a +build suffix) we accept any
+    # output containing the AMV-stripped version.
+    if [ "$install_ok" = "true" ]; then
+      ver_out="$(/usr/local/bin/ai-memory --version 2>&1 || true)"
+      log "  ai-memory --version → $ver_out"
+      if ! printf '%s' "$ver_out" | grep -qF "$AI_MEMORY_VERSION"; then
+        log "  version mismatch: expected to contain '$AI_MEMORY_VERSION', got '$ver_out' — falling through to source build"
+        install_ok="false"
+        AI_MEMORY_INSTALL_METHOD=""
+        AI_MEMORY_ASSET=""
+        AI_MEMORY_ASSET_SHA256=""
+        AI_MEMORY_SHA_VERIFIED="false"
+        # Best-effort uninstall of the .deb so source-build installs
+        # cleanly into /usr/local/bin.
+        if dpkg -l ai-memory >/dev/null 2>&1; then
+          DEBIAN_FRONTEND=noninteractive dpkg -r ai-memory 2>&1 | sed 's/^/[dpkg] /' || true
+        fi
+      fi
+    fi
+
+    # Path D: source-build fallback (same as AI_MEMORY_SOURCE_BUILD=true
+    # branch above — kept inline so the manifest can record the path
+    # taken). Triggered only when both A and B failed/mismatched.
+    if [ "$install_ok" = "false" ]; then
+      log "  release-asset install failed — falling back to source build @ ${AI_MEMORY_GIT_REF}"
+      DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
+        build-essential pkg-config libssl-dev git ca-certificates \
+        2>&1 | sed 's/^/[apt] /'
+      if ! command -v cargo >/dev/null 2>&1; then
+        curl -sSf --tlsv1.2 https://sh.rustup.rs | \
+          sh -s -- -y --default-toolchain stable --profile minimal \
+          2>&1 | sed 's/^/[rustup] /'
+      fi
+      export PATH="$HOME/.cargo/bin:$PATH"
+      rm -rf /tmp/ai-memory-src
+      git clone --depth 1 --branch "${AI_MEMORY_GIT_REF}" \
+        https://github.com/alphaonedev/ai-memory-mcp.git /tmp/ai-memory-src \
+        2>&1 | sed 's/^/[git] /'
+      pushd /tmp/ai-memory-src >/dev/null
+      cargo build --release --locked 2>&1 | sed 's/^/[cargo] /'
+      install -m 0755 target/release/ai-memory /usr/local/bin/ai-memory
+      popd >/dev/null
+      AI_MEMORY_INSTALL_METHOD="source-build-fallback"
+      AI_MEMORY_ASSET=""
+      AI_MEMORY_ASSET_SHA256="$(sha256sum /usr/local/bin/ai-memory | awk '{print $1}')"
+      AI_MEMORY_SHA_VERIFIED="false"
+      install_ok="true"
+    fi
+  else
+    # Non-tag ref or unsupported arch: keep the old direct-tarball
+    # behavior (best-effort, no SHA verify) so existing hand-built
+    # workflows that pass an AMV without a tag still function.
+    log "installing ai-memory v${AI_MEMORY_VERSION} (legacy tarball path; ref=${AI_MEMORY_GIT_REF} arch=$arch)"
+    cd /tmp
+    curl -sSL -o amem.tgz \
+      "https://github.com/alphaonedev/ai-memory-mcp/releases/download/v${AI_MEMORY_VERSION}/ai-memory-x86_64-unknown-linux-gnu.tar.gz"
+    tar xzf amem.tgz
+    install -m 0755 ai-memory /usr/local/bin/ai-memory
+    AI_MEMORY_INSTALL_METHOD="release-tarball-legacy"
+    AI_MEMORY_ASSET="ai-memory-x86_64-unknown-linux-gnu.tar.gz"
+    AI_MEMORY_ASSET_SHA256="$(sha256sum amem.tgz | awk '{print $1}')"
+    AI_MEMORY_SHA_VERIFIED="false"
+  fi
 fi
 ai-memory --version
+
+# ---- install manifest -------------------------------------------
+# Phase 0 preflight (scripts/preflight/) reads this file off each
+# droplet via SSH (cat /etc/ai-memory-a2a/install-manifest.json) and
+# attests:
+#   * install_method ∈ {prebuilt-runner, source-build, release-deb,
+#                       release-tarball, release-tarball-legacy,
+#                       source-build-fallback}
+#   * asset (file name) and asset_sha256 (lowercase hex) match what
+#     the workflow expected for ai_memory_git_ref
+#   * sha256_verified=true when the asset was cross-checked against
+#     the release's SHA256SUMS file (currently only darwin-aarch64
+#     is enumerated in v0.6.3.1's SHA256SUMS — Linux assets fall to
+#     "false" and Phase 0 surfaces that as a soft warn, not a fail)
+# Manifest is written for ALL paths including the
+# /tmp/ai-memory.prebuilt fast-path and the AI_MEMORY_SOURCE_BUILD=true
+# legacy path so Phase 0 has a single source of truth.
+mkdir -p /etc/ai-memory-a2a
+: "${AI_MEMORY_INSTALL_METHOD:=}"
+: "${AI_MEMORY_ASSET:=}"
+: "${AI_MEMORY_ASSET_SHA256:=}"
+: "${AI_MEMORY_SHA_VERIFIED:=false}"
+if [ -z "$AI_MEMORY_INSTALL_METHOD" ]; then
+  if [ -f /usr/local/bin/ai-memory ]; then
+    AI_MEMORY_ASSET_SHA256="$(sha256sum /usr/local/bin/ai-memory | awk '{print $1}')"
+  fi
+  if [ "${AI_MEMORY_SOURCE_BUILD:-false}" = "true" ]; then
+    AI_MEMORY_INSTALL_METHOD="source-build"
+  else
+    AI_MEMORY_INSTALL_METHOD="prebuilt-runner"
+  fi
+fi
+# Strip embedded double quotes from the version string for JSON safety
+# (rare — `ai-memory --version` prints "ai-memory <semver>" without
+# quotes — but a future +build suffix could include them).
+_aim_ver_str="$(ai-memory --version 2>&1 | head -1 | tr -d '"' || true)"
+_aim_arch="$(uname -m)"
+_aim_captured_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+cat > /etc/ai-memory-a2a/install-manifest.json <<EOF
+{
+  "schema_version": 1,
+  "install_method": "${AI_MEMORY_INSTALL_METHOD}",
+  "ai_memory_git_ref": "${AI_MEMORY_GIT_REF}",
+  "ai_memory_version": "${AI_MEMORY_VERSION}",
+  "asset": "${AI_MEMORY_ASSET}",
+  "asset_sha256": "${AI_MEMORY_ASSET_SHA256}",
+  "sha256_verified": ${AI_MEMORY_SHA_VERIFIED},
+  "arch": "${_aim_arch}",
+  "binary_version_string": "${_aim_ver_str}",
+  "node_index": "${NODE_INDEX}",
+  "captured_at": "${_aim_captured_at}"
+}
+EOF
+chmod 644 /etc/ai-memory-a2a/install-manifest.json
+log "install manifest: method=${AI_MEMORY_INSTALL_METHOD} asset=${AI_MEMORY_ASSET:-<none>} sha_verified=${AI_MEMORY_SHA_VERIFIED}"
 
 mkdir -p /var/lib/ai-memory /etc/ai-memory-a2a
 
