@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r3",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run exposes a critical risk in the CI/CD pipeline, rendering the campaign ineffective and delaying validation of v0.6.3.1's production readiness; no evidence supports customer-facing claims on memory reliability. Compared to prior runs, this represents a regression in infrastructure stability, potentially due to harness issues at SHA d343c879. Immediate pipeline hardening is required to maintain release cadence and mitigate deployment risks.",
+  "for_non_technical": "This test run aimed to check if AI agents can reliably share memories across a network, but it didn't work because no test results were collected at all. Agents couldn't demonstrate memory sharing because the testing setup broke down. We need to fix the testing process before knowing if the memory sharing works.",
+  "for_sme": "No per-scenario results available, with overall_pass=false and reasons=['no scenario reports recovered'], indicating a failure in the test harness (harness_sha=d343c8796628023ffdc3b5afb6f95597b3742d2b) or reporting mechanism, likely root cause in CI workflow at https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25224433517; all requested scenarios (S1,S1b,S2,S4-S6,S9-S18,S22-S25,S28-S42) remain unexecuted, impacting coverage of transports (e.g., mTLS in S9-18), frameworks (e.g., Ironclaw primitives in S22+), and core memory ops (S1-6). No specific failure modes observable without reports.",
+  "headline": "Campaign run failed due to no scenario reports recovered",
+  "next_run_change": "Debug and resolve CI harness reporting failure (check workflow logs for artifact collection errors) before retrying the campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The testing infrastructure failed to generate or capture any scenario results, demonstrating a breakdown in the CI harness or reporting pipeline rather than validating the AI memory system.",
+  "what_it_tested": "The run requested 30 scenarios (1,1b,2,4-6,9-18,22-25,28-42) covering transport protocols, framework integrations, and memory primitives in a 4-node federation mesh topology on DigitalOcean."
+}
