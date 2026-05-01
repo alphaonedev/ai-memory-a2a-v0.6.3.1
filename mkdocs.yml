@@ -43,7 +43,7 @@ nav:
       - Test book: testbook.md
       - Every test performed: tests.md
       - v1.0 GA criteria: v1-ga-criteria.md
-  - Agents (in scope: IronClaw, Hermes):
+  - "Agents (in scope: IronClaw, Hermes)":
       - IronClaw: agents/ironclaw.md
       - Hermes: agents/hermes.md
       - OpenClaw (out of scope): agents/openclaw.md
