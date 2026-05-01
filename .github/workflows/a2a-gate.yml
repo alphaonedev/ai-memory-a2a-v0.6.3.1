@@ -744,6 +744,97 @@ jobs:
           cp -r phase-reports/baselines "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp a2a-summary.json "$CAMPAIGN_DIR/" 2>/dev/null || true
 
+      # ───── First-Principles governance phases (docs/governance.md §3) ─────
+      #
+      # Phase 1 (substrate cert) ran above as the testbook scenarios. The
+      # next four phases run on the SAME live droplets so we don't pay for
+      # a second provision. Each phase gates the next per Principles 1+2.
+      # If Phase 1 reports a substrate that does not match the v0.6.3.1
+      # expected verdict ("PARTIAL — pending Patch 2"), Phase 2 still runs
+      # in `--no-commit` mode for diagnostic value, but the campaign
+      # verdict is FAIL.
+
+      - name: Phase 2 — scripted orchestration dry run
+        if: always()
+        env:
+          NODE1_IP: ${{ env.NODE1_IP }}
+          NODE2_IP: ${{ env.NODE2_IP }}
+          NODE3_IP: ${{ env.NODE3_IP }}
+          NODE4_IP: ${{ env.NODE4_IP }}
+          NODE1_PRIV: ${{ env.NODE1_PRIV }}
+          NODE2_PRIV: ${{ env.NODE2_PRIV }}
+          NODE3_PRIV: ${{ env.NODE3_PRIV }}
+          MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
+          AGENT_GROUP: ${{ github.event.inputs.agent_group }}
+          TLS_MODE: ${{ github.event.inputs.transport }}
+          CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
+          RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
+          LLM_MODEL_SKU: ${{ github.event.inputs.llm_model }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: |
+          set +e
+          pip install --quiet jsonschema 2>/dev/null || true
+          python3 scripts/phase2_orchestration.py
+          rc=$?
+          echo "phase2 exit=$rc"
+          # Don't gate the workflow on phase2 here — write the artifact
+          # and let phase3 conditional-skip if phase2 didn't pass.
+
+      - name: Phase 3 — autonomous NHI playbook (4 scenarios × 4 arms × n=3)
+        if: always()
+        env:
+          NODE1_IP: ${{ env.NODE1_IP }}
+          NODE2_IP: ${{ env.NODE2_IP }}
+          NODE3_IP: ${{ env.NODE3_IP }}
+          NODE4_IP: ${{ env.NODE4_IP }}
+          NODE1_PRIV: ${{ env.NODE1_PRIV }}
+          NODE2_PRIV: ${{ env.NODE2_PRIV }}
+          NODE3_PRIV: ${{ env.NODE3_PRIV }}
+          MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
+          AGENT_GROUP: ${{ github.event.inputs.agent_group }}
+          TLS_MODE: ${{ github.event.inputs.transport }}
+          CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
+          RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
+          PHASE3_MODE: do-droplets
+          LLM_MODEL_SKU: ${{ github.event.inputs.llm_model }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+        run: |
+          set +e
+          CAMPAIGN_DIR="runs/${{ github.event.inputs.campaign_id }}"
+          if [ ! -f "$CAMPAIGN_DIR/phase2-orchestration.json" ]; then
+            echo "::warning::phase2-orchestration.json missing; phase3 skipped"
+            exit 0
+          fi
+          phase2_pass=$(python3 -c "import json,sys; d=json.load(open('$CAMPAIGN_DIR/phase2-orchestration.json')); print(d.get('pass'))")
+          if [ "$phase2_pass" != "True" ]; then
+            echo "::warning::phase2 did not pass (pass=$phase2_pass); phase3 skipped per Principle 2"
+            exit 0
+          fi
+          python3 scripts/phase3_autonomous.py
+          echo "phase3 exit=$?"
+
+      - name: Phase 4 — meta-analysis
+        if: always()
+        env:
+          CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
+          RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
+          PHASE1_SUMMARY: releases/v0.6.3.1/summary.json
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set +e
+          python3 scripts/phase4_meta_analyst.py
+          echo "phase4 exit=$?"
+
+      - name: Phase 5 — verdict commit + findings sync (no-commit; operator merges)
+        if: always()
+        env:
+          CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
+          RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
+        run: |
+          set +e
+          python3 scripts/phase5_commit.py --no-commit
+          echo "phase5 exit=$?"
+
       # Synthesize a tri-audience AI NHI analysis per run by calling
       # xAI Grok with the full scenario artefact set. Writes
       # runs/<id>/ai-nhi-analysis.json; the HTML generator prefers this
