@@ -821,7 +821,7 @@ jobs:
           NODE3_PRIV: ${{ env.NODE3_PRIV }}
           MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
           AGENT_GROUP: ${{ github.event.inputs.agent_group }}
-          TLS_MODE: ${{ github.event.inputs.transport }}
+          TLS_MODE: ${{ github.event.inputs.tls_mode }}
           CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
           RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
           LLM_MODEL_SKU: ${{ github.event.inputs.llm_model }}
@@ -847,7 +847,7 @@ jobs:
           NODE3_PRIV: ${{ env.NODE3_PRIV }}
           MEMORY_PRIV: ${{ env.MEMORY_PRIV }}
           AGENT_GROUP: ${{ github.event.inputs.agent_group }}
-          TLS_MODE: ${{ github.event.inputs.transport }}
+          TLS_MODE: ${{ github.event.inputs.tls_mode }}
           CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
           RUN_OUT_DIR: runs/${{ github.event.inputs.campaign_id }}
           PHASE3_MODE: do-droplets
