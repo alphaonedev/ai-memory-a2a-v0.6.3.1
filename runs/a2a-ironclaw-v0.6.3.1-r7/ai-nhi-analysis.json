@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r7",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run exposes a high-risk failure in the testing pipeline, with zero scenarios yielding results, blocking assessment of production readiness for ai-memory v0.6.3.1. Customer claims about reliable agent memory federation remain unviable without resolved CI issues; no change from prior runs, but urgency increases for infra stability to avoid deployment delays.",
+  "for_non_technical": "This test run aimed to check if AI agents can reliably share memories across a network, but it didn't work because no results were recorded. We couldn't verify if the memory sharing holds up under different conditions. Overall, it shows the testing setup needs fixing before we can trust the system's performance.",
+  "for_sme": "No per-scenario results available (scenarios array empty), with overall_pass=false and reason 'no scenario reports recovered'; likely root cause in harness (SHA 2be65a28431fcd5993bfcdf476e27b87b46b0012) failing to aggregate or persist outputs from the 4-node mesh (W=2/N=4 on DigitalOcean nyc3). All requested scenarios (30 total, e.g., S1-S42 subsets) untested, impacting coverage of transports (e.g., mTLS in S9-18), frameworks (e.g., Ironclaw primitives in S22-25), and core memory ops (S28-42). No specific failure modes observable without reports.",
+  "headline": "Campaign run failed due to no scenario reports recovered",
+  "next_run_change": "Fix CI harness reporting pipeline to ensure scenario results are captured and aggregated before re-running the full scenario set.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The testing infrastructure failed to capture or retrieve any scenario results, demonstrating a critical gap in CI/CD pipeline reliability rather than in the ai-memory system itself.",
+  "what_it_tested": "The campaign requested 30 scenarios (1,1b,2,4-6,9-18,22-25,28-42) covering transport protocols, framework integrations, and memory primitives in a 4-node DigitalOcean federation mesh, but executed zero due to reporting failure."
+}
