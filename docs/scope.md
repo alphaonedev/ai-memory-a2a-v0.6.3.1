@@ -1,75 +1,125 @@
-# Scope — v0.6.3.1 campaign
+# Scope — v0.6.3.1 First-Principles campaign
 
-What is in scope for this per-release A2A campaign, what is deferred to later certs, and what counts as `CERT` / `PARTIAL` / `FAIL`.
+What this campaign tests, what it deliberately does not test, and what each verdict in `releases/v0.6.3.1/summary.json` means.
 
-This is the public-facing companion to [`SCOPE.md`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/SCOPE.md) at the repo root. The repo-root copy is the source of truth; this page mirrors it for Pages readers.
+This page is the docsite-rendered companion to repo-root [`SCOPE.md`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/SCOPE.md). The authoritative specification of *how* the campaign behaves is [`docs/governance.md`](governance.md) — if anything below conflicts with `governance.md`, governance wins.
 
 ## Subject under test
 
 | Field | Value |
 |---|---|
-| Tag | [`v0.6.3.1`](https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1) (shipped 2026-04-30) |
-| Schema | `v19` (migration ladder `v15` → `v17` → `v18` → `v19`, verified on production data) |
+| Tag | [`v0.6.3.1`](https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1) (cut 2026-04-30) |
+| Schema | `v19` (migration ladder `v15` → `v17` → `v18` → `v19`) |
 | Repo | [`alphaonedev/ai-memory-mcp`](https://github.com/alphaonedev/ai-memory-mcp) |
 | CLI surfaces added since v0.6.3 | `ai-memory boot`, `install <agent>`, `wrap <agent>`, `logs`, `audit verify`, `doctor` |
 | Config surfaces added | `[boot]`, `[logging]`, `[audit]`, `[audit.compliance.{soc2,hipaa,gdpr,fedramp}]` |
 | Tooling claim being verified | 1,886 lib tests, 49+ integration tests, 93.84% line coverage, 17 documented integrations × 10 platforms, 7-section doctor health dashboard |
+| Campaign repo | [`alphaonedev/ai-memory-a2a-v0.6.3.1`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1) |
+| Verdict surface | [`releases/v0.6.3.1/summary.json`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/releases/v0.6.3.1/summary.json) (schema v2) |
+| Umbrella issue | [`ai-memory-mcp#511`](https://github.com/alphaonedev/ai-memory-mcp/issues/511) |
 
-The `doctor` surface in particular is the v0.6.3.1 promotion of `R7` from [ROADMAP2 §7.2](https://github.com/alphaonedev/ai-memory-mcp/blob/main/ROADMAP2.md). The `budget_tokens` recall is the recovered commitment `R1`.
+The `doctor` surface is the v0.6.3.1 promotion of `R7` from [ROADMAP2 §7.2](https://github.com/alphaonedev/ai-memory-mcp/blob/main/ROADMAP2.md). The `budget_tokens` recall is the recovered commitment `R1`.
 
-## What is carried forward from v0.6.3 cert
+## Agent scope
 
-The eight base scenarios `S1` – `S8` from the [umbrella testbook](https://github.com/alphaonedev/ai-memory-ai2ai-gate) are run unchanged on the v0.6.3.1 binary. They must remain green. Any regression is a release-blocker for the campaign verdict — these are not Patch 2 candidates.
+In scope (Principle 6 — scope discipline; see [governance §2.6](governance.md#principle-6-scope-discipline-this-node-these-agents-this-release)):
 
-The certification cell is `ironclaw / mTLS` at the carry-forward sweep. Target: 48 / 48 on that cell. Other cells are regression or stretch and do not gate the verdict on their own.
+- **IronClaw** — Rust framework, primary cert agent.
+- **Hermes** — counterpart agent for cross-framework substrate cells and Phase 3 NHI playbook.
+
+Out of scope:
+
+- **OpenClaw** — runs in a separate per-release campaign per [`#511`](https://github.com/alphaonedev/ai-memory-mcp/issues/511) convention. Cross-scope contamination (using OpenClaw logs to fill an IronClaw / Hermes evidence gap) invalidates the artifact.
+
+## What carries forward from the v0.6.3 cert
+
+Eight base scenarios `S1` – `S8` from the umbrella [testbook](testbook.md) run unchanged on the v0.6.3.1 binary:
+
+| Scenario | What it asserts |
+|---|---|
+| S1 | Per-agent write + read |
+| S2 | Shared-context handoff |
+| S3 | Targeted share |
+| S4 | Federation-aware agents |
+| S5 | Consolidation + curation |
+| S6 | Contradiction detection |
+| S7 | Scoping visibility |
+| S8 | Auto-tagging |
+
+These must remain green. Any regression on `S1` – `S8` is a release-blocker for the campaign verdict — they are not Patch 2 candidates.
+
+The certification cell is **`ironclaw / mTLS`** at the carry-forward sweep. Target: 48 / 48 on that cell.
 
 ## What is new for v0.6.3.1
 
 Sixteen scenarios `S9` – `S24` exercise the surfaces added in this release:
 
-- New CLI: `boot`, `doctor`, `install`, `wrap`, `audit verify`, `logs` (`S9` – `S14`).
-- Recovered commitments: `R1` `budget_tokens` (`S15`), Capabilities v2 honesty (`S16`).
-- Audit findings absorbed into v0.6.3.1: `G9` webhook fanout (`S17`), `G4` embedding-dim integrity (`S18`), `G5` archive/restore (`S19`), `G6` `on_conflict` policy (`S20`), `G13` endianness magic byte (`S21`).
-- Schema `v19` migration on a heterogeneous mesh (`S22`).
-- Two **expected-red** integrity checks (`S23`, `S24`) — see below.
+| ID | Surface | Assertion |
+|---|---|---|
+| S9 | `ai-memory boot` multi-node | Boot manifest agreement on `version`, `schema_version`, `tier` across 4 nodes. |
+| S10 | `ai-memory doctor` cross-node | Storage / Index / Recall / Sync sections agree (in-flight delta tolerated). |
+| S11 | `ai-memory install <agent>` recipe handoff | Recipes installed at different nodes share the same store cleanly. |
+| S12 | `ai-memory wrap <agent>` cross-vendor | Boot context delivered for codex / gemini / aider / ollama. |
+| S13 | `ai-memory audit verify` tamper-evident | Hash chain verifies independently per node; corruption detected. |
+| S14 | `ai-memory logs` operator surface | Filters work uniformly; privacy default OFF holds. |
+| S15 | **R1** `budget_tokens` recall | Same query + budget → same ranked head on federated peers. |
+| S16 | **Capabilities v2** honesty cross-mesh | Asymmetric capabilities surface, never absorb. |
+| S17 | **G9** webhook fanout | link / promote / delete / consolidate fire from any originating node. |
+| S18 | **G4** embedding-dim integrity | Mixed-dim writes refused at boundary. |
+| S19 | **G5** archive/restore preserves embeddings | Archive at A → restore at B keeps embedding + tier + expiry. |
+| S20 | **G6** `on_conflict` policy | Concurrent same-key writes deterministic. |
+| S21 | **G13** endianness magic byte | x86_64 + arm64 nodes exchange f32 BLOBs without silent corruption. |
+| S22 | Schema **v19** migration | Heterogeneous mesh; warn manifest variant fires on mismatch. |
+| **S23** | Issue [#507](https://github.com/alphaonedev/ai-memory-mcp/issues/507) `~` expansion | Tilde in `db` field expanded before SQLite open. **Expected RED on v0.6.3.1.** |
+| **S24** | Issue [#318](https://github.com/alphaonedev/ai-memory-mcp/issues/318) MCP stdio fanout | MCP stdio writes trigger federation fanout. **Expected RED on v0.6.3.1.** |
 
-## Expected-red scenarios
+`S23` and `S24` are intentionally expected to fail. They correspond to known-open OSS bugs that will close in **Patch 2 (`v0.6.3.2`)**. Their inclusion is an integrity check on the harness itself: if either ever turned green on v0.6.3.1, the harness would be lying. Both flip to expected-green in the successor `ai-memory-a2a-v0.6.3.2` repo.
 
-`S23` and `S24` are intentionally expected to fail on v0.6.3.1. They correspond to known-open OSS bugs that will be closed in **Patch 2 (`v0.6.3.2`)**:
+## What is deferred (out of scope)
 
-- `S23` → [`#507` — config.toml `~` expansion](https://github.com/alphaonedev/ai-memory-mcp/issues/507) (medium severity, the seed defect for Patch 2).
-- `S24` → [`#318` — MCP stdio writes bypass federation fanout](https://github.com/alphaonedev/ai-memory-mcp/issues/318) (high severity).
+Per [governance Appendix B](governance.md#appendix-b-out-of-scope-for-absolute-clarity), this campaign deliberately does not cover:
 
-Their inclusion is an integrity check on the harness itself. If `S23` or `S24` came back green on v0.6.3.1, the harness would be lying — we know the underlying defects exist on this tag because they have OSS issue threads with reproductions. Both flip to expected-green in the successor `ai-memory-a2a-v0.6.3.2` repo.
-
-## What is deferred
-
-This campaign deliberately does not cover:
-
-- **v0.7 attestation.** Ed25519 signing of `memory_links` is on the v0.7 cert. Not in scope here.
-- **v0.8 typed cognition / CRDTs / curator daemon.** Covered by the v0.8 cert when v0.8 tags.
-- **Full mixed-framework × mTLS sweep.** The `mixed / mTLS` cell in the matrix is currently `stretch` — kept as nightly regression and not blocking for the v0.6.3.1 verdict.
-- **Performance / scale benchmarking.** The ship-gate covers performance regressions. This campaign is correctness-focused.
-- **Provider-specific surfaces beyond the four wrap targets.** `wrap` is exercised against `codex`, `gemini`, `aider`, `ollama`. Other vendors are not in the v0.6.3.1 cert sweep.
+- **OpenClaw.** Separate campaign per Principle 6.
+- **Infrastructure provisioning, mTLS cert management, Terraform.** Confirmed-good before Phase 0 by a separate process.
+- **Auto-tagging via Ollama.** Opt-in feature requiring `s-4vcpu-16gb` droplet; deferred per the [ai2ai-gate README](https://github.com/alphaonedev/ai-memory-ai2ai-gate).
+- **`memory_share` / [#311](https://github.com/alphaonedev/ai-memory-mcp/issues/311) targeted-share scenario.** Depends on a v0.6.0.1 capability upstream of v0.6.3.1; revisit for v0.6.4.
+- **Patch 2 (v0.6.3.2) regression run.** Separate campaign in `ai-memory-a2a-v0.6.3.2`, using this repo as a template.
+- **v0.7 attestation (Ed25519 signing of `memory_links`).** Covered by the v0.7 cert.
+- **v0.8 typed cognition / CRDTs / curator daemon.** Covered by the v0.8 cert.
+- **Performance / scale benchmarking.** Owned by the ship-gate, not this correctness campaign.
 
 Deferred work is not a gap in the v0.6.3.1 cert — it is owned by a different per-release cert.
 
-## Verdict criteria
+## Verdict criteria — two truth-claims, two evidence streams
 
-The campaign emits exactly one of three verdicts in [`releases/v0.6.3.1/summary.json`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/releases/v0.6.3.1/summary.json):
+Per [Principle 1](governance.md#principle-1-two-truth-claims-two-evidence-streams-never-conflated), the campaign emits **two independent verdicts** in `releases/v0.6.3.1/summary.json` (schema v2). They are stored in separate top-level keys (`substrate_verdict`, `nhi_verdict`) and **never collapsed**.
 
-- **`CERT`** — all carry-forward `S1` – `S8` green; all new-surface `S9` – `S22` green; `S23` and `S24` red as expected; the `ironclaw / mTLS` cell is 48 / 48. The release passes A2A certification on this tag.
-- **`PARTIAL`** — same as `CERT` except `S23` and / or `S24` are still red and counted toward the Patch 2 funnel rather than treated as regressions. The release is conditionally certified pending Patch 2.
-- **`FAIL`** — any other red, including any regression on `S1` – `S8` or any failure on `S9` – `S22`. Each red opens or updates a `bug` + `v0.6.3.2-candidate` issue on [`alphaonedev/ai-memory-mcp`](https://github.com/alphaonedev/ai-memory-mcp), parent-linked to the campaign's umbrella tracking issue.
+### Substrate verdict (Phase 1 — binary, reproducible)
 
-The verdict is computed from `summary.json` by the `publish-pages.yml` workflow and reflected on [the index page](./index.md) as well as on the [test-hub aggregator](https://alphaonedev.github.io/ai-memory-test-hub/).
+Read this for ship / no-ship gating. Computed from `S1` – `S24` outcomes on the `ironclaw / mTLS` cert cell.
+
+| Value | Meaning |
+|---|---|
+| `CERT` | All `S1` – `S22` GREEN; `S23` and `S24` RED as expected; cert cell is 48 / 48. The release passes A2A certification on this tag. |
+| `PARTIAL — pending Patch 2` | Same as `CERT` except `S23` and / or `S24` are still RED. **This is the expected v0.6.3.1 outcome** — see [governance §2.2](governance.md#principle-2-substrate-first-gate-the-playbook-on-substrate-green). The release is conditionally certified pending Patch 2. |
+| `FAIL` | Any other red — including any regression on `S1` – `S8` or any unexpected failure on `S9` – `S22`. Each red opens or updates a `bug` + `v0.6.3.2-candidate` issue parent-linked to [#511](https://github.com/alphaonedev/ai-memory-mcp/issues/511). |
+
+If `S23` or `S24` flips GREEN, the harness halts the campaign and files a harness-integrity issue. Substrate is not allowed to lie.
+
+### NHI verdict (Phase 3 — behavioral, statistical, n=3)
+
+Read this to assess whether ai-memory measurably changes NHI behavior under realistic agent workloads. Computed from the four-arm × four-scenario × n=3 = 48-run Phase 3 playbook.
+
+The NHI verdict reports per-scenario treatment effects (Arm-T vs each control arm) and a cross-layer consistency assessment, never collapsed into a single ship/no-ship bit. See [governance §6](governance.md#6-phase-3-autonomous-nhi-playbook) for the full scenario design and [matrix](matrix.md) for the cell-by-cell view.
+
+A campaign that ships a green substrate badge but produces no Phase 3 behavioral evidence does **not** satisfy the v0.6.3.1 cert.
 
 ## Cross-links
 
-- Back to [index](./index.md)
-- [Matrix](./matrix.md) — framework × transport status
-- [Scenarios](./scenarios.md) — full scenario list with expected verdicts
-- [Reproducing](./reproducing.md) — local docker mesh + DigitalOcean
-- [Findings](./findings.md) — defects funneled into Patch 2
-- Repo-root [`SCOPE.md`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/SCOPE.md) — source of truth for this page
+- [Governance (authoritative)](governance.md)
+- [Verdict matrix](matrix.md) — substrate cells + Phase 3 arms × scenarios
+- [Findings funnel](findings.md) — defects routed into Patch 2
+- [Operator runbook](runbook.md) — phase-by-phase execution
+- Repo-root [`SCOPE.md`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/SCOPE.md)
+- Repo-root [`README.md`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/README.md) — phase structure overview
 - Umbrella spec: [`ai-memory-ai2ai-gate`](https://github.com/alphaonedev/ai-memory-ai2ai-gate)
