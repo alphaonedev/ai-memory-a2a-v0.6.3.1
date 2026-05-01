@@ -270,6 +270,15 @@ else
             AI_MEMORY_ASSET="$deb_asset"
             install_ok="true"
             log "  installed via dpkg -i $deb_asset"
+            # The .deb installs to /usr/bin (Debian convention); the rest
+            # of this script and setup_node downstream assume the binary
+            # is at /usr/local/bin/ai-memory. Add a symlink so the
+            # version-check + serve invocations work without case-by-casing
+            # on install method.
+            if [ -x /usr/bin/ai-memory ] && [ ! -e /usr/local/bin/ai-memory ]; then
+              ln -sf /usr/bin/ai-memory /usr/local/bin/ai-memory
+              log "  symlinked /usr/local/bin/ai-memory -> /usr/bin/ai-memory (deb install convention)"
+            fi
           else
             log "  dpkg -i $deb_asset failed — falling through to tarball"
           fi
@@ -890,9 +899,24 @@ EOF
       | sed 's/^/[ironclaw-mcp-add] /' \
       || log "ironclaw mcp add returned non-zero; may already be registered"
 
-    # Verify MCP landed.
-    if ! ironclaw mcp list 2>/dev/null | grep -q memory; then
+    # Verify MCP landed. r5 surfaced a 100ms race on n1 where `mcp add`
+    # reported "✓ Added MCP server 'memory'" but the immediately-following
+    # `mcp list` didn't show it (the other 3 nodes had longer setup tails
+    # so the race didn't fire). Retry up to 5 times at 2s intervals; if
+    # still missing, dump the actual `mcp list` output before exiting so
+    # future regressions land actionable evidence in the run log.
+    mcp_listed=false
+    for _attempt in 1 2 3 4 5; do
+      if ironclaw mcp list 2>/dev/null | grep -q memory; then
+        mcp_listed=true
+        break
+      fi
+      sleep 2
+    done
+    if [ "$mcp_listed" != "true" ]; then
       log "FATAL: ai-memory MCP not registered with ironclaw after mcp add"
+      log "  ironclaw mcp list output (full, for diagnosis):"
+      ironclaw mcp list 2>&1 | sed 's/^/    [mcp-list] /' || true
       exit 1
     fi
 
