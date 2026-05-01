@@ -166,6 +166,19 @@ def update_summary_json(summary: dict, phase4: dict, campaign_id: str,
 
     summary["substrate_verdict"]["value"] = substrate_v
 
+    # Top-level `version` + `verdict` are flat shims for release-summary-gate.yml.
+    # version mirrors subject.tag; verdict is a derived 3-state collapse:
+    #   pass  iff substrate ∈ {PASS, "PARTIAL — pending Patch 2"} AND nhi=PASS
+    #   fail  iff substrate=FAIL OR substrate=HARNESS_INTEGRITY_FAILURE OR nhi=FAIL
+    #   pending otherwise
+    summary["version"] = (summary.get("subject") or {}).get("tag", summary.get("version"))
+    if substrate_v in ("FAIL", "HARNESS_INTEGRITY_FAILURE") or nhi_v == "FAIL":
+        summary["verdict"] = "fail"
+    elif substrate_v in ("PASS", "PARTIAL — pending Patch 2") and nhi_v == "PASS":
+        summary["verdict"] = "pass"
+    else:
+        summary["verdict"] = "pending"
+
     nhi = summary.setdefault("nhi_verdict", {})
     nhi["value"] = nhi_v
     nhi["phase4_analysis_path"] = str(
