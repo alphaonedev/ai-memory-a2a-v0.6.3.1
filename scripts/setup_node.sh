@@ -1043,6 +1043,21 @@ EOF
 chmod 0644 /etc/ai-memory-a2a/env
 log "agent $AGENT_ID provisioned with MCP config pointing at local ai-memory federation peer"
 
+# ---- Install drive_agent_autonomous.sh under /opt/ai-memory-a2a ---
+# Phase 3 autonomous runs (scripts/phase3_autonomous.py::_run_droplet)
+# call /opt/ai-memory-a2a/drive_agent_autonomous.sh on the droplet.
+# The workflow scp's it to /root/drive_agent_autonomous.sh; mirror
+# the action-based drive_agent.sh distribution pattern but place the
+# autonomous variant under the canonical /opt path the orchestrator
+# expects. Idempotent: re-runs of setup_node.sh refresh the install.
+mkdir -p /opt/ai-memory-a2a
+if [ -f /root/drive_agent_autonomous.sh ]; then
+  install -m 0755 /root/drive_agent_autonomous.sh /opt/ai-memory-a2a/drive_agent_autonomous.sh
+  log "installed /opt/ai-memory-a2a/drive_agent_autonomous.sh (Phase 3 autonomous driver)"
+else
+  log "WARN: /root/drive_agent_autonomous.sh missing — Phase 3 do-droplets mode will fail until script is scp'd"
+fi
+
 # ---- BASELINE VERIFICATION ---------------------------------------
 # Emit /etc/ai-memory-a2a/baseline.json asserting the invariants that
 # MUST hold on every agent droplet of every campaign. The workflow
