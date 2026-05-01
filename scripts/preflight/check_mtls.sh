@@ -88,9 +88,9 @@ check_one_droplet() {
   # lookup works against 127.0.0.1).
   local https_cmd
   if [ "$TLS_MODE" = "mtls" ]; then
-    https_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 --cert /etc/ai-memory-a2a/tls/client.pem --key /etc/ai-memory-a2a/tls/client.key https://localhost:9077/health'
+    https_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 --cert /etc/ai-memory-a2a/tls/client.pem --key /etc/ai-memory-a2a/tls/client.key https://localhost:9077/api/v1/health'
   else
-    https_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 https://localhost:9077/health'
+    https_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 https://localhost:9077/api/v1/health'
   fi
   local body
   body="$(ssh_exec "$ip" "$https_cmd" 2>/dev/null || true)"
@@ -101,7 +101,7 @@ check_one_droplet() {
   # mTLS rejection probe — only when mtls. We expect curl to FAIL
   # (handshake rejected by the server's client-cert requirement).
   if [ "$TLS_MODE" = "mtls" ]; then
-    local rej_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 https://localhost:9077/health; echo "__exit__$?"'
+    local rej_cmd='curl -sS --max-time 6 --cacert /etc/ai-memory-a2a/tls/ca.pem --resolve localhost:9077:127.0.0.1 https://localhost:9077/api/v1/health; echo "__exit__$?"'
     local rej_out rej_rc
     rej_out="$(ssh_exec "$ip" "$rej_cmd" 2>&1 || true)"
     rej_rc="$(printf '%s' "$rej_out" | sed -n 's/.*__exit__\([0-9]\+\).*/\1/p' | tail -1)"

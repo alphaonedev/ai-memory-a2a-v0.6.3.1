@@ -160,18 +160,30 @@ PY
     missing_peers="[$(printf '"%s",' "${unmatched[@]}" | sed 's/,$//')]"
   fi
 
-  # `ai-memory federation status` — JSON form preferred, else parse text.
+  # `ai-memory federation status` is NOT a v0.6.3.1 subcommand
+  # (verified empirically — error: unrecognized subcommand 'federation').
+  # The HTTP /api/v1/peers endpoint is the canonical federation health
+  # surface for v0.6.3.1; we already probed it above. fed_healthy here
+  # is therefore derived from the peers-endpoint behavior unless a future
+  # build re-introduces the CLI subcommand.
   local fed_raw fed_healthy=false
-  fed_raw="$(ssh_exec "$ip" "ai-memory federation status --format json 2>/dev/null" || true)"
-  if [ -z "$fed_raw" ]; then
-    fed_raw="$(ssh_exec "$ip" "ai-memory federation status 2>&1" || true)"
-  fi
-  if [ -n "$fed_raw" ]; then
+  fed_raw="$(ssh_exec "$ip" "ai-memory federation status --format json 2>/dev/null || ai-memory federation status 2>&1 || true" || true)"
+  if [ -n "$fed_raw" ] && ! printf '%s' "$fed_raw" | grep -qiE 'unrecognized subcommand|error: unknown'; then
     if printf '%s' "$fed_raw" | grep -qiE '"healthy"[[:space:]]*:[[:space:]]*true|status[[:space:]]*:[[:space:]]*"?(ok|healthy|green|info)"?'; then
       fed_healthy=true
     elif printf '%s' "$fed_raw" | grep -qiE '\bhealthy\b|\bok\b' && ! printf '%s' "$fed_raw" | grep -qiE '\b(error|fail|degraded)\b'; then
       fed_healthy=true
     fi
+  else
+    # CLI subcommand absent (expected on v0.6.3.1) — use the HTTP peers
+    # endpoint as the federation health proxy. peers_endpoint_reachable
+    # AND peer_count>=1 → federation is structurally healthy from the
+    # substrate's point of view; the per-peer matching logic below
+    # tightens the verdict.
+    if [ "$peers_endpoint_reachable" = "true" ] && [ "$peer_count" -ge 1 ]; then
+      fed_healthy=true
+    fi
+    fed_raw="cli-subcommand-absent (expected on v0.6.3.1); HTTP peers endpoint used as fed health proxy"
   fi
 
   # ok = peers endpoint reachable AND (>=3 peers OR all expected priv IPs matched) AND federation healthy
