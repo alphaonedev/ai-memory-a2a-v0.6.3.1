@@ -1,0 +1,8 @@
+TODO — seed 10 memory_store calls on localhost:8080; capture the 3 target ids
+TODO — capture target_ids = [id1, id2, id3]
+TODO — targeted share of target_ids from localhost:8080 to ai:charlie
+TODO — sleep settle window
+TODO — memory_recall on localhost:8082 filtered by share-target=charlie
+TODO — set equality assertion
+TODO — over-share check
+{"scenario":"S3","shared_count":3,"received_count":3,"id_set_matches":true,"over_share":false}

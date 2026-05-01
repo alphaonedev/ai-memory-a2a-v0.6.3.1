@@ -1,0 +1,19 @@
+TODO — seed ~30 memories via memory_store on NODE_A; await sync
+TODO — ssh NODE_A: ai-memory wrap codex -- /opt/a2a/stubs/codex-stub
+TODO — ssh NODE_A: ai-memory wrap gemini -- /opt/a2a/stubs/gemini-stub
+TODO — ssh NODE_A: ai-memory wrap aider -- /opt/a2a/stubs/aider-stub
+TODO — ssh NODE_A: ai-memory wrap ollama -- /opt/a2a/stubs/ollama-stub
+TODO — extract delivered boot context from each stub stdout
+TODO — sha256 each payload; assert single distinct hash
+TODO — ssh NODE_B: ai-memory wrap codex -- /opt/a2a/stubs/codex-stub; compare hash
+TODO — ssh NODE_B: ai-memory wrap gemini -- /opt/a2a/stubs/gemini-stub; compare hash
+TODO — ssh NODE_B: ai-memory wrap aider -- /opt/a2a/stubs/aider-stub; compare hash
+TODO — ssh NODE_B: ai-memory wrap ollama -- /opt/a2a/stubs/ollama-stub; compare hash
+TODO — invoke a stub that exits 7; assert wrap also exits 7
+{
+  "scenario": "S12",
+  "verdict": "TODO",
+  "vendor_payload_hashes": {},
+  "cross_node_payload_match": null,
+  "exit_propagation_ok": null
+}

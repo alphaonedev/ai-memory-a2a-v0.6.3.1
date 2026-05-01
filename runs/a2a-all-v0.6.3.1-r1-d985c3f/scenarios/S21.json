@@ -1,0 +1,19 @@
+TODO — ssh localhost:8080: uname -m; record arch
+TODO — ssh localhost:8081: uname -m; record arch
+TODO — ssh localhost:8082: uname -m; record arch
+TODO — ssh localhost:8083: uname -m; record arch
+TODO — bulk-load fixtures/g13-embeddings.jsonl on NODE_A_X86; poll until C/D have rows
+TODO — fetch a seeded memory's embedding on NODE_C_ARM; cosine vs original; assert ~1.0
+TODO — bulk-load on NODE_C_ARM; await sync; cosine check on NODE_A_X86
+TODO — sqlite3 SELECT hex(substr(embedding, 1, 1)); assert documented magic byte on both arches
+TODO — POST /api/v1/replicate with byteswapped f32 payload; assert documented refuse-or-rewrite
+TODO — memory_recall(query=Q) on x86 and arm; assert same ranked head
+{
+  "scenario": "S21",
+  "verdict": "TODO",
+  "arch_per_node": {},
+  "magic_byte_present_per_arch": {},
+  "cross_arch_cosine_ok": null,
+  "wrong_endian_handled": null,
+  "recall_determinism": null
+}

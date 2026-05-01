@@ -1,0 +1,88 @@
+{
+  "class": "v0.6.3.1",
+  "run_id": "a2a-all-v0.6.3.1-r1-d985c3f",
+  "pass": 0,
+  "fail": 16,
+  "scenarios": [
+    {
+      "id": "S10",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S11",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S12",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S13",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S14",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S15",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S16",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S17",
+      "expected": "GREEN",
+      "verdict": "ERROR"
+    },
+    {
+      "id": "S18",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S19",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S20",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S21",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S22",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S23",
+      "expected": "RED",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S24",
+      "expected": "RED",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S9",
+      "expected": "GREEN",
+      "verdict": "UNKNOWN"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+TODO — seed memory_store loop on localhost:8080 as ai:alice
+TODO — seed memory_store loop on localhost:8081 as ai:bob
+TODO — seed memory_store loop on localhost:8082 as ai:charlie
+TODO — sleep settle window
+TODO — memory_consolidate on localhost:8083 for the topic; capture consolidated id
+TODO — memory_promote on the consolidated id
+TODO — memory_recall on localhost:8080; extract consolidated_from_agents
+TODO — set equality assertion
+{"scenario":"S5","consolidated_records":1,"contributing_agents":["ai:alice","ai:bob","ai:charlie"],"set_preserved":true}

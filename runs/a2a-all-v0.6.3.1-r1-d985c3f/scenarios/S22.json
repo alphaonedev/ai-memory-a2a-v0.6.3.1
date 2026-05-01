@@ -1,0 +1,18 @@
+TODO — for each NODE: ai-memory boot --format json; record schema_version, status variant
+TODO — assert A/B status=warn; C/D status=ok
+TODO — ai-memory doctor on NODE_C_V19; assert Sync section flags A/B as schema-stale
+TODO — ssh NODE_A_V15: SELECT COUNT(*) FROM memories; record
+TODO — install v0.6.3.1 on A/B; start; capture migration log v15->v17->v18->v19
+TODO — grep migration log for each step; assert all four steps present in order
+TODO — SELECT COUNT(*) post-migration; assert equals pre-migration snapshot
+TODO — ai-memory boot --format json on every NODE; assert ok + schema_version=v19 everywhere
+{
+  "scenario": "S22",
+  "verdict": "TODO",
+  "phase1_warn_on_v15": null,
+  "phase1_ok_on_v19": null,
+  "phase1_asymmetry_surfaced": null,
+  "ladder_steps_observed": [],
+  "row_count_preserved": null,
+  "phase2_mesh_agreement": null
+}

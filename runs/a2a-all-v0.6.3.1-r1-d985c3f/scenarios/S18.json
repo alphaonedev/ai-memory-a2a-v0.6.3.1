@@ -1,0 +1,22 @@
+TODO — ssh NODE_A: memory_store(content, embedding=zeros(768)); assert ok; SELECT embedding_dim from memories WHERE id=NEW; assert 768
+TODO — ssh NODE_A: memory_store(content, embedding=zeros(384)); assert error code dim_mismatch
+TODO — ssh localhost:8081: same bad-dim probe; assert refused
+TODO — ssh localhost:8082: same bad-dim probe; assert refused
+TODO — ssh localhost:8083: same bad-dim probe; assert refused
+TODO — ssh localhost:8080: memory_stats; assert dim_violations >= 1; record value
+TODO — ssh localhost:8081: memory_stats; assert dim_violations >= 1; record value
+TODO — ssh localhost:8082: memory_stats; assert dim_violations >= 1; record value
+TODO — ssh localhost:8083: memory_stats; assert dim_violations >= 1; record value
+TODO — ssh NODE_A: GET /api/v1/peers/localhost:8081/stats; assert dim_violations matches local
+TODO — ssh NODE_A: GET /api/v1/peers/localhost:8082/stats; assert dim_violations matches local
+TODO — ssh NODE_A: GET /api/v1/peers/localhost:8083/stats; assert dim_violations matches local
+TODO — memory_recall(probe-query); assert returned set has no 384-d row
+{
+  "scenario": "S18",
+  "verdict": "TODO",
+  "good_dim_accepted": null,
+  "bad_dim_refused_per_node": {},
+  "dim_violations_per_node": {},
+  "federation_view_matches": null,
+  "no_silent_leak": null
+}

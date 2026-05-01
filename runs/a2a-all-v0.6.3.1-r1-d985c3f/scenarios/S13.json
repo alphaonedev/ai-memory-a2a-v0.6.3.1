@@ -1,0 +1,18 @@
+TODO — for each NODE: run ~50 mixed memory ops to populate audit log
+TODO — for each NODE: ssh and run: ai-memory audit verify; assert exit 0
+TODO — for each NODE: ai-memory audit tail 10; assert prev_hash chain locally
+TODO — ssh NODE_A: cp $(ai-memory audit path) $(ai-memory audit path).snapshot
+TODO — ssh NODE_A: out-of-band byte flip in middle of audit log
+TODO — ssh NODE_A: ai-memory audit verify; assert exit 2; capture stderr sequence id
+TODO — ssh localhost:8081: ai-memory audit verify; assert exit 0
+TODO — ssh localhost:8082: ai-memory audit verify; assert exit 0
+TODO — ssh localhost:8083: ai-memory audit verify; assert exit 0
+TODO — ssh NODE_A: mv snapshot back; verify exit 0 again
+{
+  "scenario": "S13",
+  "verdict": "TODO",
+  "pre_tamper_exit_codes": {},
+  "tampered_node_exit_code": null,
+  "peer_exit_codes_post_tamper": {},
+  "tampered_sequence_reported": null
+}

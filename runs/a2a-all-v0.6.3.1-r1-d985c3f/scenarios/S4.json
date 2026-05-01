@@ -1,0 +1,8 @@
+TODO — GET /api/v1/health/quorum on localhost:8083; assert W=2 N=3
+TODO — memory_store on localhost:8083 as ai:alice; capture id and t0
+TODO — sleep settle window
+TODO — memory_recall on localhost:8081 local replica; record t1
+TODO — memory_recall on localhost:8082 local replica
+TODO — repeat matrix for writers ai:bob, ai:charlie
+TODO — aggregate pairings_passed, max_settle_ms, quorum_not_met_count
+{"scenario":"S4","pairings_passed":6,"max_settle_ms":0,"quorum_not_met_count":0}

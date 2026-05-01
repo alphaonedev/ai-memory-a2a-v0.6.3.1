@@ -1,0 +1,9 @@
+TODO — five memory_store calls on localhost:8080, one per scope
+TODO — sleep settle window
+TODO — memory_recall on localhost:8080; record visible scopes for caller=alice
+TODO — memory_recall on localhost:8081; record visible scopes for caller=bob
+TODO — memory_recall on localhost:8082; record visible scopes for caller=charlie
+TODO — memory_get on private id from localhost:8081 and localhost:8082
+TODO — matrix diff; count cell mismatches
+TODO — HTTP /api/v1/memories?scope=... agreement check
+{"scenario":"S7","matrix_mismatches":0,"private_leak":false,"http_mcp_agree":true}

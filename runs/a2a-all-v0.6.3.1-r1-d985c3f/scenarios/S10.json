@@ -1,0 +1,11 @@
+TODO — write ~20 memories spanning 3 namespaces via memory_store on node-A
+TODO — for each NODE: ssh and run: ai-memory doctor --format json
+TODO — jq each manifest into per-section severity table
+TODO — build agreement matrix; flag any categorical disagreement
+TODO — toggle embedder off on D, re-run doctor on A/B/C/D, assert D is flagged from all four perspectives
+{
+  "scenario": "S10",
+  "verdict": "TODO",
+  "section_table": {},
+  "asymmetric_warning_surfaced": null
+}

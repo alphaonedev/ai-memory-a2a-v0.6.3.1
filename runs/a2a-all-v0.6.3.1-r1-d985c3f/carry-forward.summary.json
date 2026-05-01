@@ -1,0 +1,40 @@
+{
+  "class": "carry-forward",
+  "run_id": "a2a-all-v0.6.3.1-r1-d985c3f",
+  "pass": 0,
+  "fail": 8,
+  "scenarios": [
+    {
+      "id": "S1",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S2",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S3",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S4",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S5",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S6",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S7",
+      "verdict": "UNKNOWN"
+    },
+    {
+      "id": "S8",
+      "verdict": "UNKNOWN"
+    }
+  ]
+}

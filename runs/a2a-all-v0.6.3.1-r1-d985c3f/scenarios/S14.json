@@ -1,0 +1,16 @@
+TODO — for each NODE: ai-memory logs tail; assert default-OFF signal and exit 0; assert no log file
+TODO — flip [logging] enabled = true on each NODE; reload; run small workload
+TODO — ai-memory logs tail --format json --since '5 minutes ago' on each NODE; collect key set
+TODO — diff key sets; assert single distinct schema
+TODO — apply progressive filters; assert subset cardinality holds
+TODO — flip A/B/C off; confirm D still emitting; A/B/C silent post-revert
+TODO — AI_MEMORY_LOG_DIR=/tmp/elsewhere ai-memory logs tail on D; confirm read path = /tmp/elsewhere
+{
+  "scenario": "S14",
+  "verdict": "TODO",
+  "phase1_default_off_clean": null,
+  "phase2_envelope_uniform": null,
+  "phase2_filter_subsets_ok": null,
+  "phase3_partial_optin_ok": null,
+  "env_precedence_ok": null
+}

@@ -1,0 +1,10 @@
+TODO — memory_store on localhost:8080 as ai:alice
+TODO — memory_store on localhost:8081 as ai:bob
+TODO — memory_store on localhost:8082 as ai:charlie
+TODO — sleep settle window
+TODO — memory_recall from localhost:8080
+TODO — memory_recall from localhost:8081
+TODO — memory_recall from localhost:8082
+TODO — read-back via HTTP on localhost:8083 for ground truth
+TODO — equivalence assertion
+{"scenario":"S1","writes_ok":true,"recalls_ok":true,"agent_id_preserved":true,"records_per_agent":3}

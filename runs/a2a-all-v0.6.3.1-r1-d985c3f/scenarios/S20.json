@@ -1,0 +1,17 @@
+TODO — agent-X writes (title=dup-key, ns=probe) on NODE_A; agent-Y writes same on NODE_B with on_conflict=error; assert exactly one fails
+TODO — purge probe ns; agent-X writes; agent-Y writes with on_conflict=merge differing body; assert single row, merged content per spec
+TODO — purge probe ns; agent-X writes; agent-Y writes with on_conflict=version; assert two rows / versioned successor
+TODO — purge probe ns; first write OK; second write WITHOUT on_conflict; assert default behaviour == error
+TODO — barrier-sync agent-X/agent-Y on NODE_A/NODE_B; race 50 times; tally winners
+TODO — assert sum(wins) == 50; both wins in plausible range
+{
+  "scenario": "S20",
+  "verdict": "TODO",
+  "error_policy_ok": null,
+  "merge_policy_ok": null,
+  "version_policy_ok": null,
+  "default_is_error": null,
+  "race_trials": 50,
+  "race_exactly_one_winner_per_trial": null,
+  "win_distribution": {}
+}

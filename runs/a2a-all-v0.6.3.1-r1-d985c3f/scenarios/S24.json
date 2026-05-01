@@ -1,0 +1,27 @@
+TODO — POST /api/v1/memories x10 on NODE_A; poll memory_recall on NODE_B/C/D for the seeded content
+TODO — assert peer replication count >= 1 (W=2 means at least one peer must ack); record
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_store() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_update() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_delete() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_link() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_promote() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_consolidate() with phase-2 payload
+TODO — ssh NODE_A: spawn 'ai-memory mcp' via stub agent runner; call memory_forget() with phase-2 payload
+TODO — for each peer (B/C/D): query for memory_store phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_update phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_delete phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_link phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_promote phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_consolidate phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — for each peer (B/C/D): query for memory_forget phase-2 marker; expect 0 rows on v0.6.3.1; record actual
+TODO — ssh NODE_A: ai-memory audit tail | grep phase2-marker; assert each operation present locally
+TODO — ssh B/C/D: grep serve daemon log for replication requests with phase-2 marker; assert empty on v0.6.3.1
+{
+  "scenario": "S24",
+  "verdict": "TODO",
+  "expected_red_reason": "Issue #318 — MCP stdio writes bypass federation fanout (closes in Patch 2)",
+  "phase1_http_replication_ok": null,
+  "phase2_mcp_replication_per_tool": {},
+  "phase2_local_audit_present": null,
+  "peer_serve_logs_silent": null
+}

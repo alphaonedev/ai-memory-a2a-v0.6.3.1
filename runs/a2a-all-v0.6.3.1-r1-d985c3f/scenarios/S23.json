@@ -1,0 +1,18 @@
+TODO — for each NODE: write config.toml.tilde and config.toml.absolute under ~/.config/ai-memory/
+TODO — for each NODE: ln -sf config.toml.tilde config.toml; ai-memory boot --format json --quiet; capture status
+TODO — assert each NODE returned status=warn with 'db unavailable' (#507 RED proof)
+TODO — jq .db on each manifest; assert starts with '~' (no expansion)
+TODO — for each NODE: ln -sf config.toml.absolute config.toml; ai-memory boot --format json; capture status
+TODO — assert each NODE returned status=ok (control case)
+TODO — re-activate tilde; ai-memory doctor --format json on each NODE; assert Storage CRIT on v0.6.3.1
+TODO — re-activate absolute; ai-memory doctor; assert Storage OK
+{
+  "scenario": "S23",
+  "verdict": "TODO",
+  "expected_red_reason": "Issue #507 — config.toml ~ expansion (closes in Patch 2)",
+  "tilde_boot_status_per_node": {},
+  "tilde_db_field_literal_tilde_per_node": {},
+  "absolute_boot_status_per_node": {},
+  "tilde_doctor_storage_per_node": {},
+  "absolute_doctor_storage_per_node": {}
+}

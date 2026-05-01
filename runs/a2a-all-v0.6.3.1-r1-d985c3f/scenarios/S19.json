@@ -1,0 +1,17 @@
+TODO — bulk-load fixtures/g5-alpha.jsonl and fixtures/g5-beta.jsonl on NODE_A
+TODO — SELECT id, embedding, tier, expires_at FROM memories WHERE id IN (...); save as fixtures/g5-snapshot.json
+TODO — ssh NODE_A: memory_archive(...) for each seeded id
+TODO — ssh NODE_B: memory_archive_list; assert seeded ids present
+TODO — ssh NODE_B: memory_archive_restore(id) for each id
+TODO — for each id: SELECT embedding, tier, expires_at; assert byte-equal embedding, tier match, expires_at match
+TODO — memory_recall(query=Q) on NODE_B; assert restored ids in result
+TODO — memory_archive_stats on each NODE; compare counts
+{
+  "scenario": "S19",
+  "verdict": "TODO",
+  "embedding_byte_equal_per_id": {},
+  "tier_preserved_per_id": {},
+  "expires_at_preserved_per_id": {},
+  "recall_hit_post_restore": null,
+  "stats_mesh_consistent": null
+}

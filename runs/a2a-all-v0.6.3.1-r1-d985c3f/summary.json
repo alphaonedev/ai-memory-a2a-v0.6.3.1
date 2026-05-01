@@ -10,7 +10,9 @@
     "verdict": "FAIL",
     "verdict_qualifier": "see scenario verdicts",
     "last_run_id": "a2a-all-v0.6.3.1-r1-d985c3f",
-    "updated_at": "2026-05-01T05:51:10Z"
+    "updated_at": "2026-05-01T05:51:10Z",
+    "framework": "all",
+    "transport": "mtls"
   },
   "matrix": {
     "ironclaw_off": "PENDING",
@@ -32,7 +34,6 @@
     "S6": "UNKNOWN",
     "S7": "UNKNOWN",
     "S8": "UNKNOWN",
-    "S9": "UNKNOWN",
     "S10": "UNKNOWN",
     "S11": "UNKNOWN",
     "S12": "UNKNOWN",
@@ -47,15 +48,11 @@
     "S21": "UNKNOWN",
     "S22": "UNKNOWN",
     "S23": "UNKNOWN",
-    "S24": "UNKNOWN"
+    "S24": "UNKNOWN",
+    "S9": "UNKNOWN"
   },
   "expected_red": [
     "S23",
     "S24"
-  ],
-  "funnel": {
-    "umbrella_issue": null,
-    "patch_2_branch": "release/v0.6.3.2",
-    "seed_issue": "https://github.com/alphaonedev/ai-memory-mcp/issues/507"
-  }
+  ]
 }

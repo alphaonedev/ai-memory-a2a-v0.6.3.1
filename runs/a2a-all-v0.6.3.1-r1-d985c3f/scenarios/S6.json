@@ -1,0 +1,8 @@
+TODO — memory_store on localhost:8080 as ai:alice: 'X is true'
+TODO — memory_store on localhost:8081 as ai:bob: 'X is false'
+TODO — sleep settle window
+TODO — memory_detect_contradiction on localhost:8083; capture contradictions_found
+TODO — memory_recall on localhost:8082 for the topic
+TODO — memory_get_links between A's id and B's id; expect contradicts edge
+TODO — yes_no_match check
+{"scenario":"S6","contradictions_found":1,"yes_no_match":true,"link_present":true,"both_records_in_c_recall":true}

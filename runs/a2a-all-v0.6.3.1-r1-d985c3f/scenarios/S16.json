@@ -1,0 +1,17 @@
+TODO — for each NODE: GET /api/v1/capabilities; assert recall_mode_active=hybrid, reranker_active=neural, schema_version>=2
+TODO — jq has("subscribers"), has("by_event"), has("rule_summary"), has("default_timeout_seconds"); all must be false
+TODO — jq .permissions.mode; assert advisory
+TODO — ssh NODE_D: stop embedder; GET /api/v1/capabilities; assert recall_mode_active=keyword_only
+TODO — ssh NODE_A: GET /api/v1/peers/<D-id>/capabilities; assert recall_mode_active=keyword_only
+TODO — block reranker; assert reranker_active=lexical_fallback from D and via A
+TODO — re-enable embedder + reranker; await refresh; assert hybrid + neural everywhere
+{
+  "scenario": "S16",
+  "verdict": "TODO",
+  "v2_schema_present": null,
+  "v1_theater_fields_absent": null,
+  "self_reports_degraded": null,
+  "peer_view_surfaces_degraded": null,
+  "permissions_mode_advisory": null,
+  "round_trip_clean": null
+}

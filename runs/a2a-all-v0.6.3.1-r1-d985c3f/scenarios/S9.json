@@ -1,0 +1,14 @@
+TODO — ssh/docker-exec each NODE and run: ai-memory boot --format json --quiet
+TODO — jq -r '.version, .schema_version, .tier' on each captured manifest
+TODO — build an agreement matrix; flag any disagreement
+TODO — grep status field; fail if any node is warn
+{
+  "scenario": "S9",
+  "verdict": "TODO",
+  "manifests": {},
+  "agreement": {
+    "version": null,
+    "schema_version": null,
+    "tier": null
+  }
+}

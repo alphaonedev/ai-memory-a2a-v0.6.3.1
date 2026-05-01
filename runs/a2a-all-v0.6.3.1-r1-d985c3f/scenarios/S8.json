@@ -1,0 +1,8 @@
+TODO — memory_store on localhost:8080 as ai:alice with tags=[]
+TODO — sleep auto-tag settle window
+TODO — memory_auto_tag on the new record id
+TODO — memory_get_taxonomy on localhost:8083; capture taxonomy_size
+TODO — memory_get on the record; capture applied_tags
+TODO — non-empty + subset assertion
+TODO — memory_recall on localhost:8081 filtered by one applied tag; assert A's record present
+{"scenario":"S8","tags_applied":0,"tags_in_taxonomy":true,"recall_by_auto_tag_ok":true,"taxonomy_size":0}

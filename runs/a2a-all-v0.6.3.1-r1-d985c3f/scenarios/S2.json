@@ -1,0 +1,8 @@
+TODO — memory_store on localhost:8080 with tag handoff-to-bob, scope team
+TODO — record t0
+TODO — sleep quorum-settle window
+TODO — memory_recall on localhost:8081 filtered by tag glob handoff-*
+TODO — assert presence + author preserved
+TODO — record t1; settle_ms = t1 - t0
+TODO — memory_recall on localhost:8082; assert handoff absent
+{"scenario":"S2","handoff_observed":true,"settle_ms":0,"scope_leak_to_c":false}

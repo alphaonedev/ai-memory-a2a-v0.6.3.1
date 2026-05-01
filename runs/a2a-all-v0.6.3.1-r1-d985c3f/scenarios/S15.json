@@ -1,0 +1,74 @@
+TODO — bulk-load fixtures/200-corpus.jsonl into NODE_A; poll memory_stats on B/C/D until count matches
+TODO — ssh localhost:8080: memory_recall(query="architecture decisions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="architecture decisions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="architecture decisions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="architecture decisions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="architecture decisions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="architecture decisions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="architecture decisions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="architecture decisions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="architecture decisions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="architecture decisions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="architecture decisions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="architecture decisions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="incident postmortem", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="incident postmortem", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="incident postmortem", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="incident postmortem", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="incident postmortem", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="incident postmortem", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="incident postmortem", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="incident postmortem", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="incident postmortem", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="incident postmortem", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="incident postmortem", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="incident postmortem", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="onboarding notes", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="onboarding notes", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="onboarding notes", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="onboarding notes", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="onboarding notes", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="onboarding notes", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="onboarding notes", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="onboarding notes", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="onboarding notes", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="onboarding notes", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="onboarding notes", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="onboarding notes", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="deployment topology", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="deployment topology", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="deployment topology", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="deployment topology", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="deployment topology", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="deployment topology", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="deployment topology", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="deployment topology", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="deployment topology", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="deployment topology", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="deployment topology", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="deployment topology", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="test fixture conventions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="test fixture conventions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="test fixture conventions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="test fixture conventions", budget_tokens=256); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="test fixture conventions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="test fixture conventions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="test fixture conventions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="test fixture conventions", budget_tokens=1024); capture [(id, score), ...]
+TODO — ssh localhost:8080: memory_recall(query="test fixture conventions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8081: memory_recall(query="test fixture conventions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8082: memory_recall(query="test fixture conventions", budget_tokens=4096); capture [(id, score), ...]
+TODO — ssh localhost:8083: memory_recall(query="test fixture conventions", budget_tokens=4096); capture [(id, score), ...]
+TODO — pairwise diff per case; any diff is a fail
+TODO — memory_recall(query=Q, budget_tokens=64) on all NODES; assert single memory; same id
+TODO — memory_recall(query=Q, budget_tokens=10_000_000) on all NODES; assert full corpus same order
+TODO — sum returned-memory tokens; assert <= budget_tokens
+{
+  "scenario": "S15",
+  "verdict": "TODO",
+  "case_count": 15,
+  "head_match_per_case": {},
+  "budget_respected_per_case": {},
+  "edge_below_ok": null,
+  "edge_above_ok": null
+}

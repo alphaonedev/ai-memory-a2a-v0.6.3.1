@@ -1,0 +1,15 @@
+TODO — ssh NODE_A: ai-memory install claude-code --dry-run; capture diff
+TODO — ssh NODE_A: ai-memory install claude-code --apply; rerun and confirm zero-diff
+TODO — read managed-block contents and confirm backup file exists
+TODO — ssh NODE_B: ai-memory install claude-code --apply; read managed block
+TODO — diff payloads; assert identical
+TODO — ai-memory boot --format json on both nodes; assert same recall set after federation sync
+TODO — ssh NODE_A: ai-memory install claude-code --uninstall --apply; assert config restored
+{
+  "scenario": "S11",
+  "verdict": "TODO",
+  "recipe": "claude-code",
+  "managed_block_match": null,
+  "idempotent": null,
+  "uninstall_roundtrip_clean": null
+}
