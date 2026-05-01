@@ -313,15 +313,30 @@ else
       fi
     fi
 
-    # Path C: verify --version matches the expected ref. The v0.6.3.x
-    # series prints `ai-memory <version>` on `--version`; if the strict
-    # match fails (e.g. release ships a +build suffix) we accept any
-    # output containing the AMV-stripped version.
+    # Path C: verify --version matches the expected ref. ai-memory's
+    # Cargo.toml encodes the 4-segment release form as SemVer build
+    # metadata: `version = "0.6.3+patch.1"` ⇔ release tag `v0.6.3.1`.
+    # crates.io rejects 4-segment versions, so the Cargo encoding is
+    # intentional. The binary's --version reports the Cargo encoding
+    # (`ai-memory 0.6.3+patch.1`); we accept either form here so the
+    # check doesn't false-fail on a correctly-installed deb.
     if [ "$install_ok" = "true" ]; then
       ver_out="$(/usr/local/bin/ai-memory --version 2>&1 || true)"
       log "  ai-memory --version → $ver_out"
-      if ! printf '%s' "$ver_out" | grep -qF "$AI_MEMORY_VERSION"; then
-        log "  version mismatch: expected to contain '$AI_MEMORY_VERSION', got '$ver_out' — falling through to source build"
+      # Translate the release-tag form (e.g. 0.6.3.1) to the Cargo form
+      # (e.g. 0.6.3+patch.1) and accept either. Drops a leading `v` from
+      # the env var if present.
+      _amv_release="${AI_MEMORY_VERSION#v}"
+      if printf '%s' "$_amv_release" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+        _amv_cargo="$(printf '%s' "$_amv_release" | sed -E 's/^([0-9]+\.[0-9]+\.[0-9]+)\.([0-9]+)$/\1+patch.\2/')"
+      else
+        _amv_cargo="$_amv_release"
+      fi
+      if printf '%s' "$ver_out" | grep -qF "$_amv_release" \
+         || printf '%s' "$ver_out" | grep -qF "$_amv_cargo"; then
+        log "  version match: '$ver_out' satisfies expected '$_amv_release' (or Cargo form '$_amv_cargo')"
+      else
+        log "  version mismatch: expected to contain '$_amv_release' or '$_amv_cargo', got '$ver_out' — falling through to source build"
         install_ok="false"
         AI_MEMORY_INSTALL_METHOD=""
         AI_MEMORY_ASSET=""
