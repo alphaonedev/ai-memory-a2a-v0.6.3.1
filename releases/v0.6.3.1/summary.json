@@ -1,9 +1,12 @@
 {
   "schema_version": 2,
+  "version": "v0.6.3.1",
+  "verdict": "pending",
   "schema_change_notes": [
     "v2 splits substrate vs NHI verdict per docs/governance.md §1 (Principle 1: two truth-claims, two evidence streams, never conflated).",
     "v1 had a single `campaign.verdict` field that collapsed substrate + NHI evidence; v2 separates them into `substrate_verdict` (Phase 1, S1–S24, binary/reproducible) and `nhi_verdict` (Phase 3, behavioral, statistical).",
-    "Reader convention: use `substrate_verdict` for ship/no-ship gating; use `nhi_verdict` to assess utility delta of ai-memory under realistic agent workloads."
+    "Reader convention: use `substrate_verdict` for ship/no-ship gating; use `nhi_verdict` to assess utility delta of ai-memory under realistic agent workloads.",
+    "`version` + `verdict` at top level are flat shims for the existing release-summary-gate.yml workflow; they mirror `subject.tag` and a derived collapse of substrate+nhi (pass iff substrate ∈ {PASS, 'PARTIAL — pending Patch 2'} AND nhi=PASS, else fail/pending)."
   ],
   "subject": {
     "repo": "alphaonedev/ai-memory-mcp",

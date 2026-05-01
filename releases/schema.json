@@ -36,12 +36,14 @@
       ]
     },
     {
-      "$comment": "Schema v2 — First-Principles separation per docs/governance.md §1. substrate_verdict and nhi_verdict are distinct top-level keys (binary/reproducible vs behavioral/statistical evidence). cross_layer_consistency is a separate join surface.",
+      "$comment": "Schema v2 — First-Principles separation per docs/governance.md §1. substrate_verdict and nhi_verdict are distinct top-level keys (binary/reproducible vs behavioral/statistical evidence). cross_layer_consistency is a separate join surface. `version` + `verdict` are flat shims at top level for backward compatibility with release-summary-gate.yml — mirror subject.tag and a derived collapse of (substrate, nhi).",
       "type": "object",
       "additionalProperties": true,
-      "required": ["schema_version", "subject", "campaign", "substrate_verdict", "nhi_verdict", "cross_layer_consistency", "funnel"],
+      "required": ["schema_version", "version", "verdict", "subject", "campaign", "substrate_verdict", "nhi_verdict", "cross_layer_consistency", "funnel"],
       "properties": {
         "schema_version": { "const": 2 },
+        "version":        { "type": "string", "pattern": "^v\\d+\\.\\d+\\.\\d+(?:\\.\\d+)?$" },
+        "verdict":        { "type": "string", "enum": ["pending", "pass", "fail"] },
         "schema_change_notes": { "type": "array", "items": { "type": "string" } },
         "subject": {
           "type": "object",
