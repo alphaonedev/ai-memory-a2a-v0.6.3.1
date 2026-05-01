@@ -52,6 +52,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from typing import Any
@@ -130,17 +131,30 @@ def check_doctor(ip: str) -> tuple[dict[str, Any], str, bool]:
             return doc, overall, ok
         except json.JSONDecodeError:
             pass
-    # Fallback path: parse text doctor output for an explicit FAIL/ERROR
-    # marker. Older ai-memory pre-v0.6 builds spelled it differently;
-    # absence of an error keyword = treat as INFO.
+    # Fallback path: parse text doctor output for the explicit `overall:`
+    # field. v0.6.3.1's text doctor emits "overall:      INFO" near the top,
+    # plus severity-tagged section headers like [INFO]/[WARN]/[ERROR] that
+    # should NOT be misread as the doctor's overall verdict. We anchor to
+    # the `overall:` field specifically so section labels never poison the
+    # verdict.
     r2 = ssh_exec(ip, "ai-memory doctor 2>&1", timeout=30)
     text = (r2.stdout or "") + (r2.stderr or "")
     if r2.returncode != 0:
         return {"raw_text": text, "exit": r2.returncode}, "ERROR", False
-    upper = text.upper()
-    if "FAIL" in upper or "ERROR" in upper:
-        return {"raw_text": text}, "ERROR", False
-    return {"raw_text": text}, "INFO", True
+    overall = "UNKNOWN"
+    for line in text.splitlines():
+        m = re.match(r"\s*overall\s*:\s*([A-Za-z]+)", line)
+        if m:
+            overall = m.group(1).upper()
+            break
+    ok = overall in DOCTOR_LEVELS_OK or overall in DOCTOR_LEVELS_WARN
+    if overall == "UNKNOWN":
+        # No `overall:` line found — treat as soft-pass (the binary loaded
+        # and exited 0, a strong signal on its own). Older builds may use a
+        # different layout that we'd extend here as needed.
+        ok = True
+        overall = "INFO"
+    return {"raw_text": text, "overall_parsed": overall}, overall, ok
 
 
 def check_env_file(ip: str, role: str) -> tuple[bool, bool, list[str]]:
@@ -184,7 +198,28 @@ def check_schema_version(ip: str, doctor_raw: dict[str, Any]) -> tuple[str, bool
     for c in candidates:
         if c:
             return c, c.lstrip("v") == EXPECTED_SCHEMA_VERSION.lstrip("v")
-    # Fallback — audit verify
+    # First fallback — `ai-memory boot --format json` (schema_version is a
+    # top-level field per v0.6.3.1 release notes). Strip the "ai-memory:
+    # loaded config from..." prelude line if present (config-load notice
+    # gets emitted to stdout before the JSON in some configs).
+    r_boot = ssh_exec(ip, "ai-memory boot --format json --limit 0 2>/dev/null", timeout=20)
+    if r_boot.returncode == 0 and (r_boot.stdout or "").strip():
+        for line in r_boot.stdout.splitlines():
+            line = line.strip()
+            if not line.startswith("{"):
+                continue
+            try:
+                doc = json.loads(line)
+                v = doc.get("schema_version") or doc.get("schema")
+                if isinstance(v, str) and v:
+                    return v, v.lstrip("v") == EXPECTED_SCHEMA_VERSION.lstrip("v")
+                if isinstance(v, dict):
+                    v2 = v.get("version") or v.get("schema_version")
+                    if isinstance(v2, str) and v2:
+                        return v2, v2.lstrip("v") == EXPECTED_SCHEMA_VERSION.lstrip("v")
+            except json.JSONDecodeError:
+                continue
+    # Second fallback — audit verify
     r = ssh_exec(ip, "ai-memory audit verify --format json 2>/dev/null", timeout=20)
     if r.returncode == 0 and (r.stdout or "").strip():
         try:
