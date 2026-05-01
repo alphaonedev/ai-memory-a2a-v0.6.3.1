@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r11",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run exposes a high-risk failure in the testing pipeline, blocking assessment of production readiness for v0.6.3.1; no evidence supports customer claims on memory reliability, worsening the risk posture from prior runs where at least partial data was available. Immediate fixes to CI reporting are essential before advancing.",
+  "for_non_technical": "This test run aimed to check if AI agents can reliably share memories across a network, but it didn't work because no results were recorded. We couldn't confirm if the memory sharing is dependable or not. It's like trying to review a game but finding no scores or highlights.",
+  "for_sme": "No per-scenario results available (scenarios array empty), with explicit reason 'no scenario reports recovered' despite 30 scenarios requested; likely root cause in harness (SHA 143aa05b1de4e02fee397d6341b18735821400d0) or DigitalOcean nyc3 deployment failing to persist logs/artifacts. Impacts all primitives (transport, framework, sharing) untestable; check CI workflow at https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25229528266 for probe failures.",
+  "headline": "Campaign run failed due to no scenario reports recovered",
+  "next_run_change": "Fix CI harness to ensure scenario reports are captured and uploaded before triggering the next campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The testing infrastructure failed to capture or retrieve any scenario results, demonstrating a critical gap in CI/CD reliability rather than validating AI memory sharing functionality.",
+  "what_it_tested": "The run requested 30 scenarios (S1, S1b, S2, S4-S6, S9-S18, S22-S25, S28-S42) covering transport protocols, framework integrations, and memory primitives in a 4-node ironclaw federation mesh, but executed none due to reporting failure."
+}
