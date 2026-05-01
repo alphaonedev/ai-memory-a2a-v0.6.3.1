@@ -82,7 +82,7 @@ jobs:
           RUN_ID: ${{ steps.locate.outputs.run_id }}
           RUN_DIR: ${{ steps.locate.outputs.run_dir }}
           UPSTREAM_REPO: alphaonedev/ai-memory-mcp
-          UMBRELLA_ISSUE: ""    # set when umbrella issue is opened
+          UMBRELLA_ISSUE: "https://github.com/alphaonedev/ai-memory-mcp/issues/511"
           S23_TRACKING: "507"
           S24_TRACKING: "318"
         shell: bash
