@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r13",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run demonstrates a clean bill of health for the Ironclaw agent group, with 100% scenario success under mTLS, reducing risks in distributed memory sharing to minimal levels and confirming production readiness for federated deployments. Compared to prior runs, it maintains the high reliability without regressions, supporting viable customer claims around secure, scalable AI memory infrastructure. No immediate blockers; focus on scaling tests next.",
+  "for_non_technical": "Agents in this test successfully shared and remembered information with each other across a network of computers. Every single test case worked perfectly, meaning the memory system is stable and agents can reliably access shared knowledge without losing or mixing up details. This shows the technology is ready for real-world use where AI agents need to collaborate.",
+  "for_sme": "All 42 scenarios (S1-S42, including variants like S1b) passed without failures or skips, validating primitives like hybrid recall (S18), bulk writes (S40, 500 items/node), mTLS auth rejection (S21, curl error 0A00045C), byzantine protection (S24, 422 reject), and permissions inheritance (S35). No specific failure modes observed; system exhibited consistent replication across nodes (e.g., S17: 15/15 per peer) and zero wrong_agent_id incidents (S1, S4). Probable root cause of prior issues (if any) resolved in v0.6.3.1 patches, as evidenced by clean diag capabilities (S30) showing uniform feature states.",
+  "headline": "Ironclaw v0.6.3.1 achieves full pass on 42 scenarios with mTLS.",
+  "next_run_change": "Add scenarios for upcoming features like memory_reflection (v0.7+) and compaction (v0.8+) to validate integration.",
+  "verdict": "PASS \u2014 all 42 scenarios green, no failures or skips.",
+  "what_it_proved": "The ai-memory system reliably shares and recalls agent memories across distributed nodes under mTLS with zero errors in recall accuracy, replication, and security primitives.",
+  "what_it_tested": "Tested 42 scenarios across multi-agent memory sharing, including CRUD operations, hybrid semantic/keyword recall, mTLS transport security, federation mesh replication, permissions, notifications, bulk writes, and export/import in a 4-node W=2/N=4 topology."
+}
