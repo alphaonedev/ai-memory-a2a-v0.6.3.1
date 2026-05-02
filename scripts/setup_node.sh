@@ -1224,7 +1224,15 @@ case "$AGENT_TYPE" in
     has_xai=$(grep -q '^XAI_API_KEY=' /etc/ai-memory-a2a/hermes.env 2>/dev/null && echo true || echo false)
     # hermes takes provider/model as drive_agent.sh flags; we assert
     # drive_agent.sh is on disk and passes the right flags.
-    default_xai=$(grep -q 'provider xai' /root/drive_agent.sh 2>/dev/null && grep -q "$A2A_GATE_LLM_MODEL" /root/drive_agent.sh 2>/dev/null && echo true || echo false)
+    # Check that drive_agent.sh wires xAI as the provider AND threads through
+    # whatever model SKU the campaign was dispatched with (default grok-4-0709;
+    # workflow input may set grok-4-fast-non-reasoning etc.). The drive_agent.sh
+    # source uses the LITERAL variable reference '$A2A_GATE_LLM_MODEL' — so we
+    # grep for that string (not its expanded value, which would have to match
+    # drive_agent.sh's hardcoded default and fails for any other dispatch SKU).
+    default_xai=$(grep -q -- '--provider xai' /root/drive_agent.sh 2>/dev/null \
+                  && grep -q -- '--model.*A2A_GATE_LLM_MODEL' /root/drive_agent.sh 2>/dev/null \
+                  && echo true || echo false)
     has_mem=$(grep -q 'command: ai-memory' /root/.hermes/config.yaml 2>/dev/null && echo true || echo false)
     has_aid=$(grep -q "AI_MEMORY_AGENT_ID.*${AGENT_ID}" /root/.hermes/config.yaml 2>/dev/null && echo true || echo false)
     ;;
