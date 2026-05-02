@@ -1,0 +1,17 @@
+{
+  "scenario": "S27",
+  "title": "Audit append-only enforcement (chattr +a)",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "OS-level append-only flag must block non-append writes (root + non-root) while still permitting legitimate append via the HTTP-driven audit hook",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "lsattr_flags": "string",
+    "chattr_supported": "boolean",
+    "nonroot_write_blocked": "boolean",
+    "root_dd_blocked": "boolean",
+    "root_truncate_blocked": "boolean",
+    "append_legitimate_worked": "boolean",
+    "lines_before": "integer",
+    "lines_after_append": "integer"
+  }
+}

@@ -44,7 +44,7 @@
     "phase": { "type": "integer", "enum": [2, 3] },
     "scenario_id": {
       "type": "string",
-      "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "phase2"]
+      "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "phase2"]
     },
     "control_arm": {
       "type": "string",
@@ -53,7 +53,7 @@
     "run_index": { "type": "integer", "enum": [1, 2, 3] },
     "turn_id": {
       "type": "string",
-      "pattern": "^(A|B|C|D|E|F|G|H|phase2)-(cold|isolated|stubbed|treatment|phase2)-r[123]-t[0-9]+$"
+      "pattern": "^(A|B|C|D|E|F|G|H|I|J|phase2)-(cold|isolated|stubbed|treatment|phase2)-r[123]-t[0-9]+$"
     },
     "agent_id": { "type": "string", "enum": ["ai:alice", "ai:bob"] },
     "agent_framework": { "type": "string", "enum": ["ironclaw", "hermes"] },

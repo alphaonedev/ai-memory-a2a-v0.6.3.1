@@ -729,24 +729,32 @@ jobs:
           printf '%s\n' "${SCENARIOS_RUN[@]}" > phase-reports/scenario-timings.txt
           echo "end_ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
-      # The v0.6.3.1-specific expected-RED canaries (S23 = #507 tilde
-      # expansion, S24 = #318 MCP stdio fanout) live under
-      # scenarios/v0.6.3.1/SXX/ and are bash runners that drive ssh + curl
-      # + jq directly against the live droplets — they don't reuse the
-      # Python testbook harness because they're proving the harness can
-      # detect KNOWN-OPEN OSS bugs (governance Principle 2: "S23 and S24
-      # must be RED on v0.6.3.1; if either turns GREEN the harness is
-      # broken"). These scenarios pass when they detect the bug exactly
-      # as documented (actual_verdict == expected_verdict == RED) and
-      # fail loudly if either #507 or #318 was silently fixed or if the
-      # harness has drifted away from the bug surface.
+      # The v0.6.3.1-specific canaries live under scenarios/v0.6.3.1/SXX/
+      # and are bash runners that drive ssh + curl + jq directly against
+      # the live droplets. Two classes share the loop:
       #
-      # Intentionally `|| true` per-runner: a single canary going green
-      # should NOT abort the rest of the campaign; the verdict is
-      # surfaced via the standard scenario JSON which collect_reports.sh
-      # rolls into a2a-summary.json (see step below).
-      - name: Run v0.6.3.1-specific expected-RED canaries
-        timeout-minutes: 10
+      #   Expected-RED canaries (S23, S24): prove the harness can detect
+      #     KNOWN-OPEN OSS bugs — governance Principle 2 ("S23 and S24
+      #     must be RED on v0.6.3.1; if either turns GREEN the harness
+      #     is broken"). #507 (tilde expansion in db field) and #318
+      #     (MCP stdio fanout bypass).
+      #
+      #   Expected-GREEN forensic-audit canaries (S25, S26, S27): prove
+      #     the v0.6.3.1 audit substrate is delivering on its
+      #     legal-admissibility claims. Hash-chain integrity over a
+      #     populated log (S25), tamper detection on byte mutation (S26),
+      #     and OS-level append-only enforcement (S27). These are the
+      #     forensic-trail tests added in feat/forensic-audit-trail-tests.
+      #
+      # All five share the same emit shape (scenario / pass /
+      # expected_verdict / actual_verdict / outputs / reasons), so the
+      # loop is generic across both classes. pass == (actual ==
+      # expected); intentionally `|| true` per-runner: a single canary
+      # outcome should not abort the rest of the campaign — the verdict
+      # is surfaced via the standard scenario JSON which
+      # collect_reports.sh rolls into a2a-summary.json.
+      - name: Run v0.6.3.1-specific canaries (expected-RED + forensic-audit)
+        timeout-minutes: 15
         if: steps.baseline.outputs.baseline_ok == 'true' && steps.probe_f3.outputs.f3_ok == 'true' && steps.phase0.outputs.phase0_ok == 'true'
         env:
           A2A_NODE_A: ${{ steps.wait.outputs.node1_ip }}
@@ -762,7 +770,7 @@ jobs:
         run: |
           set -e
           mkdir -p phase-reports
-          for s in 23 24 28 29 30 31; do
+          for s in 23 24 25 26 27 28 29 30 31; do
             runner="scenarios/v0.6.3.1/S${s}/runner.sh"
             if [ ! -x "$runner" ] && [ -f "$runner" ]; then
               chmod +x "$runner"
@@ -771,7 +779,7 @@ jobs:
               echo "::warning::v0.6.3.1 S${s} runner missing at $runner — skipping"
               continue
             fi
-            echo "::group::v0.6.3.1 S${s} expected-RED canary"
+            echo "::group::v0.6.3.1 S${s} canary"
             bash "$runner" \
               > "phase-reports/v0631-S${s}.json" \
               2> "phase-reports/v0631-S${s}.log" || true
@@ -856,6 +864,52 @@ jobs:
           cp phase-reports/*.log  "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp -r phase-reports/baselines "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp a2a-summary.json "$CAMPAIGN_DIR/" 2>/dev/null || true
+
+      # Capture per-node audit logs for legal-admissibility evidence.
+      # The v0.6.3.1 audit substrate writes hash-chained JSONL to
+      # /var/log/ai-memory/audit.jsonl on every droplet (enabled by
+      # scripts/setup_node.sh's [audit] block). We scp each node's log
+      # into runs/<campaign_id>/audit/ so Phase 4 meta-analysis can
+      # cross-correlate Phase 3 ai_memory_ops against audit entries
+      # (forensic-reproducibility property — Scenario I in
+      # phase3_autonomous.py).
+      #
+      # The redaction step below sweeps these files too. Best-effort: a
+      # destroyed droplet (or a node that never came up) leaves a
+      # missing file; we log a warning and continue. Tear-down still
+      # runs unconditionally.
+      - name: Capture per-node audit logs (forensic evidence)
+        if: always() && steps.baseline.outputs.baseline_ok == 'true'
+        timeout-minutes: 5
+        run: |
+          set +e
+          CAMPAIGN_DIR="runs/${{ github.event.inputs.campaign_id }}"
+          AUDIT_DIR="$CAMPAIGN_DIR/audit"
+          mkdir -p "$AUDIT_DIR"
+          for trip in 1:${{ steps.wait.outputs.node1_ip }} \
+                      2:${{ steps.wait.outputs.node2_ip }} \
+                      3:${{ steps.wait.outputs.node3_ip }} \
+                      4:${{ steps.wait.outputs.memory_ip }}; do
+            n=${trip%%:*}; ip=${trip##*:}
+            if [ -z "$ip" ]; then
+              echo "::warning::node-${n} ip unset; skipping audit-log scp"
+              continue
+            fi
+            out="$AUDIT_DIR/node-${n}.audit.jsonl"
+            echo "::group::audit-scp node-${n} ($ip)"
+            if scp -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+                  root@"$ip":/var/log/ai-memory/audit.jsonl "$out" 2>&1; then
+              lines=$(wc -l < "$out" 2>/dev/null || echo 0)
+              echo "::notice::audit-log captured: $out ($lines lines)"
+            else
+              echo "::warning::failed to scp audit.jsonl from node-${n} ($ip) — file may not exist if no audit-emitting op fired this campaign"
+              # Leave a placeholder so the file's absence is itself an
+              # auditable artefact (Phase 4 reads from this dir).
+              printf '{"_status":"absent","node":"node-%s","ip":"%s","reason":"scp-failed-or-file-missing"}\n' "$n" "$ip" > "$out"
+            fi
+            echo "::endgroup::"
+          done
+          ls -la "$AUDIT_DIR" || true
 
       # ───── First-Principles governance phases (docs/governance.md §3) ─────
       #
@@ -990,7 +1044,7 @@ jobs:
           # Also masks anything matching the xAI key prefix pattern
           # (xai- followed by >=20 base62) even if we don't hold the
           # exact value at redaction time.
-          for f in "$CAMPAIGN_DIR"/*.json "$CAMPAIGN_DIR"/*.log "$CAMPAIGN_DIR"/*.html "$CAMPAIGN_DIR"/baselines/*.json; do
+          for f in "$CAMPAIGN_DIR"/*.json "$CAMPAIGN_DIR"/*.log "$CAMPAIGN_DIR"/*.html "$CAMPAIGN_DIR"/baselines/*.json "$CAMPAIGN_DIR"/audit/*.jsonl; do
             [ -f "$f" ] || continue
             if [ -n "$XAI_KEY_VALUE" ]; then
               sed -i "s|${XAI_KEY_VALUE}|<REDACTED-XAI-API-KEY>|g" "$f" 2>/dev/null || true
@@ -1009,7 +1063,7 @@ jobs:
           # in committed files. If any match, fail the commit step so
           # the secret never reaches the repo.
           leak_count=0
-          for f in "$CAMPAIGN_DIR"/*.json "$CAMPAIGN_DIR"/*.log "$CAMPAIGN_DIR"/*.html "$CAMPAIGN_DIR"/baselines/*.json; do
+          for f in "$CAMPAIGN_DIR"/*.json "$CAMPAIGN_DIR"/*.log "$CAMPAIGN_DIR"/*.html "$CAMPAIGN_DIR"/baselines/*.json "$CAMPAIGN_DIR"/audit/*.jsonl; do
             [ -f "$f" ] || continue
             if [ -n "$XAI_KEY_VALUE" ] && grep -q "$XAI_KEY_VALUE" "$f" 2>/dev/null; then
               echo "::error::XAI_API_KEY leak detected in $f"

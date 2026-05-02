@@ -75,6 +75,9 @@ nav:
       - Latest-run insights: nhi-insights.md
       - Per-run NHI matrix: nhi/index.md
       - Inherited gate insights: insights.md
+  - Forensic Audit Trail:
+      - What the audit trail proves: forensic-audit.md
+      - Per-run forensics matrix: forensics/index.md
   - Campaign runs: runs/
   - Specification:
       - Baseline configuration: baseline.md

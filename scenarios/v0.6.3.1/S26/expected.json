@@ -1,0 +1,14 @@
+{
+  "scenario": "S26",
+  "title": "Audit tamper detection (chain break + restore)",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "v0.6.3.1 audit substrate must report rc!=0 + ok=false on any byte-level mutation; restore must re-verify clean",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "before_tamper": "object<rc:int, ok:bool, head_hash:string, line_count:int>",
+    "after_tamper": "object<rc:int, ok:bool, tamper_detected:bool, error_field:string>",
+    "after_restore": "object<rc:int, ok:bool, head_hash:string, line_count:int>",
+    "tamper_detection_fired": "boolean",
+    "restore_succeeded": "boolean"
+  }
+}
