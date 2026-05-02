@@ -75,6 +75,14 @@ on:
           - "off"
           - tls
           - mtls
+      hermes_debug:
+        description: "When 'true', setup_node.sh writes hermes diagnostic snapshots (mcp list, version, F2b stderr with --debug) to /var/log/hermes-debug/ on each hermes droplet. No effect for ironclaw. Only enable when investigating an F2b/F3b regression — adds ~5s of probe overhead and ships the LLM-dependent canary stderr in collected reports."
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 permissions:
   contents: write
@@ -119,6 +127,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
       A2A_GATE_LLM_MODEL: ${{ github.event.inputs.llm_model }}
       TLS_MODE: ${{ github.event.inputs.tls_mode }}
+      HERMES_DEBUG: ${{ github.event.inputs.hermes_debug == 'true' && '1' || '0' }}
 
     steps:
       - uses: actions/checkout@v5
@@ -455,7 +464,7 @@ jobs:
               scp -o StrictHostKeyChecking=no scripts/setup_node.sh scripts/drive_agent.sh scripts/drive_agent_autonomous.sh scripts/claims_extractor.py scripts/claims_extractor_cli.py root@$ip:/root/ 2>&1 | sed "s/^/[n$i scp] /"
               chmod_cmd="chmod +x /root/setup_node.sh /root/drive_agent.sh /root/drive_agent_autonomous.sh /root/claims_extractor_cli.py"
               env_cmd="NODE_INDEX=$i ROLE=$role PEER_URLS='$peers' AI_MEMORY_VERSION=$AMV AI_MEMORY_GIT_REF='$AMR' TLS_MODE='${TLS_MODE}' AI_MEMORY_SOURCE_BUILD='${AI_MEMORY_SOURCE_BUILD:-false}'"
-              [ "$role" = "agent" ] && env_cmd="$env_cmd AGENT_TYPE=${AGENT_GROUP} AGENT_ID=$aid XAI_API_KEY='${XAI_API_KEY}' A2A_GATE_LLM_MODEL='${A2A_GATE_LLM_MODEL}' IRONCLAW_INSTALL_CMD='${IRONCLAW_INSTALL_CMD}' OPENCLAW_INSTALL_CMD='${OPENCLAW_INSTALL_CMD}' HERMES_INSTALL_CMD='${HERMES_INSTALL_CMD}'"
+              [ "$role" = "agent" ] && env_cmd="$env_cmd AGENT_TYPE=${AGENT_GROUP} AGENT_ID=$aid XAI_API_KEY='${XAI_API_KEY}' A2A_GATE_LLM_MODEL='${A2A_GATE_LLM_MODEL}' IRONCLAW_INSTALL_CMD='${IRONCLAW_INSTALL_CMD}' OPENCLAW_INSTALL_CMD='${OPENCLAW_INSTALL_CMD}' HERMES_INSTALL_CMD='${HERMES_INSTALL_CMD}' HERMES_DEBUG='${HERMES_DEBUG:-0}'"
               # stdbuf -oL forces line-buffered stdout on the ssh side
               # so `sed` gets each log line promptly — without it the
               # remote bash may buffer up big chunks before flushing.
@@ -497,6 +506,19 @@ jobs:
             jq . "$out"
             [ "$pass" = "true" ] || BASELINE_OK=false
           done
+          # Optional hermes-debug snapshot — only fetched when both
+          # the dispatch input opted in AND the agent group is hermes.
+          # Other groups don't write /var/log/hermes-debug/, scp would
+          # ENOENT and BASELINE_OK would flip false for the wrong reason.
+          if [ "${HERMES_DEBUG:-0}" = "1" ] && [ "$AGENT_GROUP" = "hermes" ]; then
+            mkdir -p phase-reports/hermes-debug
+            for role_trip in 1:${{ steps.wait.outputs.node1_ip }} 2:${{ steps.wait.outputs.node2_ip }} 3:${{ steps.wait.outputs.node3_ip }}; do
+              n=${role_trip%%:*}; ip=${role_trip##*:}
+              scp -o StrictHostKeyChecking=no -r root@$ip:/var/log/hermes-debug "phase-reports/hermes-debug/node-${n}" 2>/dev/null \
+                && echo "::notice::hermes-debug snapshot fetched for node-${n}" \
+                || echo "::warning::hermes-debug snapshot missing on node-${n} (non-fatal)"
+            done
+          fi
           if [ "$BASELINE_OK" != "true" ]; then
             echo "::error::BASELINE VIOLATION — at least one agent node failed baseline verification. Scenarios will NOT run."
             echo "baseline_ok=false" >> "$GITHUB_OUTPUT"

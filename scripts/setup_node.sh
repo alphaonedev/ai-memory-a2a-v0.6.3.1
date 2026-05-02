@@ -1073,6 +1073,23 @@ EOF
     #   mcp_server_mode: false    — client-only (don't expose Hermes as MCP)
     #   subagent_delegation: false — no spawn_subagent
     # tool_allowlist restricted to memory_*.
+    #
+    # ── F2b root cause (a2a-hermes-v0.6.3.1-r3/r4) ────────────────────
+    # The previous tool_allowlist listed BARE tool names (memory_store,
+    # memory_recall, ...). hermes-agent's tool dispatcher exposes MCP
+    # tools to the LLM under the namespaced form `mcp_<server>_<tool>`
+    # (server="memory" here → mcp_memory_memory_store) BEFORE running
+    # the allowlist filter. With bare names in the allowlist, NONE of
+    # the live tool ids matched, so hermes filtered every memory_* tool
+    # away from the model — the model then truthfully reported "I don't
+    # have access to mcp_memory_memory_store" / "any MCP integration".
+    # F5 still passes because F5 talks to the stdio MCP server directly,
+    # bypassing the hermes_cli filter layer. Evidence:
+    #   runs/a2a-hermes-v0.6.3.1-r3/a2a-baseline.json (3 nodes, all f2b=false)
+    #   runs/a2a-hermes-v0.6.3.1-r4/a2a-baseline.json (3 nodes, all f2b=false)
+    # FIX: list the namespaced form. We also keep the bare name so any
+    # future hermes-agent build that filters pre-namespacing still
+    # accepts it. The negatives check below is updated to accept either.
     mkdir -p /root/.hermes
     cat > /root/.hermes/config.yaml <<EOF
 # Nous Research Hermes Agent — ai-memory-ai2ai-gate
@@ -1108,7 +1125,21 @@ execution_backends: []
 mcp_server_mode: false     # Hermes is MCP client of ai-memory, NOT an MCP server itself
 subagent_delegation: false # no spawn_subagent — forces all coordination through memory
 
+# tool_allowlist holds the EXACT tool ids hermes-agent exposes to the
+# LLM. Per hermes_cli/mcp_tools.py the dispatcher namespaces stdio MCP
+# tools as mcp_<server-name>_<bare-tool-name>; the allowlist filter
+# matches those namespaced ids. We list both forms so this config is
+# robust to a future upstream change in filter ordering.
 tool_allowlist:
+  - mcp_memory_memory_store
+  - mcp_memory_memory_recall
+  - mcp_memory_memory_list
+  - mcp_memory_memory_get
+  - mcp_memory_memory_share
+  - mcp_memory_memory_link
+  - mcp_memory_memory_update
+  - mcp_memory_memory_detect_contradiction
+  - mcp_memory_memory_consolidate
   - memory_store
   - memory_recall
   - memory_list
@@ -1123,6 +1154,34 @@ a2a_gate_profile: shared-memory-only
 a2a_gate_profile_version: "1.0.0"
 EOF
     chmod 600 /root/.hermes/config.yaml
+
+    # ---- HERMES_DEBUG=1 — capture full diagnostic surface -----------
+    # When hermes F2b regresses again, this env-gated block dumps the
+    # exact state the LLM sees: hermes mcp list, hermes --version,
+    # the loaded tool catalog (best-effort via a hermes -Q dry probe),
+    # and a stderr-tee'd canary. Files live under /var/log/hermes-debug/
+    # and are surfaced by collect_reports.sh when present.
+    if [ "${HERMES_DEBUG:-0}" = "1" ]; then
+      mkdir -p /var/log/hermes-debug
+      {
+        echo "## hermes --version"
+        hermes --version 2>&1 || true
+        echo
+        echo "## hermes mcp list"
+        hermes mcp list 2>&1 || true
+        echo
+        echo "## /root/.hermes/config.yaml (sha256 + head)"
+        sha256sum /root/.hermes/config.yaml 2>&1 || true
+        head -80 /root/.hermes/config.yaml 2>&1 || true
+        echo
+        echo "## tool catalog dry-probe (hermes chat -Q --list-tools or equivalent)"
+        # Several upstream builds print the loaded tool catalog when
+        # given an empty prompt under -Q with --debug; this is best-
+        # effort and should not fail the setup.
+        timeout 15 hermes chat -Q --debug -q "list available tools" 2>&1 | head -200 || true
+      } > /var/log/hermes-debug/setup-snapshot.txt 2>&1 || true
+      log "HERMES_DEBUG=1: snapshot written to /var/log/hermes-debug/setup-snapshot.txt"
+    fi
 
     # ---- Verify ai-memory MCP is registered with hermes -------------
     # Parallel to ironclaw's `mcp add` + `mcp list | grep memory` retry
@@ -1420,6 +1479,19 @@ def get(path, default=None):
     return cur
 tools = cfg.get("tool_allowlist") or []
 channels = (cfg.get("messaging") or {}).get("platforms") or {}
+# Accept BOTH bare tool ids ("memory_store") and the namespaced form
+# hermes-agent advertises to the LLM ("mcp_memory_memory_store"). The
+# YAML now writes both so the live filter sees a hit; the invariant
+# only requires every entry resolve to a memory_* operation, not that
+# every entry start with the literal string "memory_".
+def _is_memory_op(t):
+    if not isinstance(t, str):
+        return False
+    if t.startswith("memory_"):
+        return True
+    if t.startswith("mcp_memory_memory_"):
+        return True
+    return False
 out = {
   "acp_off":          get("acp.enabled") == False,
   "gateway_off":      get("messaging.gateway_enabled") == False,
@@ -1427,7 +1499,7 @@ out = {
   "no_exec_backends": (cfg.get("execution_backends") or []) == [],
   "mcp_client_only":  get("mcp_server_mode") == False,
   "no_subagent":      get("subagent_delegation") == False,
-  "tools_memory_only": all(isinstance(t,str) and t.startswith("memory_") for t in tools) and len(tools) > 0,
+  "tools_memory_only": all(_is_memory_op(t) for t in tools) and len(tools) > 0,
   "profile_locked":   get("a2a_gate_profile") == "shared-memory-only",
 }
 print(json.dumps(out))
@@ -1609,8 +1681,17 @@ case "$AGENT_TYPE" in
     ;;
   hermes)
     set -a; . /etc/ai-memory-a2a/hermes.env; set +a
-    timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q --provider xai --model "$A2A_GATE_LLM_MODEL" -q "$F2B_PROMPT" > /tmp/canary-hermes.log 2>&1 || \
-      log "  F2b: hermes returned non-zero or timed out (${TIMEOUT_AGENT_CLI}s) — proceeding"
+    if [ "${HERMES_DEBUG:-0}" = "1" ]; then
+      mkdir -p /var/log/hermes-debug
+      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q --debug --provider xai --model "$A2A_GATE_LLM_MODEL" -q "$F2B_PROMPT" \
+        >/tmp/canary-hermes.log 2>/var/log/hermes-debug/f2b-stderr.log || \
+          log "  F2b: hermes returned non-zero or timed out (${TIMEOUT_AGENT_CLI}s) — proceeding"
+      log "  HERMES_DEBUG=1: f2b stderr at /var/log/hermes-debug/f2b-stderr.log (head):"
+      head -c 2000 /var/log/hermes-debug/f2b-stderr.log 2>/dev/null | sed 's/^/    [hermes-f2b-stderr] /' || true
+    else
+      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q --provider xai --model "$A2A_GATE_LLM_MODEL" -q "$F2B_PROMPT" > /tmp/canary-hermes.log 2>&1 || \
+        log "  F2b: hermes returned non-zero or timed out (${TIMEOUT_AGENT_CLI}s) — proceeding"
+    fi
     ;;
   ironclaw)
     timeout -k 10 "$TIMEOUT_AGENT_CLI" ironclaw chat -p "$F2B_PROMPT" > /tmp/canary-ironclaw.log 2>&1 || \
@@ -1633,6 +1714,46 @@ if [ "${f2b_hit:-0}" -ge 1 ] 2>/dev/null; then
 else
   f2b_functional=false
   log "  PROBE F2b FAIL (non-blocking) — agent didn't land canary. Response head: ${canary_response:0:200}"
+fi
+
+# ── F3b — hermes peer-A2A repro (agent-level, non-blocking) ──────────
+# The workflow's F3 step (a2a-gate.yml) checks substrate-level peer
+# replication via direct HTTP. That probe was GREEN even when hermes
+# scenarios failed end-to-end on r3/r4, because the failure was at the
+# agent → MCP layer (F2b), not at ai-memory's federation layer.
+#
+# F3b closes that gap by exercising the same path scenario-1 will:
+# the AGENT calls the MCP tool through hermes-agent's tool dispatcher.
+# We only run on hermes (ironclaw is unaffected) and only when F2b
+# passed (otherwise this probe is guaranteed to fail for the same
+# upstream reason and adds no signal). Result is observed, not gated —
+# agent-level reasoning is non-deterministic.
+f3b_functional=false
+F3B_UUID=""
+if [ "$AGENT_TYPE" = "hermes" ] && [ "$f2b_functional" = "true" ]; then
+  F3B_UUID=$(cat /proc/sys/kernel/random/uuid 2>/dev/null || echo "f3b-$RANDOM-$RANDOM")
+  F3B_NS="_baseline_canary_f3b"
+  F3B_PROMPT="Use the ai-memory MCP mcp_memory_memory_store tool to save a memory with namespace=${F3B_NS}, title=peer-canary-${AGENT_ID}, content=${F3B_UUID}. Respond with DONE when the tool call completes."
+  log "  F3b (hermes-only): agent stores via mcp_memory_memory_store, peers asked to recall"
+  set -a; . /etc/ai-memory-a2a/hermes.env; set +a
+  timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q \
+    --provider xai --model "$A2A_GATE_LLM_MODEL" \
+    -q "$F3B_PROMPT" >/tmp/canary-hermes-f3b.log 2>&1 || \
+    log "  F3b: hermes invocation rc!=0 (proceeding to read-back check)"
+  sleep 5
+  # Read-back from THIS node's local serve. The federation push to
+  # peers is the workflow-level F3's job; here we only assert the
+  # agent's write actually landed.
+  f3b_hit=$(curl -sS "${F2A_CURL_FLAGS[@]}" "${F2A_BASE_URL}/api/v1/memories?namespace=${F3B_NS}&limit=20" 2>/dev/null | \
+    jq --arg u "$F3B_UUID" --arg a "$AGENT_ID" \
+      '[.memories[]? | select(.content == $u and (.metadata.agent_id // "") == $a)] | length' 2>/dev/null || echo 0)
+  if [ "${f3b_hit:-0}" -ge 1 ] 2>/dev/null; then
+    f3b_functional=true
+    log "  PROBE F3b OK — hermes agent landed peer-A2A canary uuid=$F3B_UUID"
+  else
+    f3b_functional=false
+    log "  PROBE F3b FAIL (non-blocking) — agent reported success but no row visible. Investigate hermes_cli/mcp_tools.py allowlist filter."
+  fi
 fi
 
 # Retained for backwards-compat with existing baseline.json schema
@@ -1931,6 +2052,8 @@ jq -n \
   --arg f8_reason "$f8_reason" \
   --arg f2a_uuid "$F2A_UUID" \
   --arg f2b_uuid "$F2B_UUID" \
+  --argjson f3b_functional "${f3b_functional:-false}" \
+  --arg f3b_uuid "${F3B_UUID:-}" \
   --arg config_sha256 "$config_sha256" \
   '{
     spec_version: "1.4.0",
@@ -1970,6 +2093,9 @@ jq -n \
       agent_mcp_canary_uuid:           $f2b_uuid,
       agent_canary_response_head:      $canary_response,
       _f2b_note:                       "F2b is LLM-dependent and non-blocking. F2a (deterministic HTTP substrate) gates baseline_pass.",
+      hermes_peer_a2a_repro_f3b:       $f3b_functional,
+      hermes_peer_a2a_repro_uuid:      $f3b_uuid,
+      _f3b_note:                       "F3b is hermes-only and observed (non-blocking). Asserts the agent-driven mcp_memory_memory_store path actually lands a row through the hermes_cli tool dispatcher, distinct from the workflow-level F3 which probes substrate-only HTTP federation. False here while F2b is true => allowlist filter regression in hermes_cli/mcp_tools.py.",
       mesh_connectivity_f4:            $f4_functional,
       mesh_edges_ok:                   $f4_edges_ok,
       mesh_edges_total:                $f4_edges_total,

@@ -211,7 +211,24 @@ execution_backends: []
 mcp_server_mode: false        # client-only; never expose Hermes AS an MCP server
 subagent_delegation: false    # no spawn_subagent — forces all coordination through memory
 
+# Hermes-agent's tool dispatcher namespaces stdio MCP tools as
+# `mcp_<server-name>_<bare-tool-name>`. The allowlist filter compares
+# against THAT id, not the bare name advertised over stdio. List both
+# forms — the namespaced ids satisfy the live filter; the bare ids
+# remain for forward-compat with future hermes-agent builds that
+# filter pre-namespacing. Listing only bare names regresses F2b: the
+# LLM sees zero memory_* tools and replies "I don't have access to
+# mcp_memory_memory_store" (observed on a2a-hermes-v0.6.3.1-r3 + r4).
 tool_allowlist:
+  - mcp_memory_memory_store
+  - mcp_memory_memory_recall
+  - mcp_memory_memory_list
+  - mcp_memory_memory_get
+  - mcp_memory_memory_share
+  - mcp_memory_memory_link
+  - mcp_memory_memory_update
+  - mcp_memory_memory_detect_contradiction
+  - mcp_memory_memory_consolidate
   - memory_store
   - memory_recall
   - memory_list
@@ -252,8 +269,15 @@ hermes --version
   version explicitly (surfaced by a2a-hermes-v0.6.0-r6).
 - **`tool_allowlist` is explicit YAML.** Unlike ironclaw, hermes has a
   first-class tool allowlist. The list above is the reference — copy
-  verbatim. Adding a tool here that doesn't start with `memory_` breaks
-  the negative invariant and fails `baseline_pass`.
+  verbatim. The negative invariant `tool_allowlist_is_memory_only`
+  accepts entries that start with `memory_` OR `mcp_memory_memory_`;
+  any other prefix fails `baseline_pass`.
+- **Tool-id namespacing.** Hermes-agent advertises stdio MCP tools to
+  the LLM under `mcp_<server-name>_<tool-name>` (server="memory" → 
+  `mcp_memory_memory_store`). If the allowlist only carries bare
+  names, the live filter rejects every memory tool, the LLM sees no
+  MCP integration, and F2b plus all agent-driven scenarios fail.
+  Always include the namespaced ids in the allowlist.
 - **Sampling.** Hermes enables MCP sampling by default. ai-memory doesn't
   need it (no LLM callback). If you want to be strict add
   `sampling: { enabled: false }` to the `memory:` block.
@@ -339,8 +363,29 @@ All three should print non-empty results and `.baseline_pass == true`.
 ### `baseline_pass: false` with `tool_allowlist_is_memory_only: false`
 
 - **Hermes**: read `/root/.hermes/config.yaml` — any entry in
-  `tool_allowlist` that doesn't start with `memory_` fails the invariant.
-  Fix the YAML and rerun setup.
+  `tool_allowlist` that doesn't start with `memory_` or
+  `mcp_memory_memory_` fails the invariant. Fix the YAML and rerun
+  setup.
+
+### `agent_mcp_canary_f2b: false` while `ai_memory_mcp_stdio_f5: true` (hermes)
+
+The MCP server is healthy at the stdio layer (F5 GREEN), but hermes-
+agent's tool dispatcher is not exposing `mcp_memory_memory_*` tools to
+the LLM (F2b RED). Two known causes:
+
+1. `tool_allowlist` carries only bare names (`memory_store`, …). The
+   dispatcher namespaces stdio tools as `mcp_<server>_<bare>`, the
+   filter compares against the namespaced id, no entry matches, every
+   tool is filtered out. Fix: include the namespaced ids (see
+   `tool_allowlist` reference above).
+2. `mcp_servers.memory.enabled` is false or the server key was
+   renamed. F5 spawns the subprocess directly so it bypasses this; F2b
+   does not.
+
+Set `HERMES_DEBUG=1` on the workflow dispatch to capture
+`/var/log/hermes-debug/setup-snapshot.txt` (hermes mcp list, version,
+config sha) and `/var/log/hermes-debug/f2b-stderr.log` (hermes
+`--debug` stderr from the canary call).
 - **IronClaw**: check `/etc/ai-memory-a2a/ironclaw-mcp-list.raw`.
   The provisioning script registers only `memory`; if the raw dump shows
   additional servers, something re-registered behind our back.

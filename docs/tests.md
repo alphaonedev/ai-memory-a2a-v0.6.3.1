@@ -72,7 +72,7 @@ for `baseline_pass=true`.
 | `a2a_protocol_off` | No direct agent-to-agent RPC channel (ACP, sessions, etc.) | Per-framework config flag(s) |
 | `sub_agent_or_sessions_spawn_off` | No parent/child agent hierarchy or session-spawn tool | Framework config + tool allowlist |
 | `alternative_channels_off` | No Telegram / Discord / Slack / Moltbook / gateway / execution_backends | Per-framework disable blocks |
-| `tool_allowlist_is_memory_only` | Only `memory_*` tools available to the agent | Hermes: `tool_allowlist` YAML list; IronClaw: only one MCP server registered (provisioning-control); OpenClaw: `toolAllowlist` JSON |
+| `tool_allowlist_is_memory_only` | Only `memory_*` (or namespaced `mcp_memory_memory_*`) tools available to the agent | Hermes: `tool_allowlist` YAML list — entries may be bare or hermes-prefixed; IronClaw: only one MCP server registered (provisioning-control); OpenClaw: `toolAllowlist` JSON |
 | `a2a_gate_profile_locked` | `a2a_gate_profile: shared-memory-only` tag present | Per-framework config set |
 
 Any `false` here = thesis preserved (good). The negative invariants only
