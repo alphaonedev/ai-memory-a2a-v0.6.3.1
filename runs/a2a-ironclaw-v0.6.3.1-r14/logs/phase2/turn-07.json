@@ -1,0 +1,37 @@
+{
+  "agent_framework": "ironclaw",
+  "agent_id": "ai:alice",
+  "ai_memory_ops": [
+    {
+      "duration_ms": 443,
+      "key_or_query": "audit-verify",
+      "namespace": "<global>",
+      "ok": true,
+      "op": "audit_verify",
+      "payload_sha256": "4470a5687db11c888b59462de73497d8776053e5571d545e137384942deb5700",
+      "returned_records": 0,
+      "scope": "org",
+      "transport": "http"
+    }
+  ],
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r14",
+  "claims_grounded": [],
+  "claims_made": [],
+  "control_arm": "phase2",
+  "llm_model_sku": "grok-4-fast-non-reasoning",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "notes": "audit_sha256=4470a5687db11c888b59462de73497d8776053e5571d545e137384942deb5700; rc=2; audit feature opt-in or tamper-state \u2014 non-zero rc accepted at hook level",
+  "phase": 2,
+  "prompt_sha256": "b4aae2d2b684d7e7208f29a7946bc0414e3b8ddde055936bc717e80cfff80590",
+  "refusals": [],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "phase2",
+  "schema_version": "v0.6.3.1-a2a-nhi-1",
+  "self_confidence": 0.7,
+  "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "termination_reason": "task_complete",
+  "timestamp_utc": "2026-05-02T02:05:13Z",
+  "tools_called": [],
+  "turn_id": "phase2-phase2-r1-t7"
+}

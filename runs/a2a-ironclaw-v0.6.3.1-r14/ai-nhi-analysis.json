@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r14",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run demonstrates strong risk posture with 42/44 scenarios passing, validating core memory federation for production use in controlled environments, but the two failures (S23 config regression, S24 MCP fanout leak) block customer-facing claims of full reliability. Compared to prior runs, this shows improved stability in primitives but new regressions beyond known issues (#507, #318). Recommend Patch 2 deployment to achieve readiness, maintaining current testing cadence.",
+  "for_non_technical": "In this test, AI agents successfully shared and recalled memories in most cases, ensuring they can work together reliably across a network. However, two specific issues prevented perfect performance: one with configuration file handling and another with internal communication not reaching all agents. Overall, agents do share memory reliably in 95% of tested situations, but needs fixes for full dependability.",
+  "for_sme": "Failures in S23 (config.toml ~ expansion, all nodes returned 'info' instead of 'ok' on absolute paths, plus 'error' in doctor storage; tied to #507) and S24 (MCP stdio writes bypassed fanout, leaking 1/7 tools like memory_delete to peers while phase-2 local audit failed; tied to #318) indicate root causes in path resolution and event propagation primitives. Core store/recall (S1, S4), hybrid search (S18), and bulk ops (S40) remain solid with 100% recall rates. No skipped scenarios; focus fixes on federation hooks before next run.",
+  "headline": "AI memory federation passes 42/44 scenarios, fails on config and MCP fanout",
+  "next_run_change": "Apply Patch 2 to resolve #507 and #318 regressions in config parsing and MCP fanout before re-running S23/S24.",
+  "verdict": "PARTIAL \u2014 2 scenarios failed due to config parsing and MCP replication issues",
+  "what_it_proved": "Proved reliable memory sharing and primitive operations in 42 scenarios, but exposed regressions in config.toml tilde expansion (S23) and MCP stdio bypassing federation (S24) preventing full production readiness.",
+  "what_it_tested": "Tested 44 scenarios across mTLS transport, IronClaw agent framework, and primitives including memory store/recall, deletion, linking, promotion, hybrid search, permissions, pubsub, and federation fanout in a 4-node mesh."
+}

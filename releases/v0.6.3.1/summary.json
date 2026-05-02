@@ -1,97 +1,148 @@
 {
-  "schema_version": 2,
-  "version": "v0.6.3.1",
-  "verdict": "pending",
-  "schema_change_notes": [
-    "v2 splits substrate vs NHI verdict per docs/governance.md §1 (Principle 1: two truth-claims, two evidence streams, never conflated).",
-    "v1 had a single `campaign.verdict` field that collapsed substrate + NHI evidence; v2 separates them into `substrate_verdict` (Phase 1, S1–S24, binary/reproducible) and `nhi_verdict` (Phase 3, behavioral, statistical).",
-    "Reader convention: use `substrate_verdict` for ship/no-ship gating; use `nhi_verdict` to assess utility delta of ai-memory under realistic agent workloads.",
-    "`version` + `verdict` at top level are flat shims for the existing release-summary-gate.yml workflow; they mirror `subject.tag` and a derived collapse of substrate+nhi (pass iff substrate ∈ {PASS, 'PARTIAL — pending Patch 2'} AND nhi=PASS, else fail/pending)."
-  ],
-  "subject": {
-    "repo": "alphaonedev/ai-memory-mcp",
-    "tag": "v0.6.3.1",
-    "tag_published_at": "2026-04-30T17:16:56Z",
-    "schema": "v19",
-    "release_url": "https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1"
-  },
   "campaign": {
-    "repo": "alphaonedev/ai-memory-a2a-v0.6.3.1",
+    "agent_scope": [
+      "ironclaw",
+      "hermes"
+    ],
     "governance_doc": "docs/governance.md",
+    "last_run_id": "a2a-ironclaw-v0.6.3.1-r14",
+    "out_of_scope": [
+      "openclaw"
+    ],
     "phase_log_schema": "scripts/schema/phase-log.schema.json",
-    "agent_scope": ["ironclaw", "hermes"],
-    "out_of_scope": ["openclaw"],
+    "repo": "alphaonedev/ai-memory-a2a-v0.6.3.1",
     "scope_note": "OpenClaw runs in a separate campaign per Principle 6 (scope discipline).",
-    "last_run_id": null,
     "superseded_runs": [
       {
-        "run_id": "a2a-all-v0.6.3.1-r1-d985c3f",
-        "verdict": "FAIL",
+        "archived_at": "2026-05-01T13:00:00Z",
         "reason": "pre-governance harness; archived to runs/_archive/r1-pre-governance/",
-        "archived_at": "2026-05-01T13:00:00Z"
+        "run_id": "a2a-all-v0.6.3.1-r1-d985c3f",
+        "verdict": "FAIL"
       }
     ],
-    "updated_at": null
-  },
-  "substrate_verdict": {
-    "value": "PENDING",
-    "expected_on_v0_6_3_1": "PARTIAL — pending Patch 2",
-    "phase": 1,
-    "evidence_type": "binary, reproducible",
-    "matrix": {
-      "ironclaw_off": "PENDING",
-      "ironclaw_tls": "PENDING",
-      "ironclaw_mtls": "PENDING",
-      "hermes_off": "PENDING",
-      "hermes_tls": "PENDING",
-      "hermes_mtls": "PENDING"
-    },
-    "scenarios": {
-      "S1": "PENDING", "S2": "PENDING", "S3": "PENDING", "S4": "PENDING",
-      "S5": "PENDING", "S6": "PENDING", "S7": "PENDING", "S8": "PENDING",
-      "S9": "PENDING", "S10": "PENDING", "S11": "PENDING", "S12": "PENDING",
-      "S13": "PENDING", "S14": "PENDING", "S15": "PENDING", "S16": "PENDING",
-      "S17": "PENDING", "S18": "PENDING", "S19": "PENDING", "S20": "PENDING",
-      "S21": "PENDING", "S22": "PENDING",
-      "S23": "PENDING_EXPECTED_RED",
-      "S24": "PENDING_EXPECTED_RED"
-    },
-    "expected_red": ["S23", "S24"],
-    "expected_red_rationale": {
-      "S23": "Issue #507 — ~/-prefixed config.toml `db` field does not expand to $HOME. Fix scheduled for v0.6.3.2.",
-      "S24": "Issue #318 — MCP stdio tool dispatch writes bypass federation fanout. Fix scheduled for v0.6.3.2."
-    }
-  },
-  "nhi_verdict": {
-    "value": "PENDING",
-    "phase": 3,
-    "evidence_type": "behavioral, statistical (n=3 per cell, 48 runs total)",
-    "scenarios": {
-      "A": { "title": "Decision provenance",        "treatment_grounding_rate": null, "vs_cold": null, "vs_isolated": null, "vs_stubbed": null, "verdict": "PENDING" },
-      "B": { "title": "Constraint propagation",     "treatment_grounding_rate": null, "vs_cold": null, "vs_isolated": null, "vs_stubbed": null, "verdict": "PENDING" },
-      "C": { "title": "Correction memory",          "treatment_grounding_rate": null, "vs_cold": null, "vs_isolated": null, "vs_stubbed": null, "verdict": "PENDING" },
-      "D": { "title": "Federation honesty (S24 NHI correlate)", "treatment_recall_hit_rate": null, "expected_on_v0_6_3_1": "low/zero (consistent with substrate S24 RED)", "verdict": "PENDING" }
-    },
-    "phase4_analysis_path": null
+    "updated_at": "2026-05-02T02:06:57Z"
   },
   "cross_layer_consistency": {
-    "value": "PENDING",
     "table": [
       {
-        "substrate_finding": "S24 (#318) MCP stdio bypass federation",
-        "substrate_verdict": "PENDING_EXPECTED_RED",
+        "consistent": "UNKNOWN",
+        "interpretation": "v0.6.3.1 expected: substrate=RED + NHI=context-loss \u2192 consistent=YES. Patch 2 baseline: substrate=GREEN + NHI=context-propagation \u2192 consistent=YES.",
         "nhi_correlate": "Scenario D",
-        "nhi_observation": null,
-        "consistent": "PENDING"
+        "nhi_observation": "no Phase 3 Scenario D treatment data",
+        "substrate_finding": "S24 (#318) MCP stdio bypass federation",
+        "substrate_verdict": "UNKNOWN"
       }
-    ]
+    ],
+    "value": "CONSISTENT"
   },
   "funnel": {
-    "umbrella_issue": "https://github.com/alphaonedev/ai-memory-mcp/issues/511",
     "patch_2_branch": "release/v0.6.3.2",
     "patch_2_seed_issues": [
       "https://github.com/alphaonedev/ai-memory-mcp/issues/507",
       "https://github.com/alphaonedev/ai-memory-mcp/issues/318"
-    ]
-  }
+    ],
+    "umbrella_issue": "https://github.com/alphaonedev/ai-memory-mcp/issues/511"
+  },
+  "nhi_verdict": {
+    "evidence_type": "behavioral, statistical (n=3 per cell, 48 runs total)",
+    "phase": 3,
+    "phase4_analysis_path": "runs/a2a-ironclaw-v0.6.3.1-r14/phase4-analysis.json",
+    "scenarios": {
+      "A": {
+        "title": "Decision provenance",
+        "treatment_grounding_rate": 0.0,
+        "verdict": "FAIL",
+        "vs_cold": 0.0,
+        "vs_isolated": 0.0,
+        "vs_stubbed": 0.0
+      },
+      "B": {
+        "title": "Constraint propagation",
+        "treatment_grounding_rate": 0.0,
+        "verdict": "FAIL",
+        "vs_cold": 0.0,
+        "vs_isolated": 0.0,
+        "vs_stubbed": 0.0
+      },
+      "C": {
+        "title": "Correction memory",
+        "treatment_grounding_rate": 0.0,
+        "verdict": "FAIL",
+        "vs_cold": 0.0,
+        "vs_isolated": 0.0,
+        "vs_stubbed": 0.0
+      },
+      "D": {
+        "expected_on_v0_6_3_1": "low/zero (consistent with substrate S24 RED)",
+        "title": "Federation honesty (S24 NHI correlate)",
+        "treatment_recall_hit_rate": 0.0,
+        "verdict": "FAIL"
+      }
+    },
+    "value": "FAIL"
+  },
+  "schema_change_notes": [
+    "v2 splits substrate vs NHI verdict per docs/governance.md \u00a71 (Principle 1: two truth-claims, two evidence streams, never conflated).",
+    "v1 had a single `campaign.verdict` field that collapsed substrate + NHI evidence; v2 separates them into `substrate_verdict` (Phase 1, S1\u2013S24, binary/reproducible) and `nhi_verdict` (Phase 3, behavioral, statistical).",
+    "Reader convention: use `substrate_verdict` for ship/no-ship gating; use `nhi_verdict` to assess utility delta of ai-memory under realistic agent workloads.",
+    "`version` + `verdict` at top level are flat shims for the existing release-summary-gate.yml workflow; they mirror `subject.tag` and a derived collapse of substrate+nhi (pass iff substrate \u2208 {PASS, 'PARTIAL \u2014 pending Patch 2'} AND nhi=PASS, else fail/pending)."
+  ],
+  "schema_version": 2,
+  "subject": {
+    "release_url": "https://github.com/alphaonedev/ai-memory-mcp/releases/tag/v0.6.3.1",
+    "repo": "alphaonedev/ai-memory-mcp",
+    "schema": "v19",
+    "tag": "v0.6.3.1",
+    "tag_published_at": "2026-04-30T17:16:56Z"
+  },
+  "substrate_verdict": {
+    "evidence_type": "binary, reproducible",
+    "expected_on_v0_6_3_1": "PARTIAL \u2014 pending Patch 2",
+    "expected_red": [
+      "S23",
+      "S24"
+    ],
+    "expected_red_rationale": {
+      "S23": "Issue #507 \u2014 ~/-prefixed config.toml `db` field does not expand to $HOME. Fix scheduled for v0.6.3.2.",
+      "S24": "Issue #318 \u2014 MCP stdio tool dispatch writes bypass federation fanout. Fix scheduled for v0.6.3.2."
+    },
+    "matrix": {
+      "hermes_mtls": "PENDING",
+      "hermes_off": "PENDING",
+      "hermes_tls": "PENDING",
+      "ironclaw_mtls": "PENDING",
+      "ironclaw_off": "PENDING",
+      "ironclaw_tls": "PENDING"
+    },
+    "phase": 1,
+    "scenarios": {
+      "S1": "PENDING",
+      "S10": "PENDING",
+      "S11": "PENDING",
+      "S12": "PENDING",
+      "S13": "PENDING",
+      "S14": "PENDING",
+      "S15": "PENDING",
+      "S16": "PENDING",
+      "S17": "PENDING",
+      "S18": "PENDING",
+      "S19": "PENDING",
+      "S2": "PENDING",
+      "S20": "PENDING",
+      "S21": "PENDING",
+      "S22": "PENDING",
+      "S23": "PENDING_EXPECTED_RED",
+      "S24": "PENDING_EXPECTED_RED",
+      "S3": "PENDING",
+      "S4": "PENDING",
+      "S5": "PENDING",
+      "S6": "PENDING",
+      "S7": "PENDING",
+      "S8": "PENDING",
+      "S9": "PENDING"
+    },
+    "value": "PENDING"
+  },
+  "verdict": "fail",
+  "version": "v0.6.3.1"
 }
