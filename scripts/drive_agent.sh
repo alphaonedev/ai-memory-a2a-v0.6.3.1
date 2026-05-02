@@ -53,6 +53,23 @@ agent_cli() { command -v "$AGENT_TYPE" >/dev/null 2>&1; }
 #   Model SKU parameterized via $A2A_GATE_LLM_MODEL (default grok-4-0709 =
 #   Grok 4.2 reasoning). Override for cost-optimized runs (#4).
 : "${A2A_GATE_LLM_MODEL:=grok-4-0709}"
+
+# MCP tool names surface to the LLM under framework-specific aliases.
+# ironclaw + openclaw forward the bare names advertised by the MCP server
+# (memory_store, memory_recall, memory_list, ...). hermes-agent prefixes
+# each MCP tool as `mcp_<server-name>_<tool-name>` — the server is
+# registered as `memory` in ~/.hermes/config.yaml's mcp_servers block
+# (see setup_node.sh hermes branch), so `memory_store` becomes
+# `mcp_memory_memory_store` from the agent's tool-selection perspective.
+# Without the prefix, hermes replies "I don't have access to <tool>".
+mcp_tool_name() {
+  local bare="$1"
+  case "$AGENT_TYPE" in
+    hermes) printf 'mcp_memory_%s' "$bare" ;;
+    *)      printf '%s' "$bare" ;;
+  esac
+}
+
 agent_prompt() {
   case "$AGENT_TYPE" in
     openclaw)
@@ -86,15 +103,15 @@ openclaw_driver() {
       store)
         title="${1:?title required}"; content="${2:?content required}"
         ns="${3:-scenario}"
-        if agent_prompt "Store a memory in namespace ${ns} titled \"${title}\" with content: ${content}. Use the ai-memory MCP memory_store tool."; then return; fi
+        if agent_prompt "Store a memory in namespace ${ns} titled \"${title}\" with content: ${content}. Use the ai-memory MCP $(mcp_tool_name memory_store) tool."; then return; fi
         ;;
       recall)
         query="${1:?query required}"; ns="${2:-}"
-        if agent_prompt "Recall memories matching \"${query}\"${ns:+ in namespace ${ns}} using the ai-memory MCP memory_recall tool. Return the JSON result verbatim."; then return; fi
+        if agent_prompt "Recall memories matching \"${query}\"${ns:+ in namespace ${ns}} using the ai-memory MCP $(mcp_tool_name memory_recall) tool. Return the JSON result verbatim."; then return; fi
         ;;
       list)
         ns="${1:-}"
-        if agent_prompt "List memories${ns:+ in namespace ${ns}} using the ai-memory MCP memory_list tool. Return the JSON result verbatim."; then return; fi
+        if agent_prompt "List memories${ns:+ in namespace ${ns}} using the ai-memory MCP $(mcp_tool_name memory_list) tool. Return the JSON result verbatim."; then return; fi
         ;;
       *)
         echo "unknown action: $ACTION" >&2; exit 1 ;;
@@ -114,15 +131,15 @@ hermes_driver() {
       store)
         title="${1:?title required}"; content="${2:?content required}"
         ns="${3:-scenario}"
-        if agent_prompt "Store a memory: namespace=${ns} title=\"${title}\" content=${content} via the ai-memory MCP memory_store tool."; then return; fi
+        if agent_prompt "Store a memory: namespace=${ns} title=\"${title}\" content=${content} via the ai-memory MCP $(mcp_tool_name memory_store) tool."; then return; fi
         ;;
       recall)
         query="${1:?query required}"; ns="${2:-}"
-        if agent_prompt "Recall on \"${query}\"${ns:+ namespace=${ns}} via the ai-memory MCP memory_recall tool; output JSON."; then return; fi
+        if agent_prompt "Recall on \"${query}\"${ns:+ namespace=${ns}} via the ai-memory MCP $(mcp_tool_name memory_recall) tool; output JSON."; then return; fi
         ;;
       list)
         ns="${1:-}"
-        if agent_prompt "List memories${ns:+ namespace=${ns}} via the ai-memory MCP memory_list tool; output JSON."; then return; fi
+        if agent_prompt "List memories${ns:+ namespace=${ns}} via the ai-memory MCP $(mcp_tool_name memory_list) tool; output JSON."; then return; fi
         ;;
       *)
         echo "unknown action: $ACTION" >&2; exit 1 ;;
@@ -179,15 +196,15 @@ ironclaw_driver() {
       store)
         title="${1:?title required}"; content="${2:?content required}"
         ns="${3:-scenario}"
-        if agent_prompt "Store a memory: namespace=${ns} title=\"${title}\" content=${content} via the ai-memory MCP memory_store tool."; then return; fi
+        if agent_prompt "Store a memory: namespace=${ns} title=\"${title}\" content=${content} via the ai-memory MCP $(mcp_tool_name memory_store) tool."; then return; fi
         ;;
       recall)
         query="${1:?query required}"; ns="${2:-}"
-        if agent_prompt "Recall on \"${query}\"${ns:+ namespace=${ns}} via the ai-memory MCP memory_recall tool; output JSON."; then return; fi
+        if agent_prompt "Recall on \"${query}\"${ns:+ namespace=${ns}} via the ai-memory MCP $(mcp_tool_name memory_recall) tool; output JSON."; then return; fi
         ;;
       list)
         ns="${1:-}"
-        if agent_prompt "List memories${ns:+ namespace=${ns}} via the ai-memory MCP memory_list tool; output JSON."; then return; fi
+        if agent_prompt "List memories${ns:+ namespace=${ns}} via the ai-memory MCP $(mcp_tool_name memory_list) tool; output JSON."; then return; fi
         ;;
       *)
         echo "unknown action: $ACTION" >&2; exit 1 ;;
