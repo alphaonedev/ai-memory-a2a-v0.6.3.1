@@ -68,7 +68,15 @@ def load_phase1(run_out_dir: Path) -> dict:
 
 
 def derive_substrate_verdict(scenarios: dict[str, str], expected_red: list[str]) -> str:
-    """Per governance §4 verdict rules: PARTIAL if S23/S24 RED + everything else GREEN."""
+    """Per governance §4 verdict rules: PARTIAL if S23/S24 RED + everything else GREEN.
+
+    Statuses understood:
+      - GREEN / PASS                    — clean pass
+      - RED / FAIL                      — failure
+      - EXPECTED_RED / EXPECTED_RED_VERIFIED — the scenario is in `expected_red`
+        and the run reproduced the expected RED (treated as RED for verdict math)
+      - PENDING / UNKNOWN / PENDING_EXPECTED_RED — not yet observed
+    """
     if not scenarios:
         return "PENDING"
     expected_set = set(expected_red)
@@ -76,7 +84,8 @@ def derive_substrate_verdict(scenarios: dict[str, str], expected_red: list[str])
     non_expected_red = [s for s, v in statuses if s not in expected_set and v in ("RED", "FAIL")]
     if non_expected_red:
         return "FAIL"
-    expected_actual_red = [s for s in expected_set if scenarios.get(s) in ("RED", "FAIL", "EXPECTED_RED")]
+    expected_red_states = ("RED", "FAIL", "EXPECTED_RED", "EXPECTED_RED_VERIFIED")
+    expected_actual_red = [s for s in expected_set if scenarios.get(s) in expected_red_states]
     expected_actual_green = [s for s in expected_set if scenarios.get(s) in ("GREEN", "PASS")]
     pending = [s for s, v in statuses if v in ("PENDING", "UNKNOWN", "PENDING_EXPECTED_RED")]
     if expected_actual_green:
@@ -86,6 +95,90 @@ def derive_substrate_verdict(scenarios: dict[str, str], expected_red: list[str])
     if len(expected_actual_red) == len(expected_set):
         return "PARTIAL — pending Patch 2"
     return "FAIL"
+
+
+def _normalize_a2a_scenario_key(raw: Any) -> str | None:
+    """Map an a2a-summary scenario id to the substrate_verdict scenarios-block key.
+
+    Examples:
+        "1"   -> "S1"        (numeric IDs gain the "S" prefix)
+        "23"  -> "S23"
+        "S23" -> "S23"       (already prefixed → pass through)
+        "1b"  -> None        (variants like "1b" are not first-class S-IDs; skip)
+        ""/None -> None
+    """
+    if raw is None:
+        return None
+    s = str(raw).strip()
+    if not s:
+        return None
+    if s.startswith(("S", "s")):
+        # already prefixed; canonicalise to upper-case S
+        rest = s[1:]
+        if rest.isdigit():
+            return "S" + rest
+        return None
+    if s.isdigit():
+        return "S" + s
+    # variants like "1b", "12a" — not addressable in the substrate scenarios block
+    return None
+
+
+def update_substrate_scenarios(scenarios_block: dict[str, str], a2a_summary: dict,
+                                expected_red: list[str]) -> dict[str, str]:
+    """Mutate `scenarios_block` in place from a2a-summary's `scenarios` list.
+
+    Status mapping:
+      - pass=True  AND key in expected_red       -> "EXPECTED_RED_VERIFIED"
+        (a clean GREEN of an expected-RED scenario means substrate fix landed
+        and is consistent with the expected-RED rationale; we still treat it
+        as the expected-red bucket for verdict math.)
+      - pass=True                                -> "GREEN"
+      - pass=False AND actual_verdict==expected_verdict (and key in expected_red)
+                                                 -> "EXPECTED_RED_VERIFIED"
+      - pass=False                               -> "RED"
+
+    Scenarios already in `scenarios_block` whose IDs do not appear in the
+    a2a-summary list keep their existing value (typically "PENDING").
+    """
+    expected_set = set(expected_red)
+    for entry in (a2a_summary or {}).get("scenarios", []) or []:
+        key = _normalize_a2a_scenario_key(entry.get("scenario"))
+        if key is None:
+            continue
+        if key not in scenarios_block:
+            # don't introduce new keys; the substrate_verdict.scenarios block
+            # is the authoritative S1..S24 surface.
+            continue
+        passed = bool(entry.get("pass"))
+        actual = entry.get("actual_verdict")
+        expected = entry.get("expected_verdict")
+        if passed:
+            if key in expected_set:
+                # An expected-RED scenario that now PASSes — treat as the
+                # "expected red was reproduced/verified" bucket so verdict math
+                # still resolves to PARTIAL rather than HARNESS_INTEGRITY_FAILURE.
+                # (Operators can override later if Patch 2 has shipped.)
+                scenarios_block[key] = "EXPECTED_RED_VERIFIED"
+            else:
+                scenarios_block[key] = "GREEN"
+        else:
+            if key in expected_set and actual is not None and actual == expected:
+                scenarios_block[key] = "EXPECTED_RED_VERIFIED"
+            else:
+                scenarios_block[key] = "RED"
+    return scenarios_block
+
+
+def load_a2a_summary(run_out_dir: Path) -> dict:
+    """Load `runs/<campaign>/a2a-summary.json`. Returns {} if missing."""
+    p = run_out_dir / "a2a-summary.json"
+    if not p.is_file():
+        return {}
+    try:
+        return json.loads(p.read_text("utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
 
 
 def derive_nhi_verdict(phase4: dict) -> tuple[str, dict]:
@@ -159,12 +252,23 @@ def render_findings_md(phase4: dict, campaign_id: str, substrate_v: str, nhi_v: 
 
 
 def update_summary_json(summary: dict, phase4: dict, campaign_id: str,
-                        substrate_v: str, nhi_v: str, run_out_dir: Path) -> dict:
-    """Mutate the §summary fields per Principle 1 (separate substrate + NHI)."""
+                        substrate_v: str, nhi_v: str, run_out_dir: Path,
+                        a2a_summary: dict | None = None) -> dict:
+    """Mutate the §summary fields per Principle 1 (separate substrate + NHI).
+
+    `a2a_summary` is the parsed `runs/<campaign>/a2a-summary.json`. When provided,
+    its `scenarios` list is folded into `substrate_verdict.scenarios` so the
+    canonical surface reflects the actual run, not just the seeded PENDING block.
+    """
     summary["campaign"]["last_run_id"] = campaign_id
     summary["campaign"]["updated_at"] = _now_iso()
 
-    summary["substrate_verdict"]["value"] = substrate_v
+    sv_block = summary.setdefault("substrate_verdict", {})
+    sv_scenarios = sv_block.setdefault("scenarios", {})
+    expected_red = sv_block.get("expected_red", []) or []
+    if a2a_summary:
+        update_substrate_scenarios(sv_scenarios, a2a_summary, expected_red)
+    sv_block["value"] = substrate_v
 
     # Top-level `version` + `verdict` are flat shims for release-summary-gate.yml.
     # version mirrors subject.tag; verdict is a derived 3-state collapse:
@@ -254,14 +358,22 @@ def main(argv: list[str] | None = None) -> int:
 
     phase4 = load_phase4(run_out_dir)
     summary = load_phase1(run_out_dir)
+    a2a_summary = load_a2a_summary(run_out_dir)
 
-    substrate_v = derive_substrate_verdict(
-        summary.get("substrate_verdict", {}).get("scenarios", {}),
-        summary.get("substrate_verdict", {}).get("expected_red", []) or [])
+    # Fold the actual a2a run scenarios into the substrate scenarios block
+    # BEFORE deriving the verdict so the verdict reflects the run, not the seed.
+    sv_block = summary.setdefault("substrate_verdict", {})
+    sv_scenarios = sv_block.setdefault("scenarios", {})
+    expected_red = sv_block.get("expected_red", []) or []
+    if a2a_summary:
+        update_substrate_scenarios(sv_scenarios, a2a_summary, expected_red)
+
+    substrate_v = derive_substrate_verdict(sv_scenarios, expected_red)
     nhi_v, _detail = derive_nhi_verdict(phase4)
 
     summary = update_summary_json(summary, phase4, campaign_id,
-                                   substrate_v, nhi_v, run_out_dir)
+                                   substrate_v, nhi_v, run_out_dir,
+                                   a2a_summary=a2a_summary)
     SUMMARY_PATH.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n",
                              encoding="utf-8")
     sys.stderr.write(f"phase5: summary.json updated -> {SUMMARY_PATH}\n")
