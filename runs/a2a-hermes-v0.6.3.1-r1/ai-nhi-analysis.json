@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r1",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run exposes a high-risk failure in the CI/CD pipeline, blocking assessment of production readiness for v0.6.3.1; no data on memory sharing reliability means we cannot validate customer claims about agent interoperability. Compared to prior runs, this represents a regression in test harness stability, potentially delaying deployment timelines.",
+  "for_non_technical": "This test run was meant to check if AI agents can reliably share memory across a network. Unfortunately, no test results were captured, so we couldn't verify if the memory sharing works as expected. It means the agents' ability to remember and share information remains unproven in this attempt.",
+  "for_sme": "All 32 requested scenarios (S1, S1b, S2, S4-S6, S9-S18, S22-S25, S28-S42) resulted in zero reports, with overall_pass=false and reason 'no scenario reports recovered'; likely root cause is a failure in the test harness (harness_sha: ca2dc75fff0f05014d87e4ecf646650f49f0245b) during execution on the 4-node DigitalOcean mesh, possibly due to logging, artifact collection, or infra provisioning issues in the GitHub Actions workflow.",
+  "headline": "Campaign run failed due to no scenario reports recovered",
+  "next_run_change": "Investigate and fix test harness reporting pipeline to ensure scenario results are captured and stored before re-running the campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The campaign infrastructure failed to generate or retrieve any scenario results, demonstrating a critical breakdown in test reporting or execution.",
+  "what_it_tested": "Intended to exercise 32 scenarios covering transport protocols, framework integrations, and memory primitives in a 4-node DigitalOcean federation mesh, but no tests executed successfully."
+}
