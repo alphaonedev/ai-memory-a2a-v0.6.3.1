@@ -1072,14 +1072,13 @@ EOF
     # subcommand. `hermes mcp list` immediately after the file write
     # should observe the config (no caching like ai-memory's
     # _RAW_CONFIG_CACHE because the mtime check there is per-process).
-    # TODO(droplet-validation): confirm on a live hermes droplet that
-    # the agent loop (`hermes chat -Q -q "..."`) actually surfaces
-    # mcp_memory_* tools to Grok. If the F2b canary still fails after
-    # this fix, the issue is downstream (likely tool-name prefix
-    # confusion: hermes registers MCP tools as `mcp_<server>_<tool>`,
-    # so `memory_store` becomes `mcp_memory_memory_store` — the
-    # f2b_prompt may need an explicit prefix hint, but that's
-    # drive_agent.sh territory and out of scope for this patch).
+    # NOTE(droplet-validation): hermes-agent registers MCP tools as
+    # `mcp_<server-name>_<tool-name>` (server = `memory` per the
+    # mcp_servers block above), so the bare `memory_store` advertised
+    # over MCP stdio surfaces to Grok as `mcp_memory_memory_store`.
+    # The F2b canary prompt and drive_agent.sh prompts now resolve
+    # the right alias per AGENT_TYPE — see the F2B_TOOL_NAME case at
+    # ~line 1503 and drive_agent.sh's `mcp_tool_name` helper.
     hermes_mcp_listed=false
     for _attempt in 1 2 3 4 5; do
       if hermes mcp list 2>/dev/null | grep -q memory; then
@@ -1500,7 +1499,18 @@ fi
 # when F2b passes, agents are fully ready for A2A scenarios.
 F2B_UUID=$(cat /proc/sys/kernel/random/uuid 2>/dev/null || echo "canary-b-$RANDOM-$RANDOM")
 F2B_NS="_baseline_canary_f2b"
-F2B_PROMPT="Use the ai-memory MCP memory_store tool to save a memory with namespace=${F2B_NS}, title=canary-${AGENT_ID}, content=${F2B_UUID}. Respond with DONE when the tool call completes."
+# Tool-name prefixing varies by agent framework. ironclaw + openclaw expose
+# MCP tools under their bare server-advertised names (memory_store, ...).
+# hermes-agent (NousResearch) prefixes every MCP tool as
+# `mcp_<server-name>_<tool-name>` — the server is registered as `memory`
+# in ~/.hermes/config.yaml's mcp_servers block (see line ~1014), so
+# `memory_store` surfaces to Grok as `mcp_memory_memory_store`. Without
+# this prefix, hermes replies "I don't have access to memory_store".
+case "$AGENT_TYPE" in
+  hermes)    F2B_TOOL_NAME="mcp_memory_memory_store" ;;
+  ironclaw|openclaw|*) F2B_TOOL_NAME="memory_store" ;;
+esac
+F2B_PROMPT="Use the ai-memory MCP ${F2B_TOOL_NAME} tool to save a memory with namespace=${F2B_NS}, title=canary-${AGENT_ID}, content=${F2B_UUID}. Respond with DONE when the tool call completes."
 . /etc/ai-memory-a2a/env
 log "  F2b: invoking $AGENT_TYPE with timeout ${TIMEOUT_AGENT_CLI}s"
 case "$AGENT_TYPE" in
