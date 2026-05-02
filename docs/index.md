@@ -33,6 +33,24 @@ through a central ai-memory authoritative store.
 
 ---
 
+## Full-spectrum test landscape
+
+This campaign exercises ai-memory across **five orthogonal evidence surfaces**, each producing a separately-auditable artifact. The First-Principles governance (`docs/governance.md`) keeps them from being conflated.
+
+| Surface | What it proves | Where it lives | Run count per dispatch |
+|---|---|---|---|
+| **Phase 1 — Substrate cert** | Testbook S1–S42 — the binary, reproducible substrate. Includes carry-forward S1–S8 + Class B v0.6.3.1 surfaces (boot/install/wrap/audit/doctor + G4/G5/G6/G9/G13). | [Test book](testbook.md), [Scenarios](scenarios/1-write-read.md) | up to 42 |
+| **v0.6.3.1 expected-RED canaries** | Harness-integrity self-test. S23 (#507 ~/expansion), S24 (#318 MCP stdio fanout) confirm the harness can detect known-open defects. | scenarios/v0.6.3.1/S{23,24}/ | 2 |
+| **Forensic audit canaries** | S25 hash-chain, S26 tamper detection, S27 OS append-only. Legally-reproducible audit-log integrity. | [Forensic Audit Trail](forensic-audit.md), scenarios/v0.6.3.1/S{25,26,27}/ | 3 |
+| **Phase 2 — Scripted A2A dry run** | 6 scripted exchanges between IronClaw + Hermes through ai-memory: write round-trip, cross-agent recall, scope enforcement, tag write+recall, audit-verify hook, JSON log sink. Gates Phase 3. | `scripts/phase2_orchestration.py` | 6 exchanges |
+| **Phase 3 — Autonomous NHI playbook** | LLM-driven agents, 4 scenarios × 4 control arms × n=3 = 48 cells, with 4 additional Prime Directive safety scenarios E–H + 2 forensic-reproducibility scenarios I/J. Tests what regular substrate testing can't capture: agent behavior under context, refusals, cross-agent override resistance. | [AI NHI assessments](nhi-assessments.md), [AI NHI insights](nhi-insights.md) | 48–96 cells |
+
+After Phase 3, **Phase 4** (meta-analysis by an isolated third Claude instance with no namespace access) computes grounding rate, hallucination rate, recall hit rate, treatment effects (T vs cold/isolated/stubbed), cross-layer consistency table, audit forensics block — see the [per-run NHI matrix](nhi/) and the [forensics matrix](forensics/) for live evidence. **Phase 5** rolls everything into [`releases/v0.6.3.1/summary.json`](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/releases/v0.6.3.1/summary.json) and funnels findings into Patch 2.
+
+The **Prime Directive** ("Ensuring AGI/ASI goals, values, and behaviors stay permanently safe and beneficial to humanity — like unbreakable guardrails so superintelligence never turns against us.") is pinned in ai-memory at `system/governance/prime-directive` and is what scenarios E–H test enforcement of: cross-agent coercion resistance, override-via-write rejection, goal drift detection, identity spoofing rejection. See [Prime Directive doctrine](prime-directive.md).
+
+---
+
 ## Certification threshold
 
 A2A-gate certification requires **three consecutive `overall_pass = true` runs at full scenario coverage** (up to 36 scenarios under the [testbook v3.0.0](testbook.md) × [baseline v1.4.0](baseline.md) set — 36 at `mtls`, 35 at `tls`, 34 at `off`). Any single `overall_pass = false` resets the counter; there is no credit for partial green.
