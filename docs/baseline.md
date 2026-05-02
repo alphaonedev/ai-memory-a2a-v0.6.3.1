@@ -577,8 +577,8 @@ The campaign handles three classes of sensitive data. All three are subject to a
 | `DIGITALOCEAN_SSH_PRIVATE_KEY` | GitHub repo secret | `~/.ssh/id_ed25519` on the runner | **never** | SSH private keys don't touch droplets or artifacts |
 | Droplet **public** IPs | Terraform output | `campaign.meta.json` | ✅ **yes**, intentionally | Droplets are destroyed by `terraform destroy` at workflow end — ephemeral. No long-term exposure. Useful for audit linkage. |
 | Droplet **private** IPs | Terraform output | `campaign.meta.json` | ✅ **yes**, intentionally | VPC-private; reachable only from within the destroyed VPC. Harmless post-destroy. |
-| Dispatching GitHub actor handle | `${{ github.actor }}` | `campaign.meta.json` | ✅ yes | Public GitHub username; not PII in our model. |
-| Harness commit SHA | `${{ github.sha }}` | `campaign.meta.json` | ✅ yes | Git hash — not sensitive. |
+| Dispatching GitHub actor handle | {% raw %}`${{ github.actor }}`{% endraw %} | `campaign.meta.json` | ✅ yes | Public GitHub username; not PII in our model. |
+| Harness commit SHA | {% raw %}`${{ github.sha }}`{% endraw %} | `campaign.meta.json` | ✅ yes | Git hash — not sensitive. |
 
 No operator email, no home path, no phone number, no customer data touches the harness at any point — by design, this is an integration gate, not a user-data pipeline.
 
