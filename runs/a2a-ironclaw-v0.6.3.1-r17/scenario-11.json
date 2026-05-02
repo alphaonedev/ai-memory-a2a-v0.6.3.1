@@ -1,0 +1,1 @@
+{"agent_group": "ironclaw", "charlie_sees_link": 1, "link_http_code": 201, "m1_id": "7aff3cd9-bdfc-4796-8c4b-ebb341dcc73d", "m2_id": "2e8229da-8a7c-463b-9f16-b6b4ac4fdfb3", "pass": true, "reasons": [], "relation": "related_to", "scenario": "11", "skipped": false, "tls_mode": "mtls"}

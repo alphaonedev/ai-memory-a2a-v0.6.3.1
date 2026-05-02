@@ -1,0 +1,57 @@
+{
+  "agent_group": "ironclaw",
+  "audit_verify_sha256": "4470a5687db11c888b59462de73497d8776053e5571d545e137384942deb5700",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r17",
+  "exchanges": [
+    {
+      "duration_ms": 1445,
+      "id": "ex1-write-round-trip",
+      "memory_id": "a1ff4fa7-b45c-473f-8613-9aaeaf5cf330",
+      "pass": true,
+      "rt_value_sha256": "7a2577eac0bf5f7c94644073ba76bee855044a61f674e2387017d66b8e26329b",
+      "verify_byte_exact": true,
+      "write_http_status": 201
+    },
+    {
+      "duration_ms": 706,
+      "id": "ex2-cross-agent-recall",
+      "pass": true
+    },
+    {
+      "id": "ex3-scope-enforcement",
+      "leak_detected": false,
+      "pass": true
+    },
+    {
+      "id": "ex4-tag-recall",
+      "pass": true,
+      "recalled": 3,
+      "written": 3
+    },
+    {
+      "audit_output_sha256": "4470a5687db11c888b59462de73497d8776053e5571d545e137384942deb5700",
+      "audit_returncode": 2,
+      "binary_responded": true,
+      "duration_ms": 625,
+      "id": "ex5-audit-verify",
+      "integrity_ok": false,
+      "pass": true
+    },
+    {
+      "alice_seen": true,
+      "bob_seen": true,
+      "id": "ex6-log-sink-check",
+      "parse_failures": 0,
+      "pass": true,
+      "records_count": 7
+    }
+  ],
+  "generated_at_utc": "2026-05-02T18:31:13Z",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "pass": true,
+  "phase": 2,
+  "release": "v0.6.3.1",
+  "schema": "phase2-orchestration/v1",
+  "tls_mode": "mtls",
+  "turns_emitted": 9
+}

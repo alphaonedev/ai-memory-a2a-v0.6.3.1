@@ -1,0 +1,1 @@
+{"agent_group": "ironclaw", "charlie_view": {"agent_id": "ai:alice", "content": "v2-1cf078c3af9240a9b438d9ddf431c0f2"}, "m1_id": "55ae4f6f-6c8a-4c0d-a85f-a40dc1589e03", "pass": true, "put_http_code": 200, "reasons": [], "scenario": "9", "skipped": false, "tls_mode": "mtls", "v1_uuid": "v1-5632a76dcd4b4e959367686da88498af", "v2_uuid": "v2-1cf078c3af9240a9b438d9ddf431c0f2"}

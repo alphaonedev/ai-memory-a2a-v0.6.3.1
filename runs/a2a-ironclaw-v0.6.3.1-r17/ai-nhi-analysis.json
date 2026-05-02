@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r17",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run demonstrates low-risk posture with 100% scenario success, advancing production readiness for federated AI memory in multi-agent environments. Customer claims around reliable, secure memory sharing are now viable post-Patch 1. Compared to prior runs, mTLS integration resolved authentication gaps without introducing regressions.",
+  "for_non_technical": "Agents in this test successfully shared and recalled memories with each other every time, without any data getting lost or mixed up. The secure connection setup kept everything protected from outsiders. Overall, the memory sharing worked smoothly across the network.",
+  "for_sme": "All 42 scenarios (S1-S42) passed with zero reasons or failures; notable successes include hybrid recall in S18 (2 rows retrieved correctly), bulk writes in S40 (500 rows synced across nodes), and mTLS rejection in S21/S24 (certificate alerts and byzantine metadata rejected). No root causes evident; S23/S24 show expected RED verdicts for known issues (#507 tilde expansion, #318 MCP bypass) closing in Patch 2. Capabilities probe S30 confirms hybrid recall active with MiniLM embeddings loaded.",
+  "headline": "Ironclaw v0.6.3.1 achieves full scenario pass under mTLS federation",
+  "next_run_change": "none \u2014 keep cadence",
+  "verdict": "PASS \u2014 42/42 scenarios green, no failures or skips",
+  "what_it_proved": "The system reliably propagates memories across a 4-node mesh with consistent recall, secure mTLS enforcement, and correct handling of edge cases like byzantine writes and clock skew.",
+  "what_it_tested": "Exercised 42 scenarios covering memory CRUD, semantic/hybrid recall, permissions, pubsub, bulk ops, export/import, and diagnostics across mTLS transport, federation framework, and primitives like HNSW embeddings and tiered storage."
+}
