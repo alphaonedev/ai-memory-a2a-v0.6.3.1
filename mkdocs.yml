@@ -62,29 +62,28 @@ extra:
 
 nav:
   - Home: index.md
-  - Governance (authoritative):
+  - Governance:
       - First-Principles governance: governance.md
       - Prime Directive (safety): prime-directive.md
       - Scope (v0.6.3.1 specifics): scope.md
       - Verdict matrix: matrix.md
       - Findings funnel: findings.md
-  - AI NHI assessments:
+  - AI NHI:
       - What an NHI assessment is: nhi-assessments.md
-      - Latest-run insights (narrative): nhi-insights.md
+      - Latest-run insights: nhi-insights.md
       - Per-run NHI matrix: nhi/index.md
+      - Inherited gate insights: insights.md
   - Campaign runs: runs/
-  - Reproducing:
-      - Reproducing (DO): reproducing.md
-      - Local Docker mesh: local-docker-mesh.md
-  - Specification (inherited from gate):
+  - Specification:
       - Baseline configuration: baseline.md
       - Test book: testbook.md
       - Every test performed: tests.md
+      - Architecture: architecture.md
+      - Topology: topology.md
+      - Methodology: methodology.md
+      - ai-memory integration: ai-memory-integration.md
+      - Infrastructure versions: infrastructure.md
       - v1.0 GA criteria: v1-ga-criteria.md
-  - "Agents (in scope: IronClaw, Hermes)":
-      - IronClaw: agents/ironclaw.md
-      - Hermes: agents/hermes.md
-      - OpenClaw (out of scope): agents/openclaw.md
   - Scenarios:
       - Carry-forward S1–S8: scenarios.md
       - 1. Per-agent write + read: scenarios/1-write-read.md
@@ -95,17 +94,16 @@ nav:
       - 6. Contradiction detection: scenarios/6-contradiction.md
       - 7. Scoping visibility: scenarios/7-scoping.md
       - 8. Auto-tagging: scenarios/8-auto-tagging.md
-  - Architecture:
-      - Architecture: architecture.md
-      - Topology: topology.md
-      - Methodology: methodology.md
-      - ai-memory integration: ai-memory-integration.md
-      - Infrastructure versions: infrastructure.md
+  - Agents:
+      - IronClaw: agents/ironclaw.md
+      - Hermes: agents/hermes.md
+      - OpenClaw (out of scope): agents/openclaw.md
   - Operations:
       - Runbook: runbook.md
+      - Reproducing (DO): reproducing.md
+      - Local Docker mesh: local-docker-mesh.md
       - Incidents: incidents.md
       - Security: security.md
-  - AI NHI insights: insights.md
 
 plugins:
   - search
