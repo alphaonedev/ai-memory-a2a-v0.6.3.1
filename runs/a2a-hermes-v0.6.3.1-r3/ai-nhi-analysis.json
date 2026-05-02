@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r3",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run indicates a critical failure in the CI/CD pipeline, blocking assessment of production readiness for v0.6.3.1; risk posture is elevated due to unverified memory federation in multi-agent setups. Customer-facing claims on reliable AI collaboration cannot be substantiated without successful tests. Compared to prior runs, this represents a regression in test execution reliability, not in the core technology.",
+  "for_non_technical": "This test run was supposed to check if AI agents can reliably share memories with each other, but it didn't work properly. No results were collected from any of the planned checks. This means we can't say if the memory sharing works or not right now.",
+  "for_sme": "All 30 requested scenarios (S1,S1b,S2,S4-S6,S9-S18,S22-S25,S28-S42) resulted in zero reports recovered, with overall_pass=false and reasons=['no scenario reports recovered']. Probable root cause is a harness bug in report aggregation or CI workflow failure (harness_sha=5ee79f673ff4558c84c4656fa27eec80570d02a3, workflow=25257431036); no primitives or transports were actually exercised. Infra topology (4-node DO nyc3 mesh) appears provisioned correctly per node metadata.",
+  "headline": "Campaign run failed: no scenario reports recovered.",
+  "next_run_change": "Investigate and fix CI harness report recovery issue before re-running to ensure scenarios execute and results are captured.",
+  "verdict": "FAIL \u2014 no scenario reports recovered.",
+  "what_it_proved": "The testing infrastructure failed to generate or capture any scenario results, providing no evidence on AI memory sharing reliability.",
+  "what_it_tested": "Intended to exercise 30 scenarios (1,1b,2,4-6,9-18,22-25,28-42) covering transport protocols, framework integrations, and memory primitives in a 4-node DigitalOcean federation mesh with Hermes agents."
+}
