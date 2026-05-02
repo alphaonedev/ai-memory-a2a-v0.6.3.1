@@ -67,6 +67,10 @@ nav:
       - Scope (v0.6.3.1 specifics): scope.md
       - Verdict matrix: matrix.md
       - Findings funnel: findings.md
+  - AI NHI assessments:
+      - What an NHI assessment is: nhi-assessments.md
+      - Latest-run insights (narrative): nhi-insights.md
+      - Per-run NHI matrix: nhi/index.md
   - Campaign runs: runs/
   - Reproducing:
       - Reproducing (DO): reproducing.md

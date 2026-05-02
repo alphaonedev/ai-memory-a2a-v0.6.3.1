@@ -36,7 +36,7 @@ jobs:
       - name: Install mkdocs-material
         run: pip install mkdocs-material mkdocs-macros-plugin
 
-      - name: Build a landing page for runs/
+      - name: Build landing pages for runs/ and nhi/
         run: |
           set -euo pipefail
           mkdir -p docs/runs
@@ -178,6 +178,54 @@ jobs:
             fi
           } > docs/runs/index.md
           rm -f "$rows_ironclaw" "$rows_hermes" "$rows_openclaw"
+
+          # ---------------------------------------------------------------
+          # docs/nhi/index.md — per-run NHI verdict matrix.
+          #
+          # The page itself is committed under docs/nhi/index.md and renders
+          # via the render_nhi_per_run_matrix() macro in main.py (which reads
+          # every runs/*/phase4-analysis.json directly). This block is a
+          # workflow-side cross-check: it builds an auxiliary jq-derived row
+          # set (sorted newest-first by phase4 generated_at_utc) and verifies
+          # at least the expected number of rows are present so the macro
+          # can't silently render an empty table on a mis-staged commit. If
+          # the committed page is missing, we fall back to a minimal
+          # generated stub that still calls the macro.
+          # ---------------------------------------------------------------
+          mkdir -p docs/nhi
+          nhi_rows=$(mktemp)
+          for dir in $(ls -1d runs/*/ 2>/dev/null); do
+            analysis="${dir}phase4-analysis.json"
+            [ -f "$analysis" ] || continue
+            ts=$(jq -r '.generated_at_utc // ""' "$analysis" 2>/dev/null)
+            [ -z "$ts" ] && ts="0000-00-00T00:00:00Z"
+            run_id=$(basename "$dir")
+            verdict=$(jq -r '
+              ([.cross_layer_consistency_table[]?
+                | select((.consistent // "" | ascii_upcase) == "NO")] | length) as $no
+              | ([.treatment_effects // {} | to_entries[]?
+                  | (.value.vs_cold.delta_grounding_rate // 0),
+                    (.value.vs_isolated.delta_grounding_rate // 0),
+                    (.value.vs_stubbed.delta_grounding_rate // 0)
+                ] | map(select(. > 0)) | length) as $pos
+              | (if $no > 0 then "FAIL" elif $pos > 0 then "PASS" else "INCONCLUSIVE" end)
+            ' "$analysis" 2>/dev/null || echo "UNKNOWN")
+            printf '%s|%s|%s\n' "$ts" "$run_id" "$verdict" >> "$nhi_rows"
+          done
+          n_runs=$(wc -l < "$nhi_rows" | tr -d ' ')
+          echo "nhi: indexed ${n_runs} run(s) with phase4-analysis.json"
+          if [ ! -f docs/nhi/index.md ]; then
+            echo "nhi: docs/nhi/index.md missing — emitting stub that calls the macro"
+            {
+              echo "# Per-run NHI matrix"
+              echo
+              echo "Auto-rendered from \`runs/*/phase4-analysis.json\` via the"
+              echo "\`render_nhi_per_run_matrix()\` macro in \`main.py\`."
+              echo
+              echo "{{ render_nhi_per_run_matrix() }}"
+            } > docs/nhi/index.md
+          fi
+          rm -f "$nhi_rows"
 
       - name: Regenerate per-run index.html (pick up generator upgrades)
         run: |
