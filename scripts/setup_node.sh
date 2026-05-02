@@ -1448,16 +1448,20 @@ esac
 # message content. max_tokens=10 keeps the probe cheap (~fractions
 # of a cent per dispatch, <1s wall).
 #
-# Retry up to 3x with backoff. xAI occasionally rate-limits individual
-# droplet IPs during a campaign (observed intermittently on v3r2-v3r4:
-# the failure lands on a different node each time, never the same).
-# Single-shot was too brittle — one flake = baseline_pass=false =
-# scenarios skipped = campaign wasted. 3 attempts covers the observed
-# flake rate without hiding a real xAI outage.
+# Retry up to 5x with linear backoff (3,6,9,12s = ~30s worst case).
+# xAI occasionally rate-limits individual droplet IPs during a campaign
+# (observed intermittently on v3r2-v3r4 and r20: the failure lands on a
+# different node each time, never the same). Single-shot was too brittle
+# — one flake = baseline_pass=false = scenarios skipped = campaign
+# wasted. 3-attempt window (~9s) was insufficient on r20; 5 attempts
+# cover a longer flake window without hiding a true xAI outage.
+# Per-node jitter (0-4s) staggers requests so 4 nodes don't hammer xAI
+# in lockstep.
 log "PROBE 1/2: xAI Grok reachability + auth"
 xai_functional=false
 xai_content=""
-for attempt in 1 2 3; do
+sleep $((RANDOM % 5))
+for attempt in 1 2 3 4 5; do
   xai_resp=$(curl -sS --max-time 20 \
     -X POST https://api.x.ai/v1/chat/completions \
     -H "Authorization: Bearer $XAI_API_KEY" \
@@ -1471,9 +1475,9 @@ for attempt in 1 2 3; do
     break
   fi
   log "  PROBE 1 attempt $attempt FAIL — response head: $(echo "$xai_resp" | head -c 200)"
-  [ "$attempt" -lt 3 ] && sleep $((attempt * 3))  # 3s, 6s backoff
+  [ "$attempt" -lt 5 ] && sleep $((attempt * 3))  # 3,6,9,12s backoff
 done
-[ "$xai_functional" = "true" ] || log "  PROBE 1 FAIL after 3 attempts"
+[ "$xai_functional" = "true" ] || log "  PROBE 1 FAIL after 5 attempts"
 
 # Probe F2a — DETERMINISTIC substrate canary (no LLM). Direct HTTP
 # POST to local serve. Proves the federation-side write path works
