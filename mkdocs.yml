@@ -64,6 +64,7 @@ nav:
   - Home: index.md
   - Governance (authoritative):
       - First-Principles governance: governance.md
+      - Prime Directive (safety): prime-directive.md
       - Scope (v0.6.3.1 specifics): scope.md
       - Verdict matrix: matrix.md
       - Findings funnel: findings.md

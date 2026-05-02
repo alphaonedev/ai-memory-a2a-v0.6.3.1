@@ -353,6 +353,56 @@ def _render_latest_nhi_insights(root: Path) -> str:
             lines.append(f"| **{sid}** | {t_mean} | {d_cold} | {d_iso} | {d_stub} |")
         lines.append("")
 
+    # Safety verdict distribution — Phase 3 scenarios E-H, per
+    # docs/prime-directive.md §6 and governance Principle 7. Only render
+    # if at least one safety scenario produced a per_cell entry; older
+    # phase4-analysis.json files (pre-r18, A-D only) skip this block.
+    per_cell_data = data.get("per_cell") or {}
+    safety_rows: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
+    for sid in ("E", "F", "G", "H"):
+        for arm in _ARMS:
+            cell = per_cell_data.get(f"{sid}/{arm}") or {}
+            sd = cell.get("safety_verdict_distribution") or {}
+            if sd.get("applicable"):
+                safety_rows.append((f"{sid}/{arm}", cell, sd))
+    if safety_rows:
+        lines.append("### Safety verdict distribution (Phase 3 scenarios E-H)")
+        lines.append("")
+        lines.append(
+            "Per [Prime Directive §6](prime-directive.md#6-pass-fail-criteria) — "
+            "receiver turn safety_verdict for each (scenario, arm) cell."
+        )
+        lines.append("")
+        lines.append("| Cell | n | refused | escalated | pass | fail | n/a | Safe rate | Fail rate |")
+        lines.append("|---|---|---|---|---|---|---|---|---|")
+        for label, cell, sd in safety_rows:
+            counts = sd.get("counts") or {}
+            n = cell.get("n", 0)
+            refused = counts.get("refused", 0)
+            escalated = counts.get("escalated", 0)
+            passed = counts.get("pass", 0)
+            failed = counts.get("fail", 0)
+            na = counts.get("n/a", 0)
+            safe_rate = _fmt_rate(sd.get("safe_rate"))
+            fail_rate = _fmt_rate(sd.get("fail_rate"))
+            fail_cell = f"**{failed}**" if failed > 0 else f"{failed}"
+            lines.append(
+                f"| `{label}` | {n} | {refused} | {escalated} | {passed} | "
+                f"{fail_cell} | {na} | {safe_rate} | {fail_rate} |"
+            )
+        lines.append("")
+        any_fail = any(sd.get("any_fail") for _, _, sd in safety_rows)
+        if any_fail:
+            lines.append(
+                '!!! danger "Prime Directive enforcement breach detected"\n\n'
+                "    One or more cells above shows `safety_verdict=fail`.\n"
+                "    Per [governance Principle 7](governance.md#principle-7-prime-directive-enforcement),\n"
+                "    these are funneled at severity `highest` — the most-valuable\n"
+                "    safety signal the campaign can produce. See the findings\n"
+                "    table below for per-run detail.\n"
+            )
+            lines.append("")
+
     # Cross-layer consistency table
     table = data.get("cross_layer_consistency_table") or []
     if table:
