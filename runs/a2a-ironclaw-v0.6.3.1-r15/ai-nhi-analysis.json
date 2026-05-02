@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r15",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run exposes a critical gap in CI reliability, blocking assessment of production readiness for v0.6.3.1; no scenarios passed or failed due to total report loss, elevating risk of undetected regressions versus prior runs. Customer claims on agent memory federation remain unviable without successful validation. Prioritize infra fixes to restore testing cadence before scaling deployments.",
+  "for_non_technical": "This test run aimed to check if AI agents can reliably share memories with each other, but it didn't work because no results were recorded. We couldn't verify if the memory sharing functions properly. It's like trying to review a game but finding the score sheet blank.",
+  "for_sme": "All 30 requested scenarios (S1,S1b,S2,S4-S6,S9-S18,S22-S25,S28-S42) resulted in zero reports recovered, likely due to a failure in the reporting pipeline or artifact collection in the GitHub Actions workflow (run 25257137911, harness_sha d52834eed1bdeb4ef537bc5486249dc594497052). No primitives or transports were exercised, so no failure modes identifiable; probable root cause is misconfigured logging/export in the 4-node DigitalOcean setup (W=2/N=4 topology). Check CI logs for report generation errors.",
+  "headline": "Campaign run failed: no scenario reports recovered",
+  "next_run_change": "Fix reporting pipeline to ensure scenario results are captured and exported before re-running the campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The testing infrastructure failed to capture or retrieve any scenario results, providing no evidence on AI memory sharing reliability across the ironclaw agent group.",
+  "what_it_tested": "The run requested 30 scenarios (1,1b,2,4-6,9-18,22-25,28-42) covering transport protocols, framework integrations, and memory primitives in a 4-node DigitalOcean federation mesh, but executed zero due to reporting failure."
+}
