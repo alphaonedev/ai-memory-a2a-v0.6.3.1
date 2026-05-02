@@ -1097,6 +1097,27 @@ else
   log "WARN: /root/drive_agent_autonomous.sh missing — Phase 3 do-droplets mode will fail until script is scp'd"
 fi
 
+# ---- Install claims_extractor.py + claims_extractor_cli.py -------
+# These are the §7 claims_made / claims_grounded extractor used by
+# drive_agent_autonomous.sh step 9. The autonomous driver shells out
+# to claims_extractor_cli.py with --framework / --output-file /
+# --ai-memory-ops; we install both files together so a directory-local
+# import works. Idempotent: re-runs of setup_node.sh refresh the
+# install. If either file is missing, drive_agent_autonomous.sh will
+# fall back to empty arrays and surface a notes-style annotation.
+if [ -f /root/claims_extractor.py ]; then
+  install -m 0644 /root/claims_extractor.py /opt/ai-memory-a2a/claims_extractor.py
+  log "installed /opt/ai-memory-a2a/claims_extractor.py (Phase 3 §7 claims extractor)"
+else
+  log "WARN: /root/claims_extractor.py missing — Phase 3 claims_made/grounded will be empty until script is scp'd"
+fi
+if [ -f /root/claims_extractor_cli.py ]; then
+  install -m 0755 /root/claims_extractor_cli.py /opt/ai-memory-a2a/claims_extractor_cli.py
+  log "installed /opt/ai-memory-a2a/claims_extractor_cli.py (claims extractor CLI wrapper)"
+else
+  log "WARN: /root/claims_extractor_cli.py missing — Phase 3 claims_made/grounded will be empty until script is scp'd"
+fi
+
 # ---- BASELINE VERIFICATION ---------------------------------------
 # Emit /etc/ai-memory-a2a/baseline.json asserting the invariants that
 # MUST hold on every agent droplet of every campaign. The workflow

@@ -445,48 +445,64 @@ if ! echo "$AI_MEMORY_OPS_JSON" | jq -e 'type == "array"' >/dev/null 2>&1; then
 fi
 
 # ---------------------------------------------------------------------------
-# 9. Tools-called extraction. ironclaw --format json emits a structured
-#    trace; hermes does not (as of the v0.6.3.1 baseline). Be honest
-#    about what's not exposed: leave [] and explain in `notes`.
+# 9. Tools / claims extraction. Delegated to claims_extractor_cli.py so the
+#    parsing rules live in stdlib-tested Python rather than inline jq —
+#    see scripts/claims_extractor.py for the schema notes and heuristics.
+#
+#    Inputs to the CLI: the agent's stdout file + the §7 ai_memory_ops JSON
+#    we just built. Output: a single JSON object with three keys
+#    (tools_called, claims_made, claims_grounded), each shaped per §7.
+#
+#    Honesty notes:
+#      - ironclaw v0.27.x's `run` subcommand has no upstream JSON-output
+#        flag (see src/cli/mod.rs). When the binary rejects --format json
+#        we get empty stdout; the extractor handles that as "raw fallback"
+#        and emits at most a `claims_made[]` from any plain text echoed.
+#      - hermes -Q (quiet) emits only the assistant final text per
+#        hermes_cli/oneshot.py; tools_called[] is therefore always [] for
+#        hermes here, with a stable notes annotation.
 # ---------------------------------------------------------------------------
 TOOLS_CALLED_JSON="[]"
+CLAIMS_MADE_JSON="[]"
+CLAIMS_GROUNDED_JSON="[]"
 TOOLS_NOTE=""
 
-case "$AGENT_TYPE" in
-  ironclaw)
-    # Best effort: try to find a tool-trace array in the JSON output.
-    # We accept either top-level .tool_calls[] or nested
-    # .turns[].tool_calls[] shapes. If the parse fails, leave []
-    # and surface a note.
-    if [ -s "$AGENT_OUT" ] && jq -e . "$AGENT_OUT" >/dev/null 2>&1; then
-      TOOLS_CALLED_JSON=$(jq -c '
-        ( .tool_calls // [.turns? // [] | .[]?.tool_calls // []] | flatten )
-        | map({
-            tool_name:         ((.name // .tool // "unknown") | tostring),
-            args_sha256:       ((.args_sha256 // "0000000000000000000000000000000000000000000000000000000000000000") | tostring),
-            args_size_bytes:   ((.args_size_bytes // (.args | tostring | length) // 0) | tonumber? // 0),
-            result_sha256:     ((.result_sha256 // "0000000000000000000000000000000000000000000000000000000000000000") | tostring),
-            result_size_bytes: ((.result_size_bytes // (.result | tostring | length) // 0) | tonumber? // 0),
-            duration_ms:       ((.duration_ms // 0) | tonumber? // 0),
-            ok:                ((.ok // (.error == null) // true))
-          })
-      ' "$AGENT_OUT" 2>/dev/null) || TOOLS_CALLED_JSON="[]"
-      [ -z "$TOOLS_CALLED_JSON" ] && TOOLS_CALLED_JSON="[]"
-      if ! echo "$TOOLS_CALLED_JSON" | jq -e 'type == "array"' >/dev/null 2>&1; then
-        TOOLS_CALLED_JSON="[]"
-        TOOLS_NOTE="tools_called: ironclaw JSON output did not expose a tool-trace array"
-      fi
+# Persist ai_memory_ops to a file the Python CLI can consume.
+AI_MEMORY_OPS_FILE="$TMPDIR_RUN/ai_memory_ops.json"
+printf '%s' "$AI_MEMORY_OPS_JSON" > "$AI_MEMORY_OPS_FILE" 2>/dev/null || echo '[]' > "$AI_MEMORY_OPS_FILE"
+
+CLAIMS_CLI="/opt/ai-memory-a2a/claims_extractor_cli.py"
+EXTRACT_OUT="$TMPDIR_RUN/extract.json"
+if command -v python3 >/dev/null 2>&1 && [ -r "$CLAIMS_CLI" ]; then
+  if python3 "$CLAIMS_CLI" \
+       --framework "$AGENT_TYPE" \
+       --output-file "$AGENT_OUT" \
+       --ai-memory-ops "$AI_MEMORY_OPS_FILE" \
+       > "$EXTRACT_OUT" 2>"$TMPDIR_RUN/extract.err"
+  then
+    if jq -e 'type == "object"' "$EXTRACT_OUT" >/dev/null 2>&1; then
+      _tc_tmp=$(jq -c '.tools_called // []' "$EXTRACT_OUT" 2>/dev/null || echo "[]")
+      _cm_tmp=$(jq -c '.claims_made // []' "$EXTRACT_OUT" 2>/dev/null || echo "[]")
+      _cg_tmp=$(jq -c '.claims_grounded // []' "$EXTRACT_OUT" 2>/dev/null || echo "[]")
+      echo "$_tc_tmp" | jq -e 'type == "array"' >/dev/null 2>&1 && TOOLS_CALLED_JSON="$_tc_tmp"
+      echo "$_cm_tmp" | jq -e 'type == "array"' >/dev/null 2>&1 && CLAIMS_MADE_JSON="$_cm_tmp"
+      echo "$_cg_tmp" | jq -e 'type == "array"' >/dev/null 2>&1 && CLAIMS_GROUNDED_JSON="$_cg_tmp"
     else
-      TOOLS_NOTE="tools_called: ironclaw stdout was empty or non-JSON"
+      TOOLS_NOTE="claims_extractor_cli emitted non-object stdout"
     fi
-    ;;
-  hermes)
-    # Hermes -Q quiet mode prints just the assistant content; tool
-    # traces are not exposed on stdout. The audit log captures the
-    # ai-memory side; tools_called[] therefore stays empty and we say so.
-    TOOLS_NOTE="tools_called: not exposed by hermes -Q (only ai-memory ops are recoverable, via audit log)"
-    ;;
-esac
+  else
+    TOOLS_NOTE="claims_extractor_cli failed (rc=$?); see $TMPDIR_RUN/extract.err"
+  fi
+else
+  TOOLS_NOTE="claims_extractor_cli or python3 missing; tools/claims left empty"
+fi
+
+# Hermes -Q never exposes a tool trace on stdout (per hermes_cli/oneshot.py
+# — final response only). State that openly so reviewers don't read empty
+# tools_called[] as a bug.
+if [ "$AGENT_TYPE" = "hermes" ] && [ -z "$TOOLS_NOTE" ]; then
+  TOOLS_NOTE="tools_called=[] is correct: hermes -Q only emits final text; ai_memory_ops are recovered via audit log"
+fi
 
 # ---------------------------------------------------------------------------
 # 10. Compose the final JSON. Note text is bounded to 500 chars per the
@@ -499,10 +515,14 @@ NOTES_TRUNC=$(printf '%s' "$NOTES_FULL" | cut -c1-500)
 jq -cn \
   --argjson tools_called "$TOOLS_CALLED_JSON" \
   --argjson ai_memory_ops "$AI_MEMORY_OPS_JSON" \
+  --argjson claims_made "$CLAIMS_MADE_JSON" \
+  --argjson claims_grounded "$CLAIMS_GROUNDED_JSON" \
   --arg termination "$TERMINATION" \
   --arg notes "$NOTES_TRUNC" \
   '{tools_called:$tools_called,
     ai_memory_ops:$ai_memory_ops,
+    claims_made:$claims_made,
+    claims_grounded:$claims_grounded,
     termination_reason:$termination,
     notes:$notes}'
 
