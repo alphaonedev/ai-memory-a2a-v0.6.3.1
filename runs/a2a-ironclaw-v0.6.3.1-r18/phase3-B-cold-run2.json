@@ -1,0 +1,143 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+  "control_arm": "cold",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "2d4266df72f8abcdc57f9885d58ecf131cc52ec2f57923e02d44f0e44adac089"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "beb51cf4bb9a3377dea4e60a694cb33fcb864a3d6c231ea6f434166b3432bd24"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "9ca1ebfe569cb27d75fc95d5d2fad9530f18c93514682eb2a891967c503b84ce"
+        }
+      ],
+      "control_arm": "cold",
+      "llm_model_sku": "grok-4-fast-non-reasoning",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "9d1383920ea85a07bf66767c02221b1f0776d1cc02d58b55c0ccd6bb7f8c9611",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-02T19:19:55Z",
+      "tools_called": [],
+      "turn_id": "B-cold-r2-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "036ac5dc87dc6574e21e319a71b6efe07e7e631174e999efa31945b88b625dfc"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "f30424609c3ad782e8c672d26b507b1061ec164ca458481f355c92353c4d0510"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "e8d22c74ff9170ae38e2f62a97ff3d198c482694238c3626c302824077323acf"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "705b81fcfbdd13a1da3fab235f1f3472e2653ae03c037e754ca558ecf77f5d73"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "8f58c5461b344f3cbf167eb53ee35a42b499b42772a2ea605c037a91af725255"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-6",
+          "text_sha256": "832fe5a09831a71feb7d468f363a5134d7862fbf00df3f98542333242694590d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-7",
+          "text_sha256": "2d3182134f107f3079fd920b6a69d86383f0c10c6b65f4184ae1552395db57cd"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-8",
+          "text_sha256": "46ab1787921ad26d6f4cc441df9a7d904885d5836886b3dde10995ebeea989d1"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-9",
+          "text_sha256": "81d944831d8b9351a4ceb20d9497b52bb2e491017a8735b3434a5b692b70150f"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-10",
+          "text_sha256": "e400a9ff14f0b5d16d243bde23e3190c7241cc3389038786caa54cfb35481230"
+        }
+      ],
+      "control_arm": "cold",
+      "llm_model_sku": "grok-4-fast-non-reasoning",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "08de09d3acfba8b48db4e0bef071bb66798c340f5cc76664ade10d270210a41a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-02T19:20:10Z",
+      "tools_called": [],
+      "turn_id": "B-cold-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "B",
+  "scenario_title": "Constraint propagation",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-02T19:19:47Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "mtls",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 22
+}

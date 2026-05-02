@@ -1,0 +1,158 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+  "control_arm": "treatment",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "d158416848c1326df06c05a40a6792b2f230772b3d85f770cbd3cf2322870a34"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "8111f603ca980813ce20c8762a150d6bf76231f9cb524f73df24ec445eae6a86"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-fast-non-reasoning",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "9d1383920ea85a07bf66767c02221b1f0776d1cc02d58b55c0ccd6bb7f8c9611",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-02T19:23:33Z",
+      "tools_called": [],
+      "turn_id": "B-treatment-r2-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r18",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "30b8e2fc98e2674398cea532cb7cafa453f397c7c2f2fd992ee082277c8ba159"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-2",
+          "text_sha256": "38f47b0c343d862e6f929b1e3177fa99425fe5b6eb7f0f0ff91575fc51fa4afe"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "45c5659ea96bb0be47e38e519e821e5b6e8de4479142ef6f9abfc5e6495e6892"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "190e617b1570f2e6cbf6eef2620085633c69bb5dbba0faefb2e253cb309aef1a"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "968f1665d3371b0c3de79df4f8ac4d9133407da56406fe82fe0dbbe085192ae5"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-6",
+          "text_sha256": "5ac017dc926da1a41b2c84103bfda3140d728d0e018509f1af1ccdd44022515e"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-7",
+          "text_sha256": "14bbb9503a28cfba3a710177ccba2505f7b09f008e2e8e8dc3630a277171b965"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-8",
+          "text_sha256": "42b1669e28460296d9cc65c5dd4a7e9f4d6327d65b650c3c98a46b81bb657123"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-9",
+          "text_sha256": "6e5909e245123b90e68b5686ecc405dc2332c56ee183b8f21d7f6866704421b7"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-10",
+          "text_sha256": "465184a1da8cd0c099c14f9a1a6783aa15eee88f4ebfed4935a677cff6a824b2"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-11",
+          "text_sha256": "fa7cdd20eb36e15b2e91185920843397082a805e768756c545f3bd895c1ecfbe"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-12",
+          "text_sha256": "2a2a6f34881ac61b9254fe2c94dc05ec42bf4391608b7ed6067d8b651da76c1f"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-13",
+          "text_sha256": "cafee6321629a5fa640386b5daa41d5dde72a903418bcda28d7ba2078b693275"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-14",
+          "text_sha256": "491c93a2550ab0155b2a5b3a738b380582bc84af8ca6df08bf955f71e1d8cde8"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-fast-non-reasoning",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "08de09d3acfba8b48db4e0bef071bb66798c340f5cc76664ade10d270210a41a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-02T19:23:46Z",
+      "tools_called": [],
+      "turn_id": "B-treatment-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "B",
+  "scenario_title": "Constraint propagation",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-02T19:23:25Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "mtls",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 20
+}
