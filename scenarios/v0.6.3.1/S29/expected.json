@@ -1,0 +1,19 @@
+{
+  "scenario": "S29",
+  "title": "Governance approval gate (Allow / Deny / Pending across federation)",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "Approval gate engages locally and decisions propagate across the federation in v0.6.3.1",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "pending_state_correct": "boolean",
+    "approve_propagates": "boolean",
+    "deny_propagates": "boolean",
+    "policy_installed": "boolean",
+    "alice_pending_id": "string",
+    "bob_pending_id": "string",
+    "approve_status_code": "integer",
+    "reject_status_code": "integer",
+    "node2_recall_after_approve_count": "integer",
+    "node2_pending_after_decisions_count": "integer"
+  }
+}

@@ -79,6 +79,7 @@ nav:
   - Specification (inherited from gate):
       - Baseline configuration: baseline.md
       - Test book: testbook.md
+      - Capability domains: capabilities.md
       - Every test performed: tests.md
       - v1.0 GA criteria: v1-ga-criteria.md
   - "Agents (in scope: IronClaw, Hermes)":

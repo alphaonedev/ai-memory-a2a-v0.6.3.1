@@ -1,0 +1,21 @@
+{
+  "scenario": "S30",
+  "title": "A2A messaging — notify + inbox + subscribe + HMAC-SHA256 webhooks",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "memory_notify/inbox/subscribe + HMAC-SHA256 webhooks ship in v0.6.3.1 and are federation-aware",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "notify_inbox_roundtrip": "boolean",
+    "hmac_verified": "boolean",
+    "federation_fanout": "boolean",
+    "subscription_id_bob": "string",
+    "subscription_id_charlie": "string",
+    "notification_id_bob": "string",
+    "notification_id_charlie": "string",
+    "inbox_unread_count_bob": "integer",
+    "webhook_body_captured": "boolean",
+    "webhook_signature_header": "string",
+    "webhook_recomputed_hmac": "string",
+    "node3_inbox_count_charlie": "integer"
+  }
+}
