@@ -1,0 +1,3787 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Per-release agent-to-agent (A2A) certification campaign for ai-memory-mcp v0.6.3.1 (tag cut 2026-04-30, schema v19). 4-node DigitalOcean mesh. Scope: IronClaw + Hermes (OpenClaw runs in a separate campaign per Principle 6). Governed by docs/governance.md.">
+      
+      
+      
+        <link rel="canonical" href="https://alphaonedev.github.io/ai-memory-a2a-v0.6.3.1/testbook/">
+      
+      
+        <link rel="prev" href="../baseline/">
+      
+      
+        <link rel="next" href="../tests/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/a1-mark.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Test book - ai-memory A2A v0.6.3.1 campaign</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/alphaone.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#a2a-test-book-full-spectrum" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ai-memory A2A v0.6.3.1 campaign" class="md-header__button md-logo" aria-label="ai-memory A2A v0.6.3.1 campaign" data-md-component="logo">
+      
+  <img src="../assets/a1-mark.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ai-memory A2A v0.6.3.1 campaign
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Test book
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    alphaonedev/ai-memory-a2a-v0.6.3.1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../governance/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Governance (authoritative)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../runs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Campaign runs
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../reproducing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reproducing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../baseline/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Specification (inherited from gate)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../agents/ironclaw/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Agents (in scope: IronClaw, Hermes)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../scenarios/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scenarios
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../runbook/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../insights/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  AI NHI insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ai-memory A2A v0.6.3.1 campaign" class="md-nav__button md-logo" aria-label="ai-memory A2A v0.6.3.1 campaign" data-md-component="logo">
+      
+  <img src="../assets/a1-mark.svg" alt="logo">
+
+    </a>
+    ai-memory A2A v0.6.3.1 campaign
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    alphaonedev/ai-memory-a2a-v0.6.3.1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance (authoritative)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Governance (authoritative)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../governance/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First-Principles governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scope/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scope (v0.6.3.1 specifics)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verdict matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../findings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Findings funnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Campaign runs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reproducing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reproducing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reproducing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reproducing (DO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-docker-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Docker mesh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specification (inherited from gate)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specification (inherited from gate)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../baseline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test book
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test book
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nine-test-suites-42-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Nine test suites, 42 scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-scenario-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Scenario register
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-coverage-by-ai-memory-primitive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Coverage by ai-memory primitive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-per-scenario-plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Per-scenario plans
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Per-scenario plans">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suite-a-core-a2a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite A — Core A2A
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite A — Core A2A">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-per-agent-write-read-mcp-stdio-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S1 — Per-agent write + read (MCP-stdio path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1b-per-agent-write-read-http-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S1b — Per-agent write + read (HTTP path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-shared-context-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S2 — Shared-context handoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-b-a2a-primitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite B — A2A Primitives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite B — A2A Primitives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-targeted-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S3 — Targeted share
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-consolidation-curation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S5 — Consolidation + curation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s6-contradiction-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S6 — Contradiction detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s11-link-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S11 — Link integrity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-c-mutation-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite C — Mutation + Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite C — Mutation + Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s9-mutation-round-trip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S9 — Mutation round-trip
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s10-deletion-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S10 — Deletion propagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s16-tier-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S16 — Tier promotion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-d-scope-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite D — Scope + Governance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite D — Scope + Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s7-scope-visibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S7 — Scope visibility matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s8-auto-tagging-round-trip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S8 — Auto-tagging round-trip
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s12-agent-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S12 — Agent registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-e-resilience-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite E — Resilience + Observability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite E — Resilience + Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s13-concurrent-write-contention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S13 — Concurrent write contention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s14-partition-tolerance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S14 — Partition tolerance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s15-read-your-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S15 — Read-your-writes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s17-stats-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S17 — Stats consistency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s18-semantic-query-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S18 — Semantic query expansion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-f-topology-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite F — Topology variants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite F — Topology variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s4-federation-aware-concurrent-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S4 — Federation-aware concurrent writes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s19-same-node-a2a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19 — SAME-NODE A2A
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-dispatch-plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Dispatch plans
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dispatch plans">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-standard-campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Standard campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-deep-resilience-campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Deep resilience campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-auto-tag-campaign-requires-larger-droplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Auto-tag campaign (requires larger droplets)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-same-node-a2a-campaign-requires-topology-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Same-node A2A campaign (requires topology override)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-reading-the-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Reading the evidence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-change-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Change control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7b-scenario-scripting-convention-v300" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. Scenario scripting convention (v3.0.0+)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-read-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Read next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Every test performed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v1-ga-criteria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.0 GA criteria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agents (in scope: IronClaw, Hermes)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agents (in scope: IronClaw, Hermes)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/ironclaw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IronClaw
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/hermes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hermes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/openclaw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenClaw (out of scope)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenarios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenarios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carry-forward S1–S8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/1-write-read/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Per-agent write + read
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/2-handoff/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Shared-context handoff
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/3-targeted-share/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Targeted share
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/4-federation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Federation-aware agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/5-consolidation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Consolidation + curation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/6-contradiction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Contradiction detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/7-scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Scoping visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/8-auto-tagging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Auto-tagging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methodology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methodology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai-memory-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ai-memory integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../infrastructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure versions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incidents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incidents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../insights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI NHI insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-nine-test-suites-42-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Nine test suites, 42 scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-scenario-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Scenario register
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-coverage-by-ai-memory-primitive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Coverage by ai-memory primitive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-per-scenario-plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Per-scenario plans
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Per-scenario plans">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#suite-a-core-a2a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite A — Core A2A
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite A — Core A2A">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s1-per-agent-write-read-mcp-stdio-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S1 — Per-agent write + read (MCP-stdio path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s1b-per-agent-write-read-http-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S1b — Per-agent write + read (HTTP path)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s2-shared-context-handoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S2 — Shared-context handoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-b-a2a-primitives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite B — A2A Primitives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite B — A2A Primitives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s3-targeted-share" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S3 — Targeted share
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s5-consolidation-curation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S5 — Consolidation + curation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s6-contradiction-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S6 — Contradiction detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s11-link-integrity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S11 — Link integrity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-c-mutation-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite C — Mutation + Lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite C — Mutation + Lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s9-mutation-round-trip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S9 — Mutation round-trip
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s10-deletion-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S10 — Deletion propagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s16-tier-promotion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S16 — Tier promotion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-d-scope-governance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite D — Scope + Governance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite D — Scope + Governance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s7-scope-visibility-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S7 — Scope visibility matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s8-auto-tagging-round-trip" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S8 — Auto-tagging round-trip
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s12-agent-registration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S12 — Agent registration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-e-resilience-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite E — Resilience + Observability
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite E — Resilience + Observability">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s13-concurrent-write-contention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S13 — Concurrent write contention
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s14-partition-tolerance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S14 — Partition tolerance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s15-read-your-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S15 — Read-your-writes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s17-stats-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S17 — Stats consistency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s18-semantic-query-expansion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S18 — Semantic query expansion
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#suite-f-topology-variants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Suite F — Topology variants
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suite F — Topology variants">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#s4-federation-aware-concurrent-writes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S4 — Federation-aware concurrent writes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#s19-same-node-a2a" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        S19 — SAME-NODE A2A
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-dispatch-plans" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Dispatch plans
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Dispatch plans">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-standard-campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Standard campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-deep-resilience-campaign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Deep resilience campaign
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-auto-tag-campaign-requires-larger-droplets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Auto-tag campaign (requires larger droplets)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-same-node-a2a-campaign-requires-topology-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Same-node A2A campaign (requires topology override)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-reading-the-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Reading the evidence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-change-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Change control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7b-scenario-scripting-convention-v300" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7b. Scenario scripting convention (v3.0.0+)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-read-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Read next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="a2a-test-book-full-spectrum">A2A test book — full spectrum<a class="headerlink" href="#a2a-test-book-full-spectrum" title="Anchor link to this section">&para;</a></h1>
+<p><strong>The formal test plan for maximum-coverage AI-to-AI integration testing through ai-memory.</strong></p>
+<p>Covers <strong>same-node</strong> A2A (two agent identities sharing a single droplet's ai-memory) and <strong>between-node</strong> A2A (agents on distinct droplets in the W=2/N=4 federation mesh) across every ai-memory primitive relevant to agent-to-agent coordination.</p>
+<p><strong>Test book version:</strong> 3.0.0 (2026-04-21)
+<strong>Changelog:</strong>
+- <strong>3.0.0</strong> — 100% A2A coverage: transport security (S20-S21), adversarial + cross-framework (S22-S27), every uncovered MCP primitive (S28-S37), every HTTP-only endpoint (S38-S42). 42 scenarios across 9 suites. Baseline bumped to v1.4.0 (adds F6 TLS handshake + F7 mTLS enforcement probes). Tracked in <a href="https://github.com/alphaonedev/ai-memory-ai2ai-gate/issues/14">EPIC #14</a>.
+- <strong>2.0.0</strong> — full-spectrum expansion to 18 scenarios across 6 suites; adds mutation / lifecycle / resilience / observability / same-node A2A coverage
+- <strong>1.0.0</strong> — initial 8-scenario core</p>
+<p>Baseline <a href="../baseline/">v1.4.0</a> must pass before any scenario runs. The test book assumes baseline green. F6 + F7 probes gate <code>baseline_pass</code> when <code>tls_mode ≥ tls</code> and <code>tls_mode = mtls</code> respectively.</p>
+<hr />
+<h2 id="1-nine-test-suites-42-scenarios">1. Nine test suites, 42 scenarios<a class="headerlink" href="#1-nine-test-suites-42-scenarios" title="Anchor link to this section">&para;</a></h2>
+<p>The scenario corpus is partitioned into suites so failures are diagnostically localized. A red result in Suite A tells a different story than a red in Suite G.</p>
+<table>
+<thead>
+<tr>
+<th>Suite</th>
+<th>Scenarios</th>
+<th>What it proves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A. Core A2A</strong></td>
+<td>S1, S1b, S2</td>
+<td>Basic read/write visibility across agents; shared-context handoff</td>
+</tr>
+<tr>
+<td><strong>B. A2A Primitives</strong></td>
+<td>S3, S5, S6, S11</td>
+<td><code>memory_share</code>, <code>memory_consolidate</code>, <code>memory_detect_contradiction</code>, <code>memory_link</code> — the tools agents reach for explicitly</td>
+</tr>
+<tr>
+<td><strong>C. Mutation + Lifecycle</strong></td>
+<td>S9, S10, S16</td>
+<td><code>memory_update</code>, <code>memory_delete</code> / <code>memory_forget</code>, tier promotion across agents</td>
+</tr>
+<tr>
+<td><strong>D. Scope + Governance</strong></td>
+<td>S7, S8, S12</td>
+<td>Scope enforcement matrix, auto-tag pipeline, agent registration (Task 1.3)</td>
+</tr>
+<tr>
+<td><strong>E. Resilience + Observability</strong></td>
+<td>S13, S14, S15, S17, S18</td>
+<td>Concurrent contention, partition tolerance, read-your-writes, stats consistency, semantic query expansion</td>
+</tr>
+<tr>
+<td><strong>F. Topology variants</strong></td>
+<td>S4, S19</td>
+<td>Quorum-under-load, SAME-NODE A2A (two agents sharing one droplet's ai-memory)</td>
+</tr>
+<tr>
+<td><strong>G. Transport + Adversarial + Cross-framework</strong> (v3.0.0)</td>
+<td>S20, S21, S22, S23, S24, S25, S26, S27</td>
+<td>mTLS happy-path, anonymous rejected, identity spoofing, malicious content fuzz, Byzantine peer, clock skew, mixed ironclaw+hermes, OpenClaw regression</td>
+</tr>
+<tr>
+<td><strong>H. Uncovered primitives — 100% MCP surface</strong> (v3.0.0)</td>
+<td>S28, S29, S30, S31, S32, S33, S34, S35, S36, S37</td>
+<td><code>memory_search</code>, archive lifecycle, <code>capabilities</code>, <code>gc</code>, <code>inbox</code>+<code>notify</code>, pub/sub, pending governance, namespace standards, <code>session_start</code>, <code>get_links</code> bidirectional</td>
+</tr>
+<tr>
+<td><strong>I. HTTP-only endpoints — 100% REST surface</strong> (v3.0.0)</td>
+<td>S38, S39, S40, S41, S42</td>
+<td><code>/export</code>+<code>/import</code>, <code>/sync/since</code> delta sync, <code>/memories/bulk</code>, <code>/metrics</code>, <code>/namespaces</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coverage scorecard (v3.0.0 target)</strong>: 37/37 MCP tools exercised, 27/27 HTTP endpoints exercised, 3 transport modes (http/tls/mtls), 3 agent groupings (ironclaw/hermes/mixed). Suites A–F are the v2.0.0 baseline; G–I are new in v3.0.0.</p>
+<hr />
+<h2 id="2-scenario-register">2. Scenario register<a class="headerlink" href="#2-scenario-register" title="Anchor link to this section">&para;</a></h2>
+<p>Each row is a one-line contract. Full per-scenario plans follow in §4.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Name</th>
+<th>Suite</th>
+<th>Runnable on v0.6.0?</th>
+<th>Primary invariant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>Per-agent write + read (MCP-stdio)</td>
+<td>A</td>
+<td>✅ (RED expected until #318 fix ships)</td>
+<td>MCP write visible on local node</td>
+</tr>
+<tr>
+<td>S1b</td>
+<td>Per-agent write + read (HTTP)</td>
+<td>A</td>
+<td>✅</td>
+<td>Quorum-HTTP write visible on peers</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>Shared-context handoff</td>
+<td>A</td>
+<td>✅</td>
+<td>Writer's memory readable by recipient within quorum settle</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>Targeted <code>memory_share</code></td>
+<td>B</td>
+<td>⚠️ Requires v0.6.0.1 (#311)</td>
+<td>Subset sync lands on exactly the targeted peer</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>Federation-aware concurrent writes</td>
+<td>F</td>
+<td>✅</td>
+<td>Quorum preserved under N-agent concurrent write burst</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>Consolidation + curation</td>
+<td>B</td>
+<td>✅ (HTTP-direct; LLM-consolidation variant deferred)</td>
+<td><code>consolidated_from_agents</code> metadata preserved</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>Contradiction detection</td>
+<td>B</td>
+<td>✅ if <code>memory_detect_contradiction</code> in v0.6.0; else deferred</td>
+<td>Contradicting memories produce a link visible to third agent</td>
+</tr>
+<tr>
+<td>S7</td>
+<td>Scope visibility matrix</td>
+<td>D</td>
+<td>⚠️ Partial (Task 1.5 scope enforcement ongoing)</td>
+<td>Each (scope, caller_scope) pair produces the correct visibility</td>
+</tr>
+<tr>
+<td>S8</td>
+<td>Auto-tagging round-trip</td>
+<td>D</td>
+<td>⚠️ Requires Ollama-backed droplets (s-4vcpu-16gb)</td>
+<td>Agent writes without tags; tags appear; recall-by-tag works</td>
+</tr>
+<tr>
+<td>S9</td>
+<td>Mutation round-trip</td>
+<td>C</td>
+<td>✅</td>
+<td><code>memory_update</code> from agent A visible with new content on agent B</td>
+</tr>
+<tr>
+<td>S10</td>
+<td>Deletion propagation</td>
+<td>C</td>
+<td>✅</td>
+<td><code>memory_delete</code> / <code>memory_forget</code> propagates to all peers</td>
+</tr>
+<tr>
+<td>S11</td>
+<td>Link integrity</td>
+<td>B</td>
+<td>✅ if <code>memory_link</code> exposed via HTTP; else documented-only</td>
+<td>Linked memories returned together on peer query</td>
+</tr>
+<tr>
+<td>S12</td>
+<td>Agent registration</td>
+<td>D</td>
+<td>✅ (Task 1.3 shipped in v0.6.0)</td>
+<td><code>memory_agent_register</code> on A is visible to B's <code>memory_agent_list</code></td>
+</tr>
+<tr>
+<td>S13</td>
+<td>Concurrent write contention</td>
+<td>E</td>
+<td>✅</td>
+<td>Two agents updating the same row converge to a consistent outcome</td>
+</tr>
+<tr>
+<td>S14</td>
+<td>Partition tolerance</td>
+<td>E</td>
+<td>✅</td>
+<td>Temporary peer loss → recovery → convergence within bounded time</td>
+</tr>
+<tr>
+<td>S15</td>
+<td>Read-your-writes</td>
+<td>E</td>
+<td>✅</td>
+<td>Writing agent sees its own write immediately (no settle required)</td>
+</tr>
+<tr>
+<td>S16</td>
+<td>Tier promotion</td>
+<td>C</td>
+<td>✅ if tier endpoint exposed</td>
+<td><code>short</code> → <code>mid</code> → <code>long</code> promotion visible to peers</td>
+</tr>
+<tr>
+<td>S17</td>
+<td>Stats consistency</td>
+<td>E</td>
+<td>✅</td>
+<td><code>memory_stats</code> returns equal counts across peers post-settle</td>
+</tr>
+<tr>
+<td>S18</td>
+<td>Semantic query expansion</td>
+<td>E</td>
+<td>✅</td>
+<td><code>memory_expand_query</code> returns semantically related memories across writers</td>
+</tr>
+<tr>
+<td>S19</td>
+<td><strong>Same-node A2A</strong></td>
+<td>F</td>
+<td>✅ (with topology override)</td>
+<td>Two agents on ONE droplet share local ai-memory; writes + reads work without federation</td>
+</tr>
+<tr>
+<td>S20</td>
+<td>mTLS happy-path</td>
+<td>G</td>
+<td>✅ tls_mode=mtls</td>
+<td>Write+read round-trip over HTTPS with client-cert on the allowlist</td>
+</tr>
+<tr>
+<td>S21</td>
+<td>Anonymous client rejected</td>
+<td>G</td>
+<td>✅ tls_mode=mtls</td>
+<td>rustls rejects the TLS handshake when no client cert is presented</td>
+</tr>
+<tr>
+<td>S22</td>
+<td>Identity spoofing resistance</td>
+<td>G</td>
+<td>✅ any tls_mode</td>
+<td>X-Agent-Id/body resolution precedence honored; transport identity not bypassable</td>
+</tr>
+<tr>
+<td>S23</td>
+<td>Malicious content fuzz</td>
+<td>G</td>
+<td>✅ any tls_mode</td>
+<td>SQLi / NUL / oversize / unicode round-trip faithfully or reject cleanly</td>
+</tr>
+<tr>
+<td>S24</td>
+<td>Byzantine peer</td>
+<td>G</td>
+<td>✅ any tls_mode</td>
+<td>Tampered <code>sync_push</code> — metadata.agent_id preserved as declared, no silent re-attribution</td>
+</tr>
+<tr>
+<td>S25</td>
+<td>Clock skew (300s)</td>
+<td>G</td>
+<td>✅ any tls_mode</td>
+<td>Vector clock still converges with node-3 offset +300s</td>
+</tr>
+<tr>
+<td>S26</td>
+<td>Mixed ironclaw + hermes on same VPC</td>
+<td>G</td>
+<td>⚠️ requires <code>agent_group=mixed</code></td>
+<td>Heterogeneous A2A through shared ai-memory</td>
+</tr>
+<tr>
+<td>S27</td>
+<td>Legacy OpenClaw regression</td>
+<td>G</td>
+<td>⚠️ requires <code>agent_group=openclaw</code></td>
+<td>Pre-ironclaw regression lane</td>
+</tr>
+<tr>
+<td>S28</td>
+<td><code>memory_search</code> keyword A2A</td>
+<td>H</td>
+<td>✅</td>
+<td>Keyword search (distinct from recall/expand_query) consistent across peers</td>
+</tr>
+<tr>
+<td>S29</td>
+<td><code>memory_archive</code> lifecycle</td>
+<td>H</td>
+<td>✅</td>
+<td>archive_list/purge/restore/stats round-trip cross-peer</td>
+</tr>
+<tr>
+<td>S30</td>
+<td><code>memory_capabilities</code> handshake</td>
+<td>H</td>
+<td>✅ v0.6.2+</td>
+<td>Protocol version + tool surface match across peers</td>
+</tr>
+<tr>
+<td>S31</td>
+<td><code>memory_gc</code> quiescence</td>
+<td>H</td>
+<td>✅</td>
+<td>After forget+gc, non-deleted rows remain readable on all peers</td>
+</tr>
+<tr>
+<td>S32</td>
+<td><code>memory_inbox</code> + <code>memory_notify</code></td>
+<td>H</td>
+<td>⚠️ requires inbox feature</td>
+<td>Notify delivers to target's inbox; non-target cannot read</td>
+</tr>
+<tr>
+<td>S33</td>
+<td>pub/sub via <code>memory_subscribe</code></td>
+<td>H</td>
+<td>⚠️ requires sub feature</td>
+<td>Subscribe→write→delivery→unsubscribe→no-delivery</td>
+</tr>
+<tr>
+<td>S34</td>
+<td><code>memory_pending_*</code> governance flow</td>
+<td>H</td>
+<td>⚠️ requires governance.write=approve</td>
+<td>Approve vs reject yields correct downstream visibility</td>
+</tr>
+<tr>
+<td>S35</td>
+<td><code>memory_namespace_*_standard</code> rule layering</td>
+<td>H</td>
+<td>✅</td>
+<td>Parent chain rules merged into namespace standard</td>
+</tr>
+<tr>
+<td>S36</td>
+<td><code>memory_session_start</code> lifecycle</td>
+<td>H</td>
+<td>✅</td>
+<td>Session-tagged writes recall by session_id only</td>
+</tr>
+<tr>
+<td>S37</td>
+<td><code>memory_get_links</code> explicit bidirectional</td>
+<td>H</td>
+<td>✅</td>
+<td>Forward and reverse link traversal both return the pair</td>
+</tr>
+<tr>
+<td>S38</td>
+<td><code>/export</code> + <code>/import</code> round-trip</td>
+<td>I</td>
+<td>✅</td>
+<td>Export one peer → import elsewhere → stats match</td>
+</tr>
+<tr>
+<td>S39</td>
+<td><code>/sync/since</code> delta sync</td>
+<td>I</td>
+<td>✅</td>
+<td>Post-partition delta returns exactly the missed rows</td>
+</tr>
+<tr>
+<td>S40</td>
+<td><code>/memories/bulk</code> bulk write</td>
+<td>I</td>
+<td>✅</td>
+<td>500-row bulk POST reaches all peers + aggregator</td>
+</tr>
+<tr>
+<td>S41</td>
+<td><code>/metrics</code> Prometheus shape</td>
+<td>I</td>
+<td>✅</td>
+<td>Required counters present and monotonic post-activity</td>
+</tr>
+<tr>
+<td>S42</td>
+<td><code>/namespaces</code> enumeration</td>
+<td>I</td>
+<td>✅</td>
+<td>Namespace list (with counts) equivalent across peers</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-coverage-by-ai-memory-primitive">3. Coverage by ai-memory primitive<a class="headerlink" href="#3-coverage-by-ai-memory-primitive" title="Anchor link to this section">&para;</a></h2>
+<p>Which scenario tests which tool. Empty cells = not directly exercised.</p>
+<table>
+<thead>
+<tr>
+<th>ai-memory primitive</th>
+<th>Scenarios</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>memory_store</code></td>
+<td>S1, S1b, S2, S4, S5, S9, S10, S11, S13, S14, S15, S18, S19</td>
+</tr>
+<tr>
+<td><code>memory_recall</code></td>
+<td>S1, S1b, S2, S4, S5, S15, S18</td>
+</tr>
+<tr>
+<td><code>memory_list</code></td>
+<td>S2, S6, S7, S11</td>
+</tr>
+<tr>
+<td><code>memory_get</code></td>
+<td>S6, S11</td>
+</tr>
+<tr>
+<td><code>memory_update</code></td>
+<td>S9, S13</td>
+</tr>
+<tr>
+<td><code>memory_delete</code> / <code>memory_forget</code></td>
+<td>S10</td>
+</tr>
+<tr>
+<td><code>memory_share</code></td>
+<td>S3</td>
+</tr>
+<tr>
+<td><code>memory_link</code></td>
+<td>S11</td>
+</tr>
+<tr>
+<td><code>memory_consolidate</code></td>
+<td>S5</td>
+</tr>
+<tr>
+<td><code>memory_detect_contradiction</code></td>
+<td>S6</td>
+</tr>
+<tr>
+<td><code>memory_auto_tag</code></td>
+<td>S8</td>
+</tr>
+<tr>
+<td><code>memory_agent_register</code> / <code>memory_agent_list</code></td>
+<td>S12</td>
+</tr>
+<tr>
+<td><code>memory_stats</code></td>
+<td>S17</td>
+</tr>
+<tr>
+<td><code>memory_promote</code> (tier)</td>
+<td>S16</td>
+</tr>
+<tr>
+<td><code>memory_expand_query</code></td>
+<td>S18</td>
+</tr>
+<tr>
+<td>Federation: quorum write</td>
+<td>S1b, S2, S4, S9, S10, S13</td>
+</tr>
+<tr>
+<td>Federation: partition tolerance</td>
+<td>S14</td>
+</tr>
+<tr>
+<td>Federation: convergence</td>
+<td>S17</td>
+</tr>
+<tr>
+<td>Scope enforcement (Task 1.5)</td>
+<td>S7</td>
+</tr>
+<tr>
+<td><code>metadata.agent_id</code> immutability (Task 1.2)</td>
+<td>S1, S1b, S2, S5, S6, S7, S9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Saturation</strong>: every primitive listed in the ai-memory-mcp tool catalog is covered by at least one scenario.</p>
+<hr />
+<h2 id="4-per-scenario-plans">4. Per-scenario plans<a class="headerlink" href="#4-per-scenario-plans" title="Anchor link to this section">&para;</a></h2>
+<p>Each plan has the same six sections: Objective · Pre-conditions · Procedure · Pass criteria · Failure modes · Evidence.</p>
+<h3 id="suite-a-core-a2a">Suite A — Core A2A<a class="headerlink" href="#suite-a-core-a2a" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s1-per-agent-write-read-mcp-stdio-path">S1 — Per-agent write + read (MCP-stdio path)<a class="headerlink" href="#s1-per-agent-write-read-mcp-stdio-path" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Proves that an agent framework can accept a natural-language prompt, select the <code>memory_store</code>/<code>memory_recall</code> tool, invoke it via MCP stdio, and the memory lands on the local substrate with correct <code>metadata.agent_id</code>.</li>
+<li><strong>Pre-conditions</strong>: Baseline v1.2.0 green. F2a passed (substrate up). F2b is the scoped-down version of this scenario.</li>
+<li><strong>Procedure</strong>: Each of 3 agents drives 10 <code>memory_store</code> calls via MCP into <code>scenario1-&lt;agent-id&gt;</code>. After 15s settle, each agent recalls the other two namespaces. Node-4 aggregator is queried independently.</li>
+<li><strong>Pass criteria</strong>: Every reader sees ≥ 20 memories (10 from each of the other 2 writers). <code>metadata.agent_id</code> stamped on every row matches the writer.</li>
+<li><strong>Failure modes</strong>:</li>
+<li><code>recall 0</code> on all readers + local HNSW index grew → MCP stdio writes bypass federation fanout (substrate bug <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/318">#318</a>)</li>
+<li>Agent CLI crash → agent framework install gap</li>
+<li><strong>Evidence</strong>: <code>scenario-1.json</code> + <code>scenario-1.log</code> with per-agent recall counts, identity-check dump from node-4.</li>
+</ul>
+<h4 id="s1b-per-agent-write-read-http-path">S1b — Per-agent write + read (HTTP path)<a class="headerlink" href="#s1b-per-agent-write-read-http-path" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Same invariant as S1 but bypasses MCP stdio. Proves the federation layer works independent of the MCP-stdio substrate bug. Green-path counterpart to S1.</li>
+<li><strong>Pre-conditions</strong>: Baseline v1.2.0 green. F3 green (federation live).</li>
+<li><strong>Procedure</strong>: Each of 3 agents <code>POST /api/v1/memories</code> to local serve HTTP into <code>scenario1b-&lt;agent-id&gt;</code>. 15s settle. Each reader counts other-namespace rows via local HTTP.</li>
+<li><strong>Pass criteria</strong>: Every reader sees ≥ 20 rows with correct <code>metadata.agent_id</code>.</li>
+<li><strong>Failure modes</strong>: Federation fanout broken (all 0 rows on peers) → PR #309 regression. Partial replication (1 peer sees, 2 don't) → quorum threshold issue.</li>
+<li><strong>Evidence</strong>: <code>scenario-1b.json</code> + <code>scenario-1b.log</code>.</li>
+</ul>
+<h4 id="s2-shared-context-handoff">S2 — Shared-context handoff<a class="headerlink" href="#s2-shared-context-handoff" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Prove an agent can drop a handoff memory that another agent picks up within bounded settle. This is the "task handed from A to B" primitive.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: Agent A (<code>ai:alice</code> on node-1) writes <code>scenario2-handoff/handoff-to-bob</code> with content describing a task. Settle 8s. Agent B (<code>ai:bob</code> on node-2) queries that namespace + title. Agent B writes <code>scenario2-handoff/ack-from-bob</code> with its acknowledgement. Settle 8s. Agent A reads the ack.</li>
+<li><strong>Pass criteria</strong>: B sees the exact handoff payload with <code>metadata.agent_id = ai:alice</code>. A sees the exact ack payload with <code>metadata.agent_id = ai:bob</code>.</li>
+<li><strong>Failure modes</strong>: B sees nothing → settle too short OR fanout failed. B sees handoff but A doesn't see ack → asymmetric replication (one direction works, other doesn't).</li>
+<li><strong>Evidence</strong>: <code>scenario-2.json</code>.</li>
+</ul>
+<h3 id="suite-b-a2a-primitives">Suite B — A2A Primitives<a class="headerlink" href="#suite-b-a2a-primitives" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s3-targeted-share">S3 — Targeted share<a class="headerlink" href="#s3-targeted-share" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_share</code> delivers a specific subset of memories from A to C without C querying (push semantics).</li>
+<li><strong>Pre-conditions</strong>: Requires ai-memory v0.6.0.1 (#311) — memory_share CLI + MCP tool not in v0.6.0. <strong>DEFERRED</strong> until v0.6.0.1 ships.</li>
+<li><strong>Procedure (documented for when runnable)</strong>: A writes 10 memories. A invokes <code>memory_share --target=ai:charlie --namespace=&lt;X&gt;</code>. Settle. C lists namespace. C sees the 10 rows with <code>metadata.shared_from: ai:alice</code>.</li>
+<li><strong>Pass criteria</strong>: C sees exactly the shared set. B (<code>ai:bob</code>) does NOT see them (targeted, not broadcast).</li>
+<li><strong>Evidence</strong>: <code>scenario-3.json</code>.</li>
+</ul>
+<h4 id="s5-consolidation-curation">S5 — Consolidation + curation<a class="headerlink" href="#s5-consolidation-curation" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_consolidate</code> produces a single memory whose <code>metadata.consolidated_from_agents</code> lists all contributing agents in correct order, preserving provenance.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: All 3 agents write 3 related memories to <code>scenario5-consolidate</code> (9 rows total). Request consolidation via HTTP (<code>POST /api/v1/memories/consolidate</code> if exposed, else CLI). Read back the consolidated memory from a 4th peer.</li>
+<li><strong>Pass criteria</strong>: Consolidated memory has <code>metadata.consolidated_from_agents</code> set to <code>[ai:alice, ai:bob, ai:charlie]</code>. All three original memories still recoverable.</li>
+<li><strong>Failure modes</strong>: Consolidation drops provenance (empty <code>consolidated_from_agents</code>). Consolidation deletes originals before consolidation row replicates.</li>
+<li><strong>Evidence</strong>: <code>scenario-5.json</code>.</li>
+</ul>
+<h4 id="s6-contradiction-detection">S6 — Contradiction detection<a class="headerlink" href="#s6-contradiction-detection" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_detect_contradiction</code> surfaces conflicting claims from different agents to an uninvolved third agent, with a <code>contradicts</code> link between them.</li>
+<li><strong>Pre-conditions</strong>: S1b green. Requires <code>memory_detect_contradiction</code> endpoint.</li>
+<li><strong>Procedure</strong>: Agent A writes "X is true". Agent B writes "X is false" (different-content, same-topic). Settle. Agent C calls <code>memory_detect_contradiction</code> on topic X. Verify response includes both rows + a <code>contradicts</code> link between them.</li>
+<li><strong>Pass criteria</strong>: C's query returns the pair + the link; neither A nor B's row is silently overwritten.</li>
+<li><strong>Failure modes</strong>: Only one memory returned (LWW overwrite). No link present (detection not running). Memory returns but with swapped <code>agent_id</code> (provenance bug).</li>
+<li><strong>Evidence</strong>: <code>scenario-6.json</code>.</li>
+</ul>
+<h4 id="s11-link-integrity">S11 — Link integrity<a class="headerlink" href="#s11-link-integrity" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_link</code> creates a relationship between two memories, and that relationship is traversable from any peer.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: Agent A writes memory M1. Agent B writes memory M2. Agent A invokes <code>memory_link --from M1 --to M2 --relation related_to</code>. Settle. Agent C on node-3 queries <code>memory_get_links M1</code>, expects M2 in the response.</li>
+<li><strong>Pass criteria</strong>: C's link query returns M2. Inverse lookup (<code>memory_get_links M2</code>) also returns M1.</li>
+<li><strong>Failure modes</strong>: Links don't replicate (only A's node sees them). Link direction not preserved (M1→M2 ≠ M2→M1 reflexive).</li>
+<li><strong>Evidence</strong>: <code>scenario-11.json</code>.</li>
+</ul>
+<h3 id="suite-c-mutation-lifecycle">Suite C — Mutation + Lifecycle<a class="headerlink" href="#suite-c-mutation-lifecycle" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s9-mutation-round-trip">S9 — Mutation round-trip<a class="headerlink" href="#s9-mutation-round-trip" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_update</code> from one agent is visible with the new content on other agents within quorum settle. <code>metadata.agent_id</code> of the ORIGINAL writer is preserved (Task 1.2 immutability) while <code>updated_by</code> reflects the mutator.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: A writes M1 with content "v1". B issues <code>memory_update M1 content="v2"</code>. Settle. C reads M1.</li>
+<li><strong>Pass criteria</strong>: C sees content="v2". <code>metadata.agent_id</code> is still <code>ai:alice</code> (immutable). <code>metadata.updated_by</code> or equivalent is <code>ai:bob</code>.</li>
+<li><strong>Failure modes</strong>: <code>metadata.agent_id</code> overwritten to <code>ai:bob</code> (Task 1.2 breach). Update doesn't propagate (C still sees "v1").</li>
+<li><strong>Evidence</strong>: <code>scenario-9.json</code>.</li>
+</ul>
+<h4 id="s10-deletion-propagation">S10 — Deletion propagation<a class="headerlink" href="#s10-deletion-propagation" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_delete</code> / <code>memory_forget</code> from one agent propagates to all peers and to the aggregator node-4 within quorum settle.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: A writes M1. Settle. A lists M1 via HTTP, confirms present. A issues <code>memory_delete M1</code> (or <code>memory_forget M1</code>). Settle 15s. B, C, node-4 all query for M1.</li>
+<li><strong>Pass criteria</strong>: None of the 3 peers still have M1. No tombstone leak (the row's content is not retrievable via recall).</li>
+<li><strong>Failure modes</strong>: Soft delete: row hidden on A but still present on peers (replication failure). Deletion creates a gap: <code>memory_list</code> returns <code>null</code> entries.</li>
+<li><strong>Evidence</strong>: <code>scenario-10.json</code>.</li>
+</ul>
+<h4 id="s16-tier-promotion">S16 — Tier promotion<a class="headerlink" href="#s16-tier-promotion" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_promote</code> from <code>short</code> → <code>mid</code> → <code>long</code> tier replicates across peers without losing content or provenance.</li>
+<li><strong>Pre-conditions</strong>: S1b green. Tier endpoint exposed.</li>
+<li><strong>Procedure</strong>: A writes M1 with <code>tier: short</code>. Settle. A issues <code>memory_promote M1 --tier long</code>. Settle. B reads M1 and checks <code>tier</code>.</li>
+<li><strong>Pass criteria</strong>: B sees <code>tier: long</code>. Content identical. <code>metadata.agent_id</code> unchanged.</li>
+<li><strong>Evidence</strong>: <code>scenario-16.json</code>.</li>
+</ul>
+<h3 id="suite-d-scope-governance">Suite D — Scope + Governance<a class="headerlink" href="#suite-d-scope-governance" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s7-scope-visibility-matrix">S7 — Scope visibility matrix<a class="headerlink" href="#s7-scope-visibility-matrix" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Task 1.5 scope contract enforced across agents on different nodes. Every (caller_scope, target_scope) pair produces the documented visibility.</li>
+<li><strong>Pre-conditions</strong>: S1b green. Task 1.5 scope enforcement shipped in v0.6.0.</li>
+<li><strong>Procedure</strong>: A writes 5 memories at scopes <code>private</code>, <code>team</code>, <code>unit</code>, <code>org</code>, <code>collective</code>. Settle. B queries each scope from different <code>as_agent</code> values (same-team, different-team, different-unit, different-org). Verify the matrix:</li>
+<li><code>private</code> → visible only to A itself</li>
+<li><code>team</code> → visible to same-team agents</li>
+<li><code>unit</code> → visible to same-unit agents (and same-team inherited)</li>
+<li><code>org</code> → visible to same-org</li>
+<li><code>collective</code> → globally visible</li>
+<li><strong>Pass criteria</strong>: Every cell of the visibility matrix matches the Task 1.5 contract.</li>
+<li><strong>Failure modes</strong>: Private memory leaked across scope boundary = critical. Collective memory not visible globally = replication gap.</li>
+<li><strong>Evidence</strong>: <code>scenario-7.json</code> with full (scope, caller_scope) matrix.</li>
+</ul>
+<h4 id="s8-auto-tagging-round-trip">S8 — Auto-tagging round-trip<a class="headerlink" href="#s8-auto-tagging-round-trip" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Auto-tag pipeline generates tags for untagged memories and makes them recallable by tag.</li>
+<li><strong>Pre-conditions</strong>: Requires Ollama on s-4vcpu-16gb droplets. Auto-tag pipeline daemon running. <strong>DEFERRED</strong> unless <code>auto_tag=true</code> dispatch input is set.</li>
+<li><strong>Procedure</strong>: A writes memory without tags. Wait 30s for auto-tag pipeline. B recalls by one of the generated tags.</li>
+<li><strong>Pass criteria</strong>: B's tag-based recall returns A's memory. Tags are non-empty, non-trivial (not just content truncation).</li>
+<li><strong>Evidence</strong>: <code>scenario-8.json</code>.</li>
+</ul>
+<h4 id="s12-agent-registration">S12 — Agent registration<a class="headerlink" href="#s12-agent-registration" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_agent_register</code> on one node makes the agent visible in <code>memory_agent_list</code> on all peers. Task 1.3 shipped in v0.6.0.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: A calls <code>memory_agent_register --agent-id=ai:dave --namespace=auto-registered</code>. Settle. B, C, node-4 each call <code>memory_agent_list</code>. All see ai:dave.</li>
+<li><strong>Pass criteria</strong>: Consistent view of registered agents across all nodes.</li>
+<li><strong>Evidence</strong>: <code>scenario-12.json</code>.</li>
+</ul>
+<h3 id="suite-e-resilience-observability">Suite E — Resilience + Observability<a class="headerlink" href="#suite-e-resilience-observability" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s13-concurrent-write-contention">S13 — Concurrent write contention<a class="headerlink" href="#s13-concurrent-write-contention" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Two agents updating the same memory converge to a consistent outcome across peers — whatever the resolution semantics (LWW, CRDT, vector clock) — <em>everyone agrees on which version won</em>.</li>
+<li><strong>Pre-conditions</strong>: S1b green, S9 green.</li>
+<li><strong>Procedure</strong>: A writes M1 with "v0". Settle. A and B concurrently issue <code>memory_update M1 content="vA"</code> and <code>memory_update M1 content="vB"</code>. Settle. All 3 peers + node-4 read M1.</li>
+<li><strong>Pass criteria</strong>: All 4 readers return the SAME content value (whether it's vA, vB, or a CRDT merge is less important than agreement). No split-brain.</li>
+<li><strong>Failure modes</strong>: Different peers report different content → split-brain. Metadata partial update (content vA but <code>updated_by</code> ai:bob) → inconsistent transaction.</li>
+<li><strong>Evidence</strong>: <code>scenario-13.json</code> with the outcome vote per peer.</li>
+</ul>
+<h4 id="s14-partition-tolerance">S14 — Partition tolerance<a class="headerlink" href="#s14-partition-tolerance" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Temporary loss of one peer doesn't permanently break the mesh; writes during partition converge after recovery (PR #309 + PR #312 regression test at A2A level).</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: Suspend node-3 via <code>kill -STOP</code> on its ai-memory process. A and B write memories. 10s settle. Resume node-3 via <code>kill -CONT</code>. 15s settle. Query node-3 for the memories written during partition.</li>
+<li><strong>Pass criteria</strong>: Node-3 eventually sees all writes made during its outage. Quorum (W=2) was satisfied during partition (A + B constituted quorum for each other).</li>
+<li><strong>Failure modes</strong>: Writes during partition lost (W=2 not satisfied during outage). Node-3 partition prevents ALL writes (W=3 requirement bug).</li>
+<li><strong>Evidence</strong>: <code>scenario-14.json</code>.</li>
+</ul>
+<h4 id="s15-read-your-writes">S15 — Read-your-writes<a class="headerlink" href="#s15-read-your-writes" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: An agent reading immediately after its own write sees the write (no settle required locally).</li>
+<li><strong>Pre-conditions</strong>: Baseline green.</li>
+<li><strong>Procedure</strong>: A writes M1 at time T0. A issues recall at T0+1ms from the same node. A reads its own write.</li>
+<li><strong>Pass criteria</strong>: The write is visible to the writer itself with zero-delay local read. (Inter-agent propagation delay is separate — tested elsewhere.)</li>
+<li><strong>Failure modes</strong>: Writer doesn't see own write locally → local-write-not-persisted bug.</li>
+<li><strong>Evidence</strong>: <code>scenario-15.json</code>.</li>
+</ul>
+<h4 id="s17-stats-consistency">S17 — Stats consistency<a class="headerlink" href="#s17-stats-consistency" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_stats</code> returns the same counts across all 4 peers post-settle (total memories, per-namespace, per-agent).</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: All 3 agents write 5 memories each (15 total). Settle 15s. Query <code>memory_stats</code> on each of the 4 peers.</li>
+<li><strong>Pass criteria</strong>: <code>total_memories &gt;= 15</code> on all 4 peers AND equal across all 4 peers (±0 tolerance post-settle).</li>
+<li><strong>Failure modes</strong>: Count drift between peers → incomplete replication. Count mismatch with writer-count → write bug.</li>
+<li><strong>Evidence</strong>: <code>scenario-17.json</code>.</li>
+</ul>
+<h4 id="s18-semantic-query-expansion">S18 — Semantic query expansion<a class="headerlink" href="#s18-semantic-query-expansion" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: <code>memory_expand_query</code> returns semantically related memories written by different agents, proving the HNSW/embedding layer works across the federated set.</li>
+<li><strong>Pre-conditions</strong>: S1b green. Semantic tier enabled (baseline.mcp args include <code>--tier semantic</code>).</li>
+<li><strong>Procedure</strong>: A writes "Lyra prefers morning runs". B writes "Lyra loves breakfast before exercise". Settle. C calls <code>memory_expand_query "dawn activity routine"</code> (semantically related but no literal keyword overlap).</li>
+<li><strong>Pass criteria</strong>: Query returns both A's and B's memories despite keyword mismatch. Both have the expected <code>metadata.agent_id</code>.</li>
+<li><strong>Failure modes</strong>: Only keyword matches returned (semantic expansion broken). Neither returned (index fails across peers).</li>
+<li><strong>Evidence</strong>: <code>scenario-18.json</code>.</li>
+</ul>
+<h3 id="suite-f-topology-variants">Suite F — Topology variants<a class="headerlink" href="#suite-f-topology-variants" title="Anchor link to this section">&para;</a></h3>
+<h4 id="s4-federation-aware-concurrent-writes">S4 — Federation-aware concurrent writes<a class="headerlink" href="#s4-federation-aware-concurrent-writes" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Quorum semantics hold under concurrent write burst. PR #309 regression test at A2A level.</li>
+<li><strong>Pre-conditions</strong>: S1b green.</li>
+<li><strong>Procedure</strong>: All 3 agents concurrently write 50 memories each (150 total, ~5s burst) into distinct namespaces. Settle 20s. Query node-4 aggregator for total row count per namespace.</li>
+<li><strong>Pass criteria</strong>: Node-4 sees 50 memories in each of the 3 namespaces. No row loss. No wrong <code>agent_id</code>.</li>
+<li><strong>Failure modes</strong>: Row loss → W=2 fanout dropping under load. Wrong <code>agent_id</code> → race condition in metadata stamping (Task 1.2 breach under concurrency).</li>
+<li><strong>Evidence</strong>: <code>scenario-4.json</code>.</li>
+</ul>
+<h4 id="s19-same-node-a2a">S19 — SAME-NODE A2A<a class="headerlink" href="#s19-same-node-a2a" title="Anchor link to this section">&para;</a></h4>
+<ul>
+<li><strong>Objective</strong>: Two agent identities running on the SAME droplet, sharing the same local <code>ai-memory serve</code>, can write and read each other's memories. This is the on-device-multi-agent case (Claude Desktop + VS Code on one dev laptop, both talking to local ai-memory). Distinct from between-node federated A2A.</li>
+<li><strong>Pre-conditions</strong>: Baseline v1.2.0 green. A modified provision: node-1 runs TWO agent identities (<code>ai:alice-primary</code> and <code>ai:alice-assistant</code>) both with MCP config pointing at the same <code>/var/lib/ai-memory/a2a.db</code>.</li>
+<li><strong>Procedure</strong>: Primary agent writes 10 memories to <code>scenario19-same-node-alice</code>. Assistant agent (on same droplet, same serve) recalls the namespace immediately (no settle — same-process DB). Primary reads assistant's writes back.</li>
+<li><strong>Pass criteria</strong>: Both agents see each other's writes with correct <code>metadata.agent_id</code>. No federation involvement — this is a pure local-shared-memory test.</li>
+<li><strong>Failure modes</strong>: Agent isolation bug (alice-primary can't see alice-assistant despite shared DB). MCP stdio session caches state across calls and misses new writes from sibling agents.</li>
+<li><strong>Evidence</strong>: <code>scenario-19.json</code>.</li>
+</ul>
+<hr />
+<h2 id="5-dispatch-plans">5. Dispatch plans<a class="headerlink" href="#5-dispatch-plans" title="Anchor link to this section">&para;</a></h2>
+<h3 id="51-standard-campaign">5.1 Standard campaign<a class="headerlink" href="#51-standard-campaign" title="Anchor link to this section">&para;</a></h3>
+<p><div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>a2a-gate.yml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">agent_group</span><span class="o">=</span>openclaw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">scenarios</span><span class="o">=</span><span class="s2">&quot;1 1b 2 4 5 9 10 12 13 15 17 18&quot;</span>
+</span></code></pre></div>
+All runnable-today scenarios. Omit S3, S6, S7, S8, S11, S14, S16, S19 (deferred or special-infra).</p>
+<h3 id="52-deep-resilience-campaign">5.2 Deep resilience campaign<a class="headerlink" href="#52-deep-resilience-campaign" title="Anchor link to this section">&para;</a></h3>
+<p><div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>a2a-gate.yml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">agent_group</span><span class="o">=</span>openclaw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">scenarios</span><span class="o">=</span><span class="s2">&quot;13 14&quot;</span>
+</span></code></pre></div>
+Contention + partition tolerance — heavier, longer-running.</p>
+<h3 id="53-auto-tag-campaign-requires-larger-droplets">5.3 Auto-tag campaign (requires larger droplets)<a class="headerlink" href="#53-auto-tag-campaign-requires-larger-droplets" title="Anchor link to this section">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>a2a-gate.yml<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">agent_group</span><span class="o">=</span>openclaw<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">scenarios</span><span class="o">=</span><span class="s2">&quot;8&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">agent_droplet_size</span><span class="o">=</span>s-4vcpu-16gb
+</span></code></pre></div>
+<h3 id="54-same-node-a2a-campaign-requires-topology-override">5.4 Same-node A2A campaign (requires topology override)<a class="headerlink" href="#54-same-node-a2a-campaign-requires-topology-override" title="Anchor link to this section">&para;</a></h3>
+<p>Documented for future dispatch; requires a <code>topology=same-node</code> dispatch input (not yet implemented).</p>
+<hr />
+<h2 id="6-reading-the-evidence">6. Reading the evidence<a class="headerlink" href="#6-reading-the-evidence" title="Anchor link to this section">&para;</a></h2>
+<p>Every scenario leaves a <code>scenario-N.json</code> + <code>scenario-N.log</code> in <code>runs/&lt;campaign-id&gt;/</code>. The aggregator rolls them up into <code>a2a-summary.json</code> with <code>overall_pass = all-scenarios-pass</code>. The dashboard at https://alphaonedev.github.io/ai-memory-ai2ai-gate/runs/ surfaces PASS/FAIL per campaign; the per-run page shows PASS/FAIL per scenario with reasons.</p>
+<p>Evidence is committed to git with redaction; no secret value reaches the repo (see <a href="../baseline/#9b-security--secrets--pii-handling">baseline.md §9b</a>).</p>
+<hr />
+<h2 id="7-change-control">7. Change control<a class="headerlink" href="#7-change-control" title="Anchor link to this section">&para;</a></h2>
+<p>Adding a scenario is a <strong>minor</strong> test-book version bump. Removing or relaxing a scenario is <strong>major</strong> and requires a narrative entry in <code>analysis/run-insights.json</code>. Every scenario added must include:</p>
+<ol>
+<li>Entry in §2 register</li>
+<li>Full §4 plan (Objective / Pre-conditions / Procedure / Pass / Failure / Evidence)</li>
+<li>Working script in <code>scripts/scenarios/&lt;N&gt;_&lt;slug&gt;.py</code> (Python 3; see §7b)</li>
+<li>Primitive coverage updated in §3</li>
+</ol>
+<hr />
+<h2 id="7b-scenario-scripting-convention-v300">7b. Scenario scripting convention (v3.0.0+)<a class="headerlink" href="#7b-scenario-scripting-convention-v300" title="Anchor link to this section">&para;</a></h2>
+<p><strong>All scenarios are Python 3.</strong> Every script in <code>scripts/scenarios/</code> is a <code>.py</code> file that imports <code>scripts/a2a_harness.py</code> (stdlib-only — no pip installs on the runner), runs its checks, and calls <code>harness.emit(...)</code> to produce the JSON report. The workflow dispatches via <code>python3</code>.</p>
+<p>Contract:
+- <code>stdout</code> — single-line JSON scenario report (consumed by aggregator)
+- <code>stderr</code> — human-readable log lines
+- exit 0 on a clean run (pass, fail, or skip); non-zero only on hard crash</p>
+<p>Why Python, not bash: complex payload construction (fuzz / bulk / export-import), real concurrency (<code>concurrent.futures</code>), clean assertions, reusable fixtures, JSON handled as data instead of shell-quoting hell.</p>
+<p>Reference implementation: <code>scripts/scenarios/26_mixed_framework.py</code>.</p>
+<hr />
+<h2 id="8-read-next">8. Read next<a class="headerlink" href="#8-read-next" title="Anchor link to this section">&para;</a></h2>
+<ul>
+<li><a href="../baseline/">Baseline configuration</a> — what must be true before any scenario runs</li>
+<li><a href="../methodology/">Methodology</a> — the philosophy behind the invariants</li>
+<li><a href="../reproducing/">Reproducing</a> — how to dispatch a campaign yourself</li>
+<li><a href="runs/">Campaign runs</a> — live evidence dashboard</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../baseline/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Baseline configuration">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Baseline configuration
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../tests/" class="md-footer__link md-footer__link--next" aria-label="Next: Every test performed">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Every test performed
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 <a href="https://github.com/alphaonedev/alphaone-website" rel="noopener" style="color:inherit">AlphaOne LLC</a>. Apache-2.0.
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/alphaonedev" target="_blank" rel="noopener" title="alphaonedev on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

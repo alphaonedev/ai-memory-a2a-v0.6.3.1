@@ -975,7 +975,11 @@ jobs:
           CAMPAIGN_DIR="runs/${{ github.event.inputs.campaign_id }}"
           git config user.name "a2a-gate-bot"
           git config user.email "a2a-gate-bot@users.noreply.github.com"
-          git add "$CAMPAIGN_DIR" || true
+          # Phase 5 mutates releases/v0.6.3.1/summary.json (in --no-commit
+          # mode) with the substrate + NHI verdict roll-up. Stage that
+          # alongside the runs/ artifacts so the verdict actually lands on
+          # main. Tracked as r13 follow-up #27.
+          git add "$CAMPAIGN_DIR" releases/v0.6.3.1/summary.json || true
           if [ -z "$(git status --porcelain)" ]; then
             echo "::notice::no artifacts to commit"
             exit 0

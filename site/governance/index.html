@@ -1,0 +1,3467 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Per-release agent-to-agent (A2A) certification campaign for ai-memory-mcp v0.6.3.1 (tag cut 2026-04-30, schema v19). 4-node DigitalOcean mesh. Scope: IronClaw + Hermes (OpenClaw runs in a separate campaign per Principle 6). Governed by docs/governance.md.">
+      
+      
+      
+        <link rel="canonical" href="https://alphaonedev.github.io/ai-memory-a2a-v0.6.3.1/governance/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../scope/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/a1-mark.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>First-Principles governance - ai-memory A2A v0.6.3.1 campaign</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Inter";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/alphaone.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ai-memory-v0631-a2a-gated-testing-playbook" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ai-memory A2A v0.6.3.1 campaign" class="md-header__button md-logo" aria-label="ai-memory A2A v0.6.3.1 campaign" data-md-component="logo">
+      
+  <img src="../assets/a1-mark.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ai-memory A2A v0.6.3.1 campaign
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              First-Principles governance
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="cyan"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    alphaonedev/ai-memory-a2a-v0.6.3.1
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Governance (authoritative)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../runs/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Campaign runs
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../reproducing/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reproducing
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../baseline/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Specification (inherited from gate)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../agents/ironclaw/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Agents (in scope: IronClaw, Hermes)
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../scenarios/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Scenarios
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../runbook/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Operations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../insights/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  AI NHI insights
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ai-memory A2A v0.6.3.1 campaign" class="md-nav__button md-logo" aria-label="ai-memory A2A v0.6.3.1 campaign" data-md-component="logo">
+      
+  <img src="../assets/a1-mark.svg" alt="logo">
+
+    </a>
+    ai-memory A2A v0.6.3.1 campaign
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    alphaonedev/ai-memory-a2a-v0.6.3.1
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Governance (authoritative)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Governance (authoritative)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First-Principles governance
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First-Principles governance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#document-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Document control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-purpose-of-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Purpose of this document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. First Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. First Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#principle-1-two-truth-claims-two-evidence-streams-never-conflated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 1 — Two truth-claims, two evidence streams, never conflated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-2-substrate-first-gate-the-playbook-on-substrate-green" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 2 — Substrate first, gate the playbook on substrate green
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-3-tasks-must-require-context-to-succeed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 3 — Tasks must require context to succeed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-4-self-logged-json-must-be-structured-for-machine-review" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 4 — Self-logged JSON must be structured for machine review
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-5-cross-layer-consistency-is-the-strongest-evidence-the-harness-can-produce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 5 — Cross-layer consistency is the strongest evidence the harness can produce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-6-scope-discipline-this-node-these-agents-this-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 6 — Scope discipline; this node, these agents, this release
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Phase structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-1-substrate-cert-recap-not-redesign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Phase 1 — Substrate cert (recap, not redesign)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-phase-2-ai-orchestration-test-scripted-dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Phase 2 — AI Orchestration Test (scripted dry run)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Phase 2 — AI Orchestration Test (scripted dry run)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Script
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-phase-3-autonomous-nhi-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Phase 3 — Autonomous NHI Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Phase 3 — Autonomous NHI Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-the-four-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 The four scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 The four scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario-a-decision-provenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario A — Decision provenance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-b-constraint-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario B — Constraint propagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-c-correction-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario C — Correction memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-d-federation-honesty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario D — Federation honesty
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-three-control-arms-per-your-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Three control arms (per your direction)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-bounding-autonomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Bounding autonomy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-determinism-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Determinism controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-json-log-schema-binding-for-all-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. JSON log schema (binding for all phases)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-phase-4-meta-analysis-third-claude-instance-no-namespace-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Phase 4 — Meta-analysis (third Claude instance, no namespace access)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Phase 4 — Meta-analysis (third Claude instance, no namespace access)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-orchestrator-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Orchestrator role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-computed-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Computed metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-cross-layer-consistency-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Cross-layer consistency table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-findings-funnel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Findings funnel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-phase-5-verdict-commit-findings-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Phase 5 — Verdict commit + findings sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-decision-authority-and-escalation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Decision authority and escalation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-what-success-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. What success looks like
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-mapping-of-first-principles-to-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A — Mapping of First Principles to phases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-out-of-scope-for-absolute-clarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B — Out of scope (for absolute clarity)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scope/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scope (v0.6.3.1 specifics)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matrix/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Verdict matrix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../findings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Findings funnel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Campaign runs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reproducing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reproducing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reproducing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reproducing (DO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-docker-mesh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local Docker mesh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Specification (inherited from gate)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Specification (inherited from gate)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../baseline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Baseline configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Test book
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Every test performed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../v1-ga-criteria/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.0 GA criteria
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agents (in scope: IronClaw, Hermes)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Agents (in scope: IronClaw, Hermes)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/ironclaw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IronClaw
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/hermes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hermes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../agents/openclaw/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenClaw (out of scope)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scenarios
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Scenarios
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Carry-forward S1–S8
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/1-write-read/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Per-agent write + read
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/2-handoff/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Shared-context handoff
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/3-targeted-share/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Targeted share
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/4-federation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Federation-aware agents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/5-consolidation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Consolidation + curation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/6-contradiction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Contradiction detection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/7-scoping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Scoping visibility
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scenarios/8-auto-tagging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Auto-tagging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../topology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Topology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../methodology/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Methodology
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai-memory-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ai-memory integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../infrastructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Infrastructure versions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Operations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../runbook/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../incidents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Incidents
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../insights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI NHI insights
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#document-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Document control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-purpose-of-this-document" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Purpose of this document
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. First Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. First Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#principle-1-two-truth-claims-two-evidence-streams-never-conflated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 1 — Two truth-claims, two evidence streams, never conflated
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-2-substrate-first-gate-the-playbook-on-substrate-green" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 2 — Substrate first, gate the playbook on substrate green
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-3-tasks-must-require-context-to-succeed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 3 — Tasks must require context to succeed
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-4-self-logged-json-must-be-structured-for-machine-review" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 4 — Self-logged JSON must be structured for machine review
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-5-cross-layer-consistency-is-the-strongest-evidence-the-harness-can-produce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 5 — Cross-layer consistency is the strongest evidence the harness can produce
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#principle-6-scope-discipline-this-node-these-agents-this-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Principle 6 — Scope discipline; this node, these agents, this release
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-phase-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Phase structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-phase-1-substrate-cert-recap-not-redesign" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Phase 1 — Substrate cert (recap, not redesign)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-phase-2-ai-orchestration-test-scripted-dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Phase 2 — AI Orchestration Test (scripted dry run)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Phase 2 — AI Orchestration Test (scripted dry run)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Purpose
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Script
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-phase-3-autonomous-nhi-playbook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Phase 3 — Autonomous NHI Playbook
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Phase 3 — Autonomous NHI Playbook">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-the-four-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 The four scenarios
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.1 The four scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario-a-decision-provenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario A — Decision provenance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-b-constraint-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario B — Constraint propagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-c-correction-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario C — Correction memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-d-federation-honesty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scenario D — Federation honesty
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-three-control-arms-per-your-direction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Three control arms (per your direction)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-bounding-autonomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Bounding autonomy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-determinism-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Determinism controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-json-log-schema-binding-for-all-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. JSON log schema (binding for all phases)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-phase-4-meta-analysis-third-claude-instance-no-namespace-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Phase 4 — Meta-analysis (third Claude instance, no namespace access)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Phase 4 — Meta-analysis (third Claude instance, no namespace access)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-orchestrator-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Orchestrator role
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-computed-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Computed metrics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-cross-layer-consistency-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Cross-layer consistency table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-findings-funnel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Findings funnel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-exit-artifact" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Exit artifact
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-phase-5-verdict-commit-findings-sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Phase 5 — Verdict commit + findings sync
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-decision-authority-and-escalation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Decision authority and escalation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-what-success-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. What success looks like
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-mapping-of-first-principles-to-phases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A — Mapping of First Principles to phases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-out-of-scope-for-absolute-clarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B — Out of scope (for absolute clarity)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="ai-memory-v0631-a2a-gated-testing-playbook">ai-memory v0.6.3.1 — A2A Gated Testing Playbook<a class="headerlink" href="#ai-memory-v0631-a2a-gated-testing-playbook" title="Anchor link to this section">&para;</a></h1>
+<p><strong>First-Principles governance for the AI NHI Orchestrator</strong></p>
+<hr />
+<h2 id="document-control">Document control<a class="headerlink" href="#document-control" title="Anchor link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Subject under test</td>
+<td><code>ai-memory-mcp</code> v0.6.3.1 (schema v19)</td>
+</tr>
+<tr>
+<td>Umbrella issue</td>
+<td><a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">alphaonedev/ai-memory-mcp#511</a></td>
+</tr>
+<tr>
+<td>Spec source</td>
+<td><a href="https://github.com/alphaonedev/ai-memory-ai2ai-gate">alphaonedev/ai-memory-ai2ai-gate</a></td>
+</tr>
+<tr>
+<td>Campaign repo</td>
+<td><a href="https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1">alphaonedev/ai-memory-a2a-v0.6.3.1</a></td>
+</tr>
+<tr>
+<td>Verdict surface</td>
+<td><code>releases/v0.6.3.1/summary.json</code></td>
+</tr>
+<tr>
+<td>Test node scope</td>
+<td>This DigitalOcean node only</td>
+</tr>
+<tr>
+<td>Agent scope</td>
+<td>IronClaw + Hermes (OpenClaw tested separately, out of scope)</td>
+</tr>
+<tr>
+<td>Cert cell</td>
+<td><code>ironclaw / mTLS</code> (target 48/48 substrate)</td>
+</tr>
+<tr>
+<td>Document audience</td>
+<td>AI NHI Orchestrator (third Claude instance, no namespace access)</td>
+</tr>
+<tr>
+<td>Document role</td>
+<td>Authoritative governance — overrides any conflicting stale convention</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-purpose-of-this-document">1. Purpose of this document<a class="headerlink" href="#1-purpose-of-this-document" title="Anchor link to this section">&para;</a></h2>
+<p>This document tells the AI NHI Orchestrator how to govern the v0.6.3.1 A2A gated testing campaign so that the campaign produces <strong>maximum benefit to the improvement of ai-memory</strong> rather than merely producing a green badge.</p>
+<p>It is written from First Principles. It does not restate ship-gate plumbing, infrastructure provisioning, authentication topology, or Terraform conventions — those are handled by separate documents and are confirmed-good before this campaign runs. This document governs only the test design, the test execution discipline, and the evidence the campaign must produce.</p>
+<p>If anything in this document conflicts with a stale convention elsewhere, this document wins for v0.6.3.1.</p>
+<hr />
+<h2 id="2-first-principles">2. First Principles<a class="headerlink" href="#2-first-principles" title="Anchor link to this section">&para;</a></h2>
+<p>These six principles govern every decision the Orchestrator makes during the campaign. Every scenario, every artifact, every verdict trace back to one or more of them.</p>
+<h3 id="principle-1-two-truth-claims-two-evidence-streams-never-conflated">Principle 1 — Two truth-claims, two evidence streams, never conflated<a class="headerlink" href="#principle-1-two-truth-claims-two-evidence-streams-never-conflated" title="Anchor link to this section">&para;</a></h3>
+<p>ai-memory's existence justifies itself by answering one question: <em>does it preserve and propagate context across agent boundaries such that the receiving agent behaves differently — and correctly — than it would without it?</em></p>
+<p>This question splits into two distinct truth-claims that need separate evidence:</p>
+<ul>
+<li><strong>Claim A — Substrate correctness.</strong> The A2A surfaces behave per spec: mTLS, federation fanout, schema v19 migration, audit verify, doctor, the boot/install/wrap/logs commands, the expected-RED canaries S23 and S24. This is what scenarios S1–S24 prove. Evidence is binary and reproducible.</li>
+<li><strong>Claim B — Substrate utility.</strong> When two real Claude-driven NHIs (IronClaw and Hermes) execute a bidirectional task that <em>requires</em> shared context, ai-memory measurably changes their behavior versus a control run with ai-memory disabled or stubbed. Evidence is behavioral and probabilistic.</li>
+</ul>
+<p>The campaign produces <strong>two artifacts</strong>: a substrate cert artifact (S1–S24 verdicts) and an NHI playbook artifact (behavioral results). They are stored, signed, and published separately. Conflating them weakens the substrate cert's standing — substrate evidence is binary; NHI evidence is statistical, and mixing them invites readers to discount both.</p>
+<h3 id="principle-2-substrate-first-gate-the-playbook-on-substrate-green">Principle 2 — Substrate first, gate the playbook on substrate green<a class="headerlink" href="#principle-2-substrate-first-gate-the-playbook-on-substrate-green" title="Anchor link to this section">&para;</a></h3>
+<p>If S1–S22 are RED, the NHI playbook is testing a broken substrate and any results are uninterpretable. The Orchestrator does not run the NHI playbook layer until substrate Phase 1 reports <code>PARTIAL — pending Patch 2</code> (S1–S22 GREEN, S23 + S24 expected RED) per <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511 verdict criteria</a>.</p>
+<p>S23 and S24 must be RED on v0.6.3.1. If either turns GREEN, the harness is broken — the Orchestrator halts the campaign and files a harness-integrity issue rather than letting the run complete with a misleading verdict.</p>
+<h3 id="principle-3-tasks-must-require-context-to-succeed">Principle 3 — Tasks must require context to succeed<a class="headerlink" href="#principle-3-tasks-must-require-context-to-succeed" title="Anchor link to this section">&para;</a></h3>
+<p>The single biggest failure mode in agent memory testing is designing scenarios where the agent could solve the task stateless and the memory lookup is incidental. Such scenarios produce inflated GREEN results that say nothing about ai-memory's value.</p>
+<p>Every NHI playbook scenario in Phase 3 must be constructed so that <strong>the receiving agent cannot complete its turn correctly without a fact only the sending agent established earlier</strong>. The control-arm comparison is then meaningful: if the control arm (ai-memory disabled) succeeds at the same rate as the treatment arm (ai-memory live), ai-memory contributed nothing for that scenario, and that is itself a finding worth funneling to Patch 2.</p>
+<h3 id="principle-4-self-logged-json-must-be-structured-for-machine-review">Principle 4 — Self-logged JSON must be structured for machine review<a class="headerlink" href="#principle-4-self-logged-json-must-be-structured-for-machine-review" title="Anchor link to this section">&para;</a></h3>
+<p>Phase 4 meta-analysis is performed by a third Claude instance with no namespace access. That instance can only see what the NHIs wrote to JSON. If the JSON is unstructured prose, the meta-analysis is a vibes check. If the JSON is structured per the schema in §7, the meta-analysis is deterministic — the Orchestrator can compute "% of claims grounded in retrieved memory" as a hard number.</p>
+<p>Every per-turn record carries: <code>turn_id</code>, <code>agent_id</code>, <code>timestamp</code>, <code>phase</code>, <code>scenario_id</code>, <code>control_arm</code>, <code>prompt_hash</code>, <code>tools_called</code> (full args), <code>ai_memory_ops</code> (tool, namespace, key/query, returned-payload hash), <code>claims_made</code> (extracted assertions), <code>claims_grounded</code> (subset traceable to retrieved memory), <code>refusals</code>, and <code>self_confidence</code>. Schema is fixed in §7.</p>
+<h3 id="principle-5-cross-layer-consistency-is-the-strongest-evidence-the-harness-can-produce">Principle 5 — Cross-layer consistency is the strongest evidence the harness can produce<a class="headerlink" href="#principle-5-cross-layer-consistency-is-the-strongest-evidence-the-harness-can-produce" title="Anchor link to this section">&para;</a></h3>
+<p>S24 (#318) is RED on v0.6.3.1: MCP stdio tool dispatch writes bypass federation fanout. This means a write on one node should <em>not</em> appear on a federated peer until Patch 2 lands.</p>
+<p>The NHI playbook's federation-honesty scenario must independently observe this same gap as a measurable cross-agent context loss. If substrate S24 says RED and the NHI federation-honesty scenario says GREEN, the NHI test is broken — it isn't exercising the bypass path. If both say RED, the harness is internally consistent and that consistency is itself a stronger evidence claim than either layer alone.</p>
+<p>The Orchestrator computes and publishes a <strong>cross-layer consistency table</strong> in the final report (§9) showing each substrate finding against its NHI-layer behavioral correlate.</p>
+<h3 id="principle-6-scope-discipline-this-node-these-agents-this-release">Principle 6 — Scope discipline; this node, these agents, this release<a class="headerlink" href="#principle-6-scope-discipline-this-node-these-agents-this-release" title="Anchor link to this section">&para;</a></h3>
+<p>Every artifact carries metadata: <code>node_id=do-&lt;id&gt;</code>, <code>agents=ironclaw,hermes</code>, <code>release=v0.6.3.1</code>, <code>campaign_id=&lt;uuid&gt;</code>. OpenClaw is out of scope and runs in a separate campaign. Cross-scope contamination — using OpenClaw logs to fill a gap in IronClaw evidence, or rolling forward findings without re-running — invalidates the artifact and the Orchestrator rejects it.</p>
+<hr />
+<h2 id="3-phase-structure">3. Phase structure<a class="headerlink" href="#3-phase-structure" title="Anchor link to this section">&para;</a></h2>
+<p>The campaign runs in five phases. Each phase has an entry gate and an exit artifact. The Orchestrator does not advance phases until the prior phase's exit artifact is signed and published.</p>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Name</th>
+<th>Entry gate</th>
+<th>Exit artifact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Pre-flight</td>
+<td>Infrastructure team confirms accesses (out of this document's scope)</td>
+<td><code>a2a-baseline.json</code> per <a href="https://github.com/alphaonedev/ai-memory-ai2ai-gate/blob/main/docs/baseline.md">baseline.md</a></td>
+</tr>
+<tr>
+<td>1</td>
+<td>Substrate cert</td>
+<td>Phase 0 baseline GREEN</td>
+<td><code>releases/v0.6.3.1/summary.json</code> with verdict <code>PARTIAL — pending Patch 2</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>AI Orchestration Test</td>
+<td>Phase 1 verdict matches Principle 2</td>
+<td><code>phase2-orchestration.json</code> (scripted bidirectional dry run)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Autonomous NHI Playbook</td>
+<td>Phase 2 GREEN</td>
+<td>One <code>phase3-&lt;scenario&gt;-&lt;arm&gt;.json</code> per scenario × arm</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Meta-analysis</td>
+<td>All Phase 3 logs present and well-formed</td>
+<td><code>phase4-analysis.json</code> + cross-layer consistency table</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Verdict commit + findings sync</td>
+<td>Phase 4 signed</td>
+<td>Updated <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a> Patch 2 candidate list</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-phase-1-substrate-cert-recap-not-redesign">4. Phase 1 — Substrate cert (recap, not redesign)<a class="headerlink" href="#4-phase-1-substrate-cert-recap-not-redesign" title="Anchor link to this section">&para;</a></h2>
+<p>The Orchestrator does not redesign Phase 1. It dispatches <code>a2a-campaign.yml</code> against tag <code>v0.6.3.1</code> on the <code>ironclaw / mTLS</code> cert cell and accepts the published verdict. Phase 1 is governed by <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a> and is in this document only as the gate Phase 2 depends on.</p>
+<p><strong>Required Phase 1 outcome to advance:</strong> <code>verdict = "PARTIAL — pending Patch 2"</code>, with S1–S22 GREEN and S23 + S24 RED. Any other outcome halts the campaign.</p>
+<hr />
+<h2 id="5-phase-2-ai-orchestration-test-scripted-dry-run">5. Phase 2 — AI Orchestration Test (scripted dry run)<a class="headerlink" href="#5-phase-2-ai-orchestration-test-scripted-dry-run" title="Anchor link to this section">&para;</a></h2>
+<h3 id="51-purpose">5.1 Purpose<a class="headerlink" href="#51-purpose" title="Anchor link to this section">&para;</a></h3>
+<p>Phase 2 validates that the MCP wiring, namespace plumbing, JSON log sink, and agent-to-ai-memory transport all work end-to-end <strong>before autonomy is enabled in Phase 3</strong>. It is a dry run with training wheels: the Orchestrator drives IronClaw (<code>ai:alice</code>) and Hermes (<code>ai:bob</code>) through scripted prompts that exercise ai-memory operations as tools. The agents follow the script; they do not yet improvise.</p>
+<p>If Phase 2 fails, Phase 3 cannot produce interpretable results — a Phase 3 failure with broken plumbing is indistinguishable from a Phase 3 failure caused by ai-memory itself.</p>
+<h3 id="52-script">5.2 Script<a class="headerlink" href="#52-script" title="Anchor link to this section">&para;</a></h3>
+<p>Six scripted exchanges, executed in order. Each must complete with the expected ai-memory ledger state before the next runs.</p>
+<ol>
+<li><strong>Write round-trip.</strong> IronClaw writes a memory <code>{key: phase2-rt-1, value: &lt;random 64-char hex&gt;, scope: team}</code>. Orchestrator confirms the value via direct ai-memory query. Pass = byte-exact match.</li>
+<li><strong>Cross-agent recall.</strong> Hermes recalls <code>phase2-rt-1</code>. Pass = byte-exact match against IronClaw's write.</li>
+<li><strong>Scope enforcement.</strong> IronClaw writes <code>{key: phase2-private, scope: private}</code>. Hermes attempts recall. Pass = recall returns empty or scope-denied; <strong>fail</strong> = leak.</li>
+<li><strong>Tag write + tagged recall.</strong> Hermes writes three memories with tag <code>phase2-tag-A</code>. IronClaw recalls by tag. Pass = all three returned.</li>
+<li><strong>Audit verify hook.</strong> Orchestrator triggers <code>ai-memory audit verify</code> on the run-to-date ledger. Pass = audit returns clean for all four prior writes.</li>
+<li><strong>JSON log sink check.</strong> Both agents emit one Phase 2 record per the §7 schema to the configured sink. Orchestrator reads back. Pass = both records present, well-formed, parseable.</li>
+</ol>
+<h3 id="53-exit-artifact">5.3 Exit artifact<a class="headerlink" href="#53-exit-artifact" title="Anchor link to this section">&para;</a></h3>
+<p><code>phase2-orchestration.json</code> — one object with the six exchange records, an aggregate <code>pass: bool</code>, and the SHA-256 of the audit-verify output captured in step 5.</p>
+<p>If any exchange fails, the Orchestrator stops and files a Phase 2 issue. Phase 3 does not run on a degraded Phase 2.</p>
+<hr />
+<h2 id="6-phase-3-autonomous-nhi-playbook">6. Phase 3 — Autonomous NHI Playbook<a class="headerlink" href="#6-phase-3-autonomous-nhi-playbook" title="Anchor link to this section">&para;</a></h2>
+<p>This is the layer that was missing in prior campaigns. IronClaw and Hermes execute the playbook scenarios <strong>autonomously</strong>, communicating only through ai-memory. The Orchestrator sets up each scenario, releases the agents, and observes via the JSON log sink. It does not relay messages between agents, does not edit prompts mid-run, and does not coach.</p>
+<h3 id="61-the-four-scenarios">6.1 The four scenarios<a class="headerlink" href="#61-the-four-scenarios" title="Anchor link to this section">&para;</a></h3>
+<p>Each scenario is constructed per Principle 3 — the receiving agent cannot complete correctly without a fact only the sending agent established. Each scenario covers a distinct ai-memory behavior. Four is the floor; more scenarios add noise unless each tests something new.</p>
+<h4 id="scenario-a-decision-provenance">Scenario A — Decision provenance<a class="headerlink" href="#scenario-a-decision-provenance" title="Anchor link to this section">&para;</a></h4>
+<blockquote>
+<p>Tests <em>recall fidelity for stated rationale</em>.</p>
+</blockquote>
+<ul>
+<li><strong>T0 (IronClaw):</strong> Given a design choice between two alternatives X and Y, IronClaw selects one and writes a memory recording the selection and the rationale. The rationale must reference at least two specific constraints.</li>
+<li><strong>T+N (Hermes):</strong> Hermes is asked by a simulated third party (prompted by the Orchestrator) to <em>justify the selection of X (or Y)</em>. Hermes has no prior context except what ai-memory returns.</li>
+<li><strong>Pass:</strong> Hermes's justification names the specific constraints IronClaw recorded. The justification is grounded — every claim about rationale traces to a retrieved memory operation in the JSON log.</li>
+<li><strong>Fail modes detectable in JSON:</strong> fabrication (claims without grounding), refusal ("I have no context"), retrieval-but-rephrasing-loss (claims grounded but constraints not preserved).</li>
+</ul>
+<h4 id="scenario-b-constraint-propagation">Scenario B — Constraint propagation<a class="headerlink" href="#scenario-b-constraint-propagation" title="Anchor link to this section">&para;</a></h4>
+<blockquote>
+<p>Tests <em>ai-memory's ability to carry binding constraints across agent boundaries</em>.</p>
+</blockquote>
+<ul>
+<li><strong>T0 (IronClaw):</strong> IronClaw writes a constraint memory: a hard upper bound on a resource (token budget, latency, cost — pick one numeric).</li>
+<li><strong>T+N (Hermes):</strong> Hermes is given a task that, executed naively, would violate the constraint. The Orchestrator does not tell Hermes about the constraint.</li>
+<li><strong>Pass:</strong> Hermes either flags the constraint violation explicitly or adapts its plan to comply. Either response must be grounded in a retrieved memory operation.</li>
+<li><strong>Fail modes:</strong> Hermes proceeds and violates (memory not consulted, or consulted but ignored), or Hermes flags from prior context rather than memory (grounding chain breaks).</li>
+</ul>
+<h4 id="scenario-c-correction-memory">Scenario C — Correction memory<a class="headerlink" href="#scenario-c-correction-memory" title="Anchor link to this section">&para;</a></h4>
+<blockquote>
+<p>Tests <em>write semantics and read-after-write</em>.</p>
+</blockquote>
+<ul>
+<li><strong>T0 (IronClaw):</strong> IronClaw writes a fact F. Then IronClaw is corrected (Orchestrator-injected correction) and writes the corrected fact F'. ai-memory now contains both writes.</li>
+<li><strong>T+N (Hermes):</strong> Hermes is asked the question whose answer is F'.</li>
+<li><strong>Pass:</strong> Hermes returns F', not F. The JSON log shows Hermes saw both writes (or saw a consolidated/superseded record) and selected the corrected one.</li>
+<li><strong>Fail modes:</strong> Hermes returns F (returned the stale write), Hermes refuses (recall ambiguous), Hermes returns both without resolution (no contradiction-detection signal).</li>
+</ul>
+<h4 id="scenario-d-federation-honesty">Scenario D — Federation honesty<a class="headerlink" href="#scenario-d-federation-honesty" title="Anchor link to this section">&para;</a></h4>
+<blockquote>
+<p>Tests <em>cross-node visibility — the NHI-layer correlate of substrate S24</em>.</p>
+</blockquote>
+<ul>
+<li><strong>T0 (IronClaw on node-1):</strong> IronClaw writes a memory via the MCP stdio path — the path that S24 (#318) flags as bypassing federation fanout.</li>
+<li><strong>T+N (Hermes on node-2, federated peer):</strong> Hermes recalls the same key.</li>
+<li><strong>Expected on v0.6.3.1:</strong> Hermes does <strong>not</strong> see the write within the configured settle window. This is the <em>correct</em> behavior given S24's RED status; a successful recall here would mean either S24 is mis-categorized at the substrate layer or the playbook isn't exercising the bypass path.</li>
+<li><strong>Pass criterion (v0.6.3.1):</strong> Hermes recall returns empty or stale; cross-layer consistency table records "S24 RED + Scenario D context-loss observed" as internally consistent.</li>
+<li><strong>Pass criterion (Patch 2 / v0.6.3.2):</strong> Hermes recall returns the write; cross-layer consistency table records "S24 GREEN + Scenario D context-propagation observed" as the regression baseline.</li>
+</ul>
+<h3 id="62-three-control-arms-per-your-direction">6.2 Three control arms (per your direction)<a class="headerlink" href="#62-three-control-arms-per-your-direction" title="Anchor link to this section">&para;</a></h3>
+<p>Each scenario runs against <strong>three control arms plus one treatment arm = four runs per scenario × four scenarios = sixteen runs total</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Arm</th>
+<th>Configuration</th>
+<th>What it isolates</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Arm-0 — Cold</strong></td>
+<td>ai-memory disabled at the MCP layer. Agents see no memory tool.</td>
+<td>Behavior baseline with no shared state at all</td>
+</tr>
+<tr>
+<td><strong>Arm-1 — Isolated</strong></td>
+<td>ai-memory enabled but each agent confined to its own private namespace. No cross-agent reads.</td>
+<td>Isolates "did ai-memory help <em>this agent</em>" from "did ai-memory help <em>cross-agent context</em>"</td>
+</tr>
+<tr>
+<td><strong>Arm-2 — Stubbed</strong></td>
+<td>In-process dict standing in for ai-memory. Persists within a run, lost between runs. No federation.</td>
+<td>Isolates ai-memory's distinctive features (federation, persistence, scope, audit) from the bare idea of "any memory at all"</td>
+</tr>
+<tr>
+<td><strong>Arm-T — Treatment</strong></td>
+<td>ai-memory v0.6.3.1 live, federated, mTLS, full configuration</td>
+<td>The actual product</td>
+</tr>
+</tbody>
+</table>
+<p>Reading the four arms together yields a clean attribution chain: Arm-T versus Arm-0 measures <em>total ai-memory contribution</em>; Arm-T versus Arm-2 measures <em>contribution attributable to ai-memory's distinctive features</em>; Arm-T versus Arm-1 measures <em>contribution attributable specifically to cross-agent sharing</em>.</p>
+<h3 id="63-bounding-autonomy">6.3 Bounding autonomy<a class="headerlink" href="#63-bounding-autonomy" title="Anchor link to this section">&para;</a></h3>
+<p>Autonomy is the point — but unbounded runs make failure modes ambiguous. Every Phase 3 run is bounded by all three of:</p>
+<ul>
+<li><strong>Max turns:</strong> 12 turns per agent per scenario.</li>
+<li><strong>Max ai-memory operations:</strong> 50 per agent per scenario.</li>
+<li><strong>Wall-clock timeout:</strong> 10 minutes per scenario per arm.</li>
+</ul>
+<p>A run that hits any cap <strong>terminates with a <code>cap_reached</code> flag</strong> in the JSON log. A <code>cap_reached</code> outcome is distinct from a <code>refusal</code> outcome and from a <code>task_complete</code> outcome — the meta-analysis treats them separately.</p>
+<h3 id="64-determinism-controls">6.4 Determinism controls<a class="headerlink" href="#64-determinism-controls" title="Anchor link to this section">&para;</a></h3>
+<p>Within reason. Agents are LLM-driven, so full determinism is impossible, but the following are fixed before any Phase 3 run begins:</p>
+<ul>
+<li>LLM model SKU pinned per the harness baseline (<a href="../baseline/">baseline.md</a> — currently <code>grok-4-fast-non-reasoning</code>). The Orchestrator records the exact SKU in every JSON log; if the runtime serves a different SKU than baseline.md names, the run is flagged <code>sku_mismatch</code> and excluded from aggregation.</li>
+<li>System prompts versioned and SHA-256-hashed; the hash appears in every Phase 3 record.</li>
+<li>Each scenario × arm combination runs <strong>three times</strong> (n=3). The meta-analysis reports per-run results plus aggregate.</li>
+<li>Random seeds (where the agent stack supports them) pinned per run and recorded in the JSON log.</li>
+</ul>
+<p>Three runs × four arms × four scenarios = <strong>48 Phase 3 runs total</strong>, mirroring the 48-cell substrate cert grid by accident-of-arithmetic but not by design.</p>
+<h3 id="65-exit-artifact">6.5 Exit artifact<a class="headerlink" href="#65-exit-artifact" title="Anchor link to this section">&para;</a></h3>
+<p>48 files: <code>phase3-&lt;scenario&gt;-&lt;arm&gt;-run&lt;n&gt;.json</code>, each conforming to §7. Plus one aggregator file <code>phase3-summary.json</code> with run counts, completion outcomes, and pointers to the individual logs.</p>
+<hr />
+<h2 id="7-json-log-schema-binding-for-all-phases">7. JSON log schema (binding for all phases)<a class="headerlink" href="#7-json-log-schema-binding-for-all-phases" title="Anchor link to this section">&para;</a></h2>
+<p>Every per-turn record emitted by IronClaw or Hermes during Phases 2 and 3 conforms to the schema in <a href="../scripts/schema/phase-log.schema.json"><code>scripts/schema/phase-log.schema.json</code></a>. Records that do not conform are rejected by the Orchestrator and the run is marked <code>malformed</code>.</p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">&quot;schema_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.6.3.1-a2a-nhi-1&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">&quot;campaign_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;uuid&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">&quot;node_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;do-&lt;id&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">&quot;release&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;v0.6.3.1&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">&quot;phase&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">  </span><span class="nt">&quot;scenario_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A&quot;</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">  </span><span class="nt">&quot;control_arm&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;treatment&quot;</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">  </span><span class="nt">&quot;run_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">  </span><span class="nt">&quot;turn_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;scenario&gt;-&lt;arm&gt;-r&lt;n&gt;-t&lt;turn&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">  </span><span class="nt">&quot;agent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ai:alice&quot;</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">  </span><span class="nt">&quot;agent_framework&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ironclaw&quot;</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">  </span><span class="nt">&quot;timestamp_utc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;ISO-8601&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">  </span><span class="nt">&quot;llm_model_sku&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;exact SKU string&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">  </span><span class="nt">&quot;system_prompt_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">  </span><span class="nt">&quot;prompt_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">  </span><span class="nt">&quot;tools_called&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">      </span><span class="nt">&quot;tool_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">      </span><span class="nt">&quot;args_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">      </span><span class="nt">&quot;args_size_bytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">      </span><span class="nt">&quot;result_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">      </span><span class="nt">&quot;result_size_bytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">      </span><span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">      </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">  </span><span class="nt">&quot;ai_memory_ops&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="p">{</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">      </span><span class="nt">&quot;op&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;write&quot;</span><span class="p">,</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">      </span><span class="nt">&quot;namespace&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">      </span><span class="nt">&quot;key_or_query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="w">      </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;team&quot;</span><span class="p">,</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="w">      </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mcp_stdio&quot;</span><span class="p">,</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="w">      </span><span class="nt">&quot;payload_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">      </span><span class="nt">&quot;returned_records&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">      </span><span class="nt">&quot;duration_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">      </span><span class="nt">&quot;ok&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="p">}</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">  </span><span class="nt">&quot;claims_made&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;claim_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;text_sha256&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;hex&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;factual&quot;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">  </span><span class="nt">&quot;claims_grounded&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;claim_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;grounded_in_op_index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;grounding_strength&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exact&quot;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="w">  </span><span class="nt">&quot;refusals&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;no_context&quot;</span><span class="w"> </span><span class="p">}</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="w">  </span><span class="p">],</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="w">  </span><span class="nt">&quot;termination_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;task_complete&quot;</span><span class="p">,</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w">  </span><span class="nt">&quot;self_confidence&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.85</span><span class="p">,</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="w">  </span><span class="nt">&quot;notes&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;free text, ≤500 chars&gt;&quot;</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The <code>claims_grounded</code> list is the central evidence object for Phase 4. The "% of claims grounded in retrieved memory" metric is computed as <code>len(claims_grounded) / len(claims_made)</code> per turn, then aggregated.</p>
+<hr />
+<h2 id="8-phase-4-meta-analysis-third-claude-instance-no-namespace-access">8. Phase 4 — Meta-analysis (third Claude instance, no namespace access)<a class="headerlink" href="#8-phase-4-meta-analysis-third-claude-instance-no-namespace-access" title="Anchor link to this section">&para;</a></h2>
+<h3 id="81-orchestrator-role">8.1 Orchestrator role<a class="headerlink" href="#81-orchestrator-role" title="Anchor link to this section">&para;</a></h3>
+<p>A third Claude instance acts as the meta-analyst. It has read access to all Phase 3 JSON logs and Phase 1 substrate verdict. It has <strong>no</strong> read access to ai-memory namespaces, and <strong>no</strong> ability to query the agents directly. This isolation is structural — it forces the meta-analyst to reason from logs alone, which is the same posture an external auditor or enterprise buyer would have.</p>
+<h3 id="82-computed-metrics">8.2 Computed metrics<a class="headerlink" href="#82-computed-metrics" title="Anchor link to this section">&para;</a></h3>
+<p>For each scenario × arm × run, the meta-analyst computes:</p>
+<ul>
+<li><strong>Grounding rate:</strong> <code>len(claims_grounded) / len(claims_made)</code> — fraction of claims traceable to a retrieved-memory op.</li>
+<li><strong>Hallucination rate:</strong> <code>1 − grounding rate</code>, but only counted on <code>claims_made</code> of category <code>factual</code> or <code>rationale</code> (constraints and decisions are agent-originating, not memory-originating).</li>
+<li><strong>Cross-agent recall hit rate:</strong> for scenarios A, B, C — fraction of the receiving agent's runs where the relevant prior write was successfully recalled.</li>
+<li><strong>Cross-layer consistency:</strong> for scenario D — does the NHI-layer outcome match the substrate-layer S24 verdict?</li>
+<li><strong>Termination distribution:</strong> % of runs ending <code>task_complete</code> vs. each <code>cap_reached</code> flavor vs. <code>refusal</code> vs. <code>error</code>.</li>
+<li><strong>Treatment effect:</strong> Arm-T metric minus each control arm's metric, per-scenario. With n=3 per cell, the meta-analyst reports point estimates plus min/max range. It does <strong>not</strong> report p-values — n=3 doesn't support them, and reporting them would be statistical theater.</li>
+</ul>
+<h3 id="83-cross-layer-consistency-table">8.3 Cross-layer consistency table<a class="headerlink" href="#83-cross-layer-consistency-table" title="Anchor link to this section">&para;</a></h3>
+<p>The meta-analyst publishes a table with one row per substrate finding that has an NHI-layer correlate:</p>
+<table>
+<thead>
+<tr>
+<th>Substrate finding</th>
+<th>Substrate verdict</th>
+<th>NHI correlate</th>
+<th>NHI observation</th>
+<th>Consistent?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S24 (#318) MCP stdio bypass federation</td>
+<td>RED (expected)</td>
+<td>Scenario D</td>
+<td>Hermes did not recall IronClaw's MCP-stdio write within settle window</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>(additional rows as findings emerge)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Inconsistent rows are the most valuable output of the entire campaign. They mean either the substrate test or the NHI test is wrong, and either answer is high-value.</p>
+<h3 id="84-findings-funnel">8.4 Findings funnel<a class="headerlink" href="#84-findings-funnel" title="Anchor link to this section">&para;</a></h3>
+<p>The meta-analyst classifies each finding as:</p>
+<ul>
+<li><strong>Carry-forward to Patch 2 (v0.6.3.2)</strong> — funneled into the <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a> candidate list per the existing convention.</li>
+<li><strong>Carry-forward to v0.6.4</strong> — out of Patch 2 scope but worth tracking.</li>
+<li><strong>Harness defect</strong> — the test, not the product, is wrong.</li>
+<li><strong>Documentation defect</strong> — the product is correct but its documented behavior is wrong.</li>
+<li><strong>Won't fix</strong> — the finding is real but accepted.</li>
+</ul>
+<p>Each finding gets a child issue under #511 (or a separate harness-repo issue if it's a harness defect) and the classification is recorded in <code>phase4-analysis.json</code>.</p>
+<h3 id="85-exit-artifact">8.5 Exit artifact<a class="headerlink" href="#85-exit-artifact" title="Anchor link to this section">&para;</a></h3>
+<p><code>phase4-analysis.json</code> containing: all computed metrics, cross-layer consistency table, findings list with classifications, narrative summary (≤2000 words) authored by the meta-analyst, and a SHA-256 manifest of every input log consumed.</p>
+<hr />
+<h2 id="9-phase-5-verdict-commit-findings-sync">9. Phase 5 — Verdict commit + findings sync<a class="headerlink" href="#9-phase-5-verdict-commit-findings-sync" title="Anchor link to this section">&para;</a></h2>
+<p>The Orchestrator publishes:</p>
+<ol>
+<li><code>releases/v0.6.3.1/summary.json</code> updated with Phase 1, Phase 3, and Phase 4 sections — substrate verdict (<code>PARTIAL — pending Patch 2</code> expected) plus NHI behavioral verdict (a separate field, not collapsed).</li>
+<li>PR to the test-hub aggregator binding the v0.6.3.1 row to the new summary.</li>
+<li><code>findings-sync.yml</code> fires, populating the Patch 2 candidate list under <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a>.</li>
+<li>PR to the umbrella ai2ai-gate repo updating <em>Latest cert</em> once the cert closes per the convention in <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a>.</li>
+</ol>
+<p>The campaign is complete when all four are merged and the test-hub verdict cell renders correctly.</p>
+<hr />
+<h2 id="10-decision-authority-and-escalation">10. Decision authority and escalation<a class="headerlink" href="#10-decision-authority-and-escalation" title="Anchor link to this section">&para;</a></h2>
+<p>The Orchestrator has authority to:</p>
+<ul>
+<li>Halt any phase if its entry gate fails.</li>
+<li>Reject malformed JSON logs and require re-run.</li>
+<li>File harness-integrity issues (S23/S24 unexpectedly GREEN, log schema violations, transport failures).</li>
+<li>Classify findings under §8.4.</li>
+</ul>
+<p>The Orchestrator does <strong>not</strong> have authority to:</p>
+<ul>
+<li>Modify scenarios A–D mid-campaign.</li>
+<li>Coach agents during Phase 3.</li>
+<li>Change control-arm definitions.</li>
+<li>Ship a verdict that conflates substrate and NHI evidence.</li>
+</ul>
+<p>Anything outside the Orchestrator's authority escalates to the human maintainer (Jim) before action.</p>
+<hr />
+<h2 id="11-what-success-looks-like">11. What success looks like<a class="headerlink" href="#11-what-success-looks-like" title="Anchor link to this section">&para;</a></h2>
+<p>A maximally beneficial v0.6.3.1 campaign produces:</p>
+<ol>
+<li>A substrate cert artifact showing <code>PARTIAL — pending Patch 2</code> with S23 + S24 RED as designed.</li>
+<li>An NHI playbook artifact showing measurable, attributable treatment effects across the four scenarios — specifically, Arm-T outperforming Arm-0 on grounding rate and cross-agent recall hit rate, with the gap to Arm-2 (stubbed) isolating the value of ai-memory's distinctive features.</li>
+<li>A cross-layer consistency table where every row is consistent — and if any row isn't, an explicit, owned investigation issue.</li>
+<li>A Patch 2 candidate list under <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a> populated with findings the previous campaign generation could not have surfaced because it did not run autonomous NHIs through ai-memory.</li>
+<li>Reproducibility: every artifact tagged with node_id, agents, release, campaign_id, and SHA-256-anchored to its inputs, such that a third party could rerun the campaign and produce the same shape of evidence.</li>
+</ol>
+<p>A campaign that produces a green badge but generates no findings, no consistency-table rows, and no Patch 2 candidates is a campaign that wasted the run. The Orchestrator's job is to make the campaign earn its keep.</p>
+<hr />
+<h2 id="appendix-a-mapping-of-first-principles-to-phases">Appendix A — Mapping of First Principles to phases<a class="headerlink" href="#appendix-a-mapping-of-first-principles-to-phases" title="Anchor link to this section">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Phase 1</th>
+<th>Phase 2</th>
+<th>Phase 3</th>
+<th>Phase 4</th>
+<th>Phase 5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 — Two truth-claims</td>
+<td>Substrate evidence</td>
+<td>—</td>
+<td>NHI evidence</td>
+<td>Both, separately</td>
+<td>Both, separately published</td>
+</tr>
+<tr>
+<td>2 — Substrate first</td>
+<td>Runs first</td>
+<td>Gated on Phase 1</td>
+<td>Gated on Phase 2</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>3 — Tasks require context</td>
+<td>—</td>
+<td>—</td>
+<td>Scenario design</td>
+<td>Grounding-rate metric</td>
+<td>—</td>
+</tr>
+<tr>
+<td>4 — Structured JSON</td>
+<td>—</td>
+<td>Schema validation</td>
+<td>Schema enforcement</td>
+<td>Deterministic computation</td>
+<td>—</td>
+</tr>
+<tr>
+<td>5 — Cross-layer consistency</td>
+<td>S23/S24 anchors</td>
+<td>—</td>
+<td>Scenario D</td>
+<td>Consistency table</td>
+<td>Findings funnel</td>
+</tr>
+<tr>
+<td>6 — Scope discipline</td>
+<td>Tagged artifacts</td>
+<td>Tagged artifacts</td>
+<td>Tagged artifacts</td>
+<td>Tagged artifacts</td>
+<td>Tagged commits</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="appendix-b-out-of-scope-for-absolute-clarity">Appendix B — Out of scope (for absolute clarity)<a class="headerlink" href="#appendix-b-out-of-scope-for-absolute-clarity" title="Anchor link to this section">&para;</a></h2>
+<ul>
+<li>OpenClaw — runs in a separate campaign per <a href="https://github.com/alphaonedev/ai-memory-mcp/issues/511">#511</a> convention.</li>
+<li>Infrastructure provisioning, authentication topology, mTLS cert management, Terraform — confirmed-good before Phase 0 by a separate process.</li>
+<li>Auto-tagging via Ollama — opt-in feature requiring <code>s-4vcpu-16gb</code> droplet, deferred from this campaign per <a href="https://github.com/alphaonedev/ai-memory-ai2ai-gate">ai2ai-gate README</a>.</li>
+<li><code>memory_share</code> / issue #311 targeted-share scenario — depends on v0.6.0.1 capability that is upstream of v0.6.3.1 scope; revisit for v0.6.4.</li>
+<li>Patch 2 (v0.6.3.2) regression run — separate campaign in the <code>ai-memory-a2a-v0.6.3.2</code> repo, using this repo as a template.</li>
+</ul>
+<hr />
+<p><em>End of document.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href=".." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Home
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../scope/" class="md-footer__link md-footer__link--next" aria-label="Next: Scope (v0.6.3.1 specifics)">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Scope (v0.6.3.1 specifics)
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 <a href="https://github.com/alphaonedev/alphaone-website" rel="noopener" style="color:inherit">AlphaOne LLC</a>. Apache-2.0.
+    </div>
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/alphaonedev" target="_blank" rel="noopener" title="alphaonedev on GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.sections", "navigation.indexes", "navigation.top", "navigation.footer", "search.highlight", "search.share", "search.suggest", "toc.follow", "content.code.copy", "content.code.annotate", "content.tooltips"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
