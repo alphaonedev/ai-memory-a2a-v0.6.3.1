@@ -447,8 +447,8 @@ jobs:
             IFS='|' read -r ip role aid peers <<< "${NODE[$i]}"
             (
               echo "[n$i] === BEGIN provision node-$i role=$role ip=$ip peers=$peers ==="
-              scp -o StrictHostKeyChecking=no scripts/setup_node.sh scripts/drive_agent.sh scripts/drive_agent_autonomous.sh root@$ip:/root/ 2>&1 | sed "s/^/[n$i scp] /"
-              chmod_cmd="chmod +x /root/setup_node.sh /root/drive_agent.sh /root/drive_agent_autonomous.sh"
+              scp -o StrictHostKeyChecking=no scripts/setup_node.sh scripts/drive_agent.sh scripts/drive_agent_autonomous.sh scripts/claims_extractor.py scripts/claims_extractor_cli.py root@$ip:/root/ 2>&1 | sed "s/^/[n$i scp] /"
+              chmod_cmd="chmod +x /root/setup_node.sh /root/drive_agent.sh /root/drive_agent_autonomous.sh /root/claims_extractor_cli.py"
               env_cmd="NODE_INDEX=$i ROLE=$role PEER_URLS='$peers' AI_MEMORY_VERSION=$AMV AI_MEMORY_GIT_REF='$AMR' TLS_MODE='${TLS_MODE}' AI_MEMORY_SOURCE_BUILD='${AI_MEMORY_SOURCE_BUILD:-false}'"
               [ "$role" = "agent" ] && env_cmd="$env_cmd AGENT_TYPE=${AGENT_GROUP} AGENT_ID=$aid XAI_API_KEY='${XAI_API_KEY}' A2A_GATE_LLM_MODEL='${A2A_GATE_LLM_MODEL}' IRONCLAW_INSTALL_CMD='${IRONCLAW_INSTALL_CMD}' OPENCLAW_INSTALL_CMD='${OPENCLAW_INSTALL_CMD}' HERMES_INSTALL_CMD='${HERMES_INSTALL_CMD}'"
               # stdbuf -oL forces line-buffered stdout on the ssh side
