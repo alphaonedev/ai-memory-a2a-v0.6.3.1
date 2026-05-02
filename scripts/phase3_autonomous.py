@@ -341,10 +341,13 @@ def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
     grounding rate across all arms. Caller emits the §7 record and
     updates RunState bookkeeping.
     """
-    # The agent runtime on each droplet exposes drive_agent.sh which takes a
-    # prompt + arm policy via env vars and emits a §7-shaped JSON to stdout.
-    # We pass arm policy via env vars; setup_node.sh wires the MCP client
-    # accordingly when AI_MEMORY_ARM is set.
+    # The agent runtime on each droplet exposes drive_agent_autonomous.sh
+    # (the one that emits §7-shaped JSON with tools_called + ai_memory_ops +
+    # claims_made + claims_grounded). drive_agent.sh is a separate
+    # CRUD-action shim used by Phase 1 testbook scenarios, NOT this
+    # autonomous Phase 3 driver — pre-r14 we mistakenly invoked it here
+    # which is why r13/r14 had ai_memory_ops=[] and claims=[] across all
+    # cells. Fixed by pointing at the autonomous-mode script.
     env_block = " ".join([
         f"AI_MEMORY_ARM={policy.arm}",
         f"AI_MEMORY_NS_PREFIX={policy.namespace_prefix}",
@@ -356,7 +359,7 @@ def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
         f"PHASE3_RUN={st.run_index}",
         f"LLM_MODEL_SKU={os.environ.get('LLM_MODEL_SKU', 'grok-4-fast-non-reasoning')}",
     ])
-    remote_cmd = f"{env_block} bash /opt/ai-memory-a2a/drive_agent.sh"
+    remote_cmd = f"{env_block} bash /opt/ai-memory-a2a/drive_agent_autonomous.sh"
     r = ctx.h.ssh_exec(node_ip, remote_cmd, stdin=prompt, timeout=WALL_CLOCK_TIMEOUT_S)
     if r.returncode == 124:
         return [], [], [], [], "cap_reached_walltime"
@@ -364,7 +367,7 @@ def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
     try:
         out = json.loads(raw)
     except json.JSONDecodeError:
-        log(f"  !! drive_agent.sh non-JSON output (rc={r.returncode}): {raw[:200]!r}")
+        log(f"  !! drive_agent_autonomous.sh non-JSON output (rc={r.returncode}): {raw[:200]!r}")
         return [], [], [], [], "error"
     return (
         out.get("tools_called", []),
