@@ -1,0 +1,6 @@
+[s28] step 1 — update immutability (ns=test/S28/20260502210244-4219)
+[s28]   M1 id=481b34d1-e56f-4d2d-9e39-d96ff973ae4d  initial agent_id=<none>
+[s28] step 2 — dedup preserves both agent_ids
+[s28]   dedup agents observed: ai:alice,ai:bob
+[s28] step 3 — federation sync preserves origin agent_id (settle 8s)
+[s28] step 4 — export + import round-trip preserves agent_id

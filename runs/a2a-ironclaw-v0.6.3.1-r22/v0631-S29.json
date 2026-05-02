@@ -1,0 +1,24 @@
+{
+  "scenario": "S29",
+  "pass": false,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "UNKNOWN",
+  "outputs": {
+    "pending_state_correct": false,
+    "approve_propagates": false,
+    "deny_propagates": false,
+    "policy_installed": false,
+    "alice_pending_id": "c2f87e88-db97-4877-a734-010ef984e37b",
+    "bob_pending_id": "272784ab-d1c3-4827-8b09-1987864af7d2",
+    "approve_status_code": 404,
+    "reject_status_code": 404,
+    "node2_recall_after_approve_count": 1,
+    "node2_pending_after_decisions_count": 0
+  },
+  "reasons": [
+    "step1: namespace policy install failed via both primary (PUT /namespaces/.../policy) and fallback (POST /namespaces/standards) — http_code=404 alt_code=404",
+    "step2: pending state not asserted — code=201, body_state='', pending_has=, recall_visible_count=1",
+    "step3: approve did not propagate cleanly — node-2 recall_count=1, node-2 pending_has_alice=, approve_code=404",
+    "step4: deny did not propagate cleanly — node-2 has_bob_in_recall=true, node-2 pending_has_bob=, reject_code=404"
+  ]
+}

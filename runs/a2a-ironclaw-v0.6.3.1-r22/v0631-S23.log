@@ -1,0 +1,9 @@
+[s23] begin S23 probe across 4 nodes
+[s23] probing node-1 (64.225.17.173)
+[s23]   node-1 tilde=warn (.db='', literal_tilde=false) absolute=info
+[s23] probing node-2 (159.203.169.144)
+[s23]   node-2 tilde=warn (.db='', literal_tilde=false) absolute=info
+[s23] probing node-3 (161.35.141.76)
+[s23]   node-3 tilde=warn (.db='', literal_tilde=false) absolute=info
+[s23] probing node-4 (174.138.88.134)
+[s23]   node-4 tilde=warn (.db='', literal_tilde=false) absolute=info

@@ -1,0 +1,38 @@
+{
+  "scenario": "S26",
+  "pass": false,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "RED",
+  "expected_green_reason": "byte-level mutation of audit.jsonl must trigger ai-memory audit verify rc!=0 + ok=false; restore from backup must re-verify clean",
+  "run_id": "20260502210241-4150",
+  "outputs": {
+    "before_tamper": {
+      "rc": 2,
+      "ok": false,
+      "head_hash": "",
+      "line_count": 157
+    },
+    "after_tamper": {
+      "rc": 2,
+      "ok": false,
+      "tamper_detected": false,
+      "error_field": "empty-verify-output"
+    },
+    "after_restore": {
+      "rc": 2,
+      "ok": false,
+      "head_hash": "",
+      "line_count": 157
+    },
+    "tamper_detection_fired": true,
+    "restore_succeeded": false,
+    "chattr_removed_for_tamper": true,
+    "backup_ok": true,
+    "remote_errors": [
+      "restore-cp-failed"
+    ]
+  },
+  "reasons": [
+    "restore did not re-verify clean: rc=2 ok=false (expected rc=0 + ok=true; restore_ok=false)"
+  ]
+}

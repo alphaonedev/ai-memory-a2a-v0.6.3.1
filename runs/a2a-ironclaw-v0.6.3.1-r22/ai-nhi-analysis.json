@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r22",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "High risk posture due to gaps in audit immutability and policy enforcement, rendering production deployment inadvisable and customer claims about secure federation unviable. Not ready for release; v0.6.3.1 shows partial fixes vs prior runs but regressions in audit and notifications persist. Prioritize security primitives before scaling.",
+  "for_non_technical": "The AI agents can reliably share and recall basic memories with each other in most cases. However, some important security checks and notification systems did not work as expected, meaning memories might not always be protected or delivered properly. Overall, the system works for simple sharing but needs fixes for advanced safety features.",
+  "for_sme": "Audit verification failed across nodes with rc=2 and zero lines (S25), tamper detection did not trigger properly and restore unverifiable (S26), import lost agent_id immutability (S28), policy install hit 404s blocking pending/approve (S29), notifications failed registration and fanout (S30); probable roots include missing SQLCipher (S31) and #318 MCP bypass. Byzantine rejection worked (24) but oversize payloads accepted unexpectedly (23). Testbook identifiers: S25, S26, S28, S29, S30 dominant reds.",
+  "headline": "Federated memory sharing reliable basics, but audit and security features fail.",
+  "next_run_change": "Integrate SQLCipher encryption and fix policy/subscription endpoints to resolve 404s before retesting audit/security scenarios.",
+  "verdict": "FAIL \u2014 8/44 scenarios red, audit+policy gaps persist.",
+  "what_it_proved": "Demonstrated reliable core memory propagation and recall in 4-node mesh but exposed critical failures in audit verification, tamper detection, agent ID preservation on import, policy installation, and notification fanout.",
+  "what_it_tested": "Exercised 44 scenarios covering basic sharing, deletion, linking, recovery, hybrid recall, and advanced features like audits, policies, notifications across HTTP transport, federation mesh, and core primitives like store/update/delete."
+}

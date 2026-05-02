@@ -1,0 +1,20 @@
+{
+  "scenario": "S31",
+  "pass": true,
+  "expected_verdict": "NOT_BUILT",
+  "actual_verdict": "NOT_BUILT",
+  "outputs": {
+    "db_header_opaque": false,
+    "plain_open_rejected": false,
+    "keyed_open_works": false,
+    "passphrase_not_in_binary": true,
+    "db_path": "/var/lib/ai-memory/a2a.db",
+    "db_header_hex": "53514c69746520666f726d6174203300",
+    "plain_open_diagnostic": "archived_memories     memories_fts_data     pending_actions     \nentity_aliases        memories_fts_docsize  schema_version      \nmemories              memories_fts_idx      subscriptions       \nmemories_fts          memory_links          sync_state          \nmemories_fts_config   namespace_meta      ",
+    "keyed_open_table_names": [],
+    "passphrase_source": ""
+  },
+  "reasons": [
+    "SQLCipher not present in this v0.6.3.1 build — DB header is plain SQLite magic and stock sqlite3 reads it. Deviation from user brief flagged."
+  ]
+}
