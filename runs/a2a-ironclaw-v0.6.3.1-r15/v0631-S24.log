@@ -1,0 +1,29 @@
+[s24] phase 1 (HTTP control) — marker=s24-p1-http-20260502172717-4033 ns=test/S24/20260502172717-4033
+[s24]   POST response head: {"agent_id":"ai:alice","id":"b665e098-0daa-4ae8-988b-9b67b01801a0","namespace":"test/S24/20260502172717-4033","quorum_acks":2,"tier":"mid","title":"s24-phase1"}
+[s24] settle 8s
+[s24]   phase1 peer counts: node-2=1 node-3=1 node-4=1
+[s24] phase 2 (MCP stdio test) — RUN_ID=20260502172717-4033
+[s24]   tool=memory_store marker=s24-p2-memory_store-20260502172717-4033
+[s24]   tool=memory_update marker=s24-p2-memory_update-20260502172717-4033
+[s24]   tool=memory_delete marker=s24-p2-memory_delete-20260502172717-4033
+[s24]   tool=memory_link marker=s24-p2-memory_link-20260502172717-4033
+[s24]   tool=memory_promote marker=s24-p2-memory_promote-20260502172717-4033
+[s24]   tool=memory_consolidate marker=s24-p2-memory_consolidate-20260502172717-4033
+[s24]   tool=memory_forget marker=s24-p2-memory_forget-20260502172717-4033
+[s24] settle 8s
+[s24] phase 2 local audit on NODE_A
+[s24]     local count for memory_store: 0
+[s24]     local count for memory_update: 0
+[s24]     local count for memory_delete: 0
+[s24]     local count for memory_link: 0
+[s24]     local count for memory_promote: 0
+[s24]     local count for memory_consolidate: 0
+[s24]     local count for memory_forget: 0
+[s24] phase 2 peer recall on B/C/D
+[s24]     memory_store: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_update: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_delete: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_link: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_promote: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_consolidate: peer hits node-2=0 node-3=0 node-4=0
+[s24]     memory_forget: peer hits node-2=0 node-3=0 node-4=0

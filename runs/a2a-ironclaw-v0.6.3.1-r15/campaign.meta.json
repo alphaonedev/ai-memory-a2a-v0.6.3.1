@@ -12,29 +12,29 @@
         "index": 1,
         "role": "agent",
         "agent_id": "ai:alice",
-        "public_ip": "",
-        "private_ip": ""
+        "public_ip": "159.65.43.84",
+        "private_ip": "10.10.2.5"
       },
       {
         "index": 2,
         "role": "agent",
         "agent_id": "ai:bob",
-        "public_ip": "",
-        "private_ip": ""
+        "public_ip": "104.131.166.142",
+        "private_ip": "10.10.2.2"
       },
       {
         "index": 3,
         "role": "agent",
         "agent_id": "ai:charlie",
-        "public_ip": "",
-        "private_ip": ""
+        "public_ip": "174.138.67.236",
+        "private_ip": "10.10.2.4"
       },
       {
         "index": 4,
         "role": "memory-only",
         "agent_id": null,
-        "public_ip": "",
-        "private_ip": ""
+        "public_ip": "64.225.2.252",
+        "private_ip": "10.10.2.3"
       }
     ]
   },
@@ -76,13 +76,13 @@
     "42"
   ],
   "timing": {
-    "started_at": "",
-    "ended_at": ""
+    "started_at": "2026-05-02T17:11:32Z",
+    "ended_at": "2026-05-02T17:27:11Z"
   },
   "ci": {
     "actor": "alphaonedev",
-    "workflow_url": "https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25257137911",
-    "harness_sha": "d52834eed1bdeb4ef537bc5486249dc594497052",
+    "workflow_url": "https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25257163714",
+    "harness_sha": "184c069adb710837e2e4c62b19632ec05600f41d",
     "runner_os": "Linux"
   }
 }

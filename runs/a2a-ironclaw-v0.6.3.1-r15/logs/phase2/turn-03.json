@@ -1,0 +1,37 @@
+{
+  "agent_framework": "ironclaw",
+  "agent_id": "ai:alice",
+  "ai_memory_ops": [
+    {
+      "duration_ms": 0,
+      "key_or_query": "phase2-private",
+      "namespace": "ai:alice/private/phase2",
+      "ok": true,
+      "op": "write",
+      "payload_sha256": "eeed78f316cd5531ae34baba476aa7724d497ab9f061a81c542bb77dcbe2fd52",
+      "returned_records": 1,
+      "scope": "private",
+      "transport": "http"
+    }
+  ],
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r15",
+  "claims_grounded": [],
+  "claims_made": [],
+  "control_arm": "phase2",
+  "llm_model_sku": "grok-4-fast-non-reasoning",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "notes": "",
+  "phase": 2,
+  "prompt_sha256": "cf659682968ae3996d57a4cfe7e37d61f474cc3de837ff9f72f9918699317371",
+  "refusals": [],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "phase2",
+  "schema_version": "v0.6.3.1-a2a-nhi-1",
+  "self_confidence": 1.0,
+  "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "termination_reason": "task_complete",
+  "timestamp_utc": "2026-05-02T17:29:15Z",
+  "tools_called": [],
+  "turn_id": "phase2-phase2-r1-t3"
+}
