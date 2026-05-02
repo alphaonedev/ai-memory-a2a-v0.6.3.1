@@ -92,7 +92,7 @@ jobs:
   campaign:
     name: "a2a-${{ github.event.inputs.agent_group }} — provision + run scenarios"
     runs-on: ubuntu-24.04
-    timeout-minutes: 50
+    timeout-minutes: 90
     env:
       DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
       DIGITALOCEAN_SSH_KEY_FINGERPRINT: ${{ secrets.DIGITALOCEAN_SSH_KEY_FINGERPRINT }}
