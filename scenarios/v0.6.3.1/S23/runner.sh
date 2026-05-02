@@ -342,11 +342,19 @@ for entry in "${NODES[@]}"; do
     reasons+=("${name} tilde-form returned ok with no '~' in .db and Storage=${tds} — bug not detected")
   fi
 
-  if [ "$as" = "ok" ]; then
-    absolute_ok=$((absolute_ok + 1))
-  else
-    reasons+=("${name} absolute-form boot returned ${as} (control case should be ok)")
-  fi
+  # Accept `ok` AND `info*` variants (info-fallback, info-empty per
+  # v0.6.3.1 release notes) as a passing absolute-form control. The
+  # boot CLI emits info* on a fresh DB with empty namespace — still
+  # SUCCESS for our control case. `warn` is the bug-surface signal and
+  # stays disqualifying.
+  case "$as" in
+    ok|info|info-fallback|info-empty)
+      absolute_ok=$((absolute_ok + 1))
+      ;;
+    *)
+      reasons+=("${name} absolute-form boot returned ${as} (control case should be ok or info*)")
+      ;;
+  esac
 done
 
 if [ "$red_signals" = "$total" ]; then
