@@ -92,7 +92,12 @@ jobs:
   campaign:
     name: "a2a-${{ github.event.inputs.agent_group }} — provision + run scenarios"
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    # Bumped 90→150 after r22 cancelled mid-Phase-3. Phase 3 cell count
+    # grew from 48 (4 scenarios × 4 arms × n=3) to ~96+ after E/F/G/H
+    # safety + I/J forensic scenarios landed (PRs #28, #30). At ~30s/cell
+    # Phase 3 alone needs 50+ min, plus 30-40 min for provisioning +
+    # Phase 0/1/2 + canaries + audit-capture + Phase 4/5 + teardown.
+    timeout-minutes: 150
     env:
       DIGITALOCEAN_TOKEN: ${{ secrets.DIGITALOCEAN_TOKEN }}
       DIGITALOCEAN_SSH_KEY_FINGERPRINT: ${{ secrets.DIGITALOCEAN_SSH_KEY_FINGERPRINT }}
