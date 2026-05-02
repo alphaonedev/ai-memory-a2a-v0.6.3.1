@@ -5,7 +5,7 @@
       "hermes"
     ],
     "governance_doc": "docs/governance.md",
-    "last_run_id": "a2a-ironclaw-v0.6.3.1-r15",
+    "last_run_id": "a2a-ironclaw-v0.6.3.1-r16",
     "out_of_scope": [
       "openclaw"
     ],
@@ -20,7 +20,7 @@
         "verdict": "FAIL"
       }
     ],
-    "updated_at": "2026-05-02T17:32:45Z"
+    "updated_at": "2026-05-02T18:01:46Z"
   },
   "cross_layer_consistency": {
     "table": [
@@ -46,7 +46,7 @@
   "nhi_verdict": {
     "evidence_type": "behavioral, statistical (n=3 per cell, 48 runs total)",
     "phase": 3,
-    "phase4_analysis_path": "runs/a2a-ironclaw-v0.6.3.1-r15/phase4-analysis.json",
+    "phase4_analysis_path": "runs/a2a-ironclaw-v0.6.3.1-r16/phase4-analysis.json",
     "scenarios": {
       "A": {
         "title": "Decision provenance",
@@ -116,30 +116,30 @@
     },
     "phase": 1,
     "scenarios": {
-      "S1": "PENDING",
-      "S10": "PENDING",
-      "S11": "PENDING",
-      "S12": "PENDING",
-      "S13": "PENDING",
-      "S14": "PENDING",
-      "S15": "PENDING",
-      "S16": "PENDING",
-      "S17": "PENDING",
-      "S18": "PENDING",
+      "S1": "GREEN",
+      "S10": "GREEN",
+      "S11": "GREEN",
+      "S12": "GREEN",
+      "S13": "GREEN",
+      "S14": "GREEN",
+      "S15": "GREEN",
+      "S16": "GREEN",
+      "S17": "GREEN",
+      "S18": "GREEN",
       "S19": "PENDING",
-      "S2": "PENDING",
-      "S20": "PENDING",
-      "S21": "PENDING",
-      "S22": "PENDING",
-      "S23": "PENDING_EXPECTED_RED",
-      "S24": "PENDING_EXPECTED_RED",
+      "S2": "GREEN",
+      "S20": "GREEN",
+      "S21": "GREEN",
+      "S22": "GREEN",
+      "S23": "EXPECTED_RED_VERIFIED",
+      "S24": "EXPECTED_RED_VERIFIED",
       "S3": "PENDING",
-      "S4": "PENDING",
-      "S5": "PENDING",
-      "S6": "PENDING",
+      "S4": "GREEN",
+      "S5": "GREEN",
+      "S6": "GREEN",
       "S7": "PENDING",
       "S8": "PENDING",
-      "S9": "PENDING"
+      "S9": "GREEN"
     },
     "value": "PENDING"
   },

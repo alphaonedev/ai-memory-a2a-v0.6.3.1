@@ -1,0 +1,86 @@
+{
+  "scenario": "S24",
+  "pass": true,
+  "expected_verdict": "RED",
+  "actual_verdict": "RED",
+  "expected_red_reason": "Issue #318 — MCP stdio writes bypass federation fanout (closes in Patch 2)",
+  "run_id": "20260502175618-3840",
+  "namespace": "test/S24/20260502175618-3840",
+  "outputs": {
+    "phase1_http_replication_ok": true,
+    "phase1_peer_counts": {
+      "node-2": 1,
+      "node-3": 1,
+      "node-4": 1
+    },
+    "phase2_mcp_replication_per_tool": {
+      "memory_store": 0,
+      "memory_update": 0,
+      "memory_delete": 1,
+      "memory_link": 0,
+      "memory_promote": 0,
+      "memory_consolidate": 0,
+      "memory_forget": 0
+    },
+    "phase2_mcp_replication_per_tool_per_peer": {
+      "memory_store": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "memory_update": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "memory_delete": {
+        "node-2": 1,
+        "node-3": 1,
+        "node-4": 1
+      },
+      "memory_link": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "memory_promote": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "memory_consolidate": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      },
+      "memory_forget": {
+        "node-2": 0,
+        "node-3": 0,
+        "node-4": 0
+      }
+    },
+    "phase2_local_audit_present": false,
+    "phase2_local_counts": {
+      "memory_store": 0,
+      "memory_update": 0,
+      "memory_delete": 1,
+      "memory_link": 0,
+      "memory_promote": 0,
+      "memory_consolidate": 0,
+      "memory_forget": 0
+    },
+    "tools_probed": [
+      "memory_store",
+      "memory_update",
+      "memory_delete",
+      "memory_link",
+      "memory_promote",
+      "memory_consolidate",
+      "memory_forget"
+    ]
+  },
+  "reasons": [
+    "majority-bypass: 1/7 tools leaked (≤ half) — #318 still dominant; partial-fix or instrumentation noise",
+    "phase 2 writes not all visible on NODE_A locally — some MCP stdio calls failed; verdict may not reflect #318 cleanly"
+  ]
+}

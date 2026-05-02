@@ -1,0 +1,59 @@
+{
+  "agent_framework": "ironclaw",
+  "agent_id": "ai:bob",
+  "ai_memory_ops": [
+    {
+      "duration_ms": 0,
+      "key_or_query": "phase2-tag-A-0",
+      "namespace": "phase2/tagged",
+      "ok": true,
+      "op": "write",
+      "payload_sha256": "25eeac7c9cb8a244377762d8dafaa8d929105424582a65382e00c3ef677be6b5",
+      "returned_records": 1,
+      "scope": "team",
+      "transport": "http"
+    },
+    {
+      "duration_ms": 0,
+      "key_or_query": "phase2-tag-A-1",
+      "namespace": "phase2/tagged",
+      "ok": true,
+      "op": "write",
+      "payload_sha256": "34103b82448d099fcdf3219e7b64d7fb7237363875c69bfe1e55c36309ed9dea",
+      "returned_records": 1,
+      "scope": "team",
+      "transport": "http"
+    },
+    {
+      "duration_ms": 0,
+      "key_or_query": "phase2-tag-A-2",
+      "namespace": "phase2/tagged",
+      "ok": true,
+      "op": "write",
+      "payload_sha256": "060306308751bcdd22cbe984b5b80a3880a1f4d595fe98a97d03fed5012f73cf",
+      "returned_records": 1,
+      "scope": "team",
+      "transport": "http"
+    }
+  ],
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r16",
+  "claims_grounded": [],
+  "claims_made": [],
+  "control_arm": "phase2",
+  "llm_model_sku": "grok-4-fast-non-reasoning",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "notes": "",
+  "phase": 2,
+  "prompt_sha256": "91ca6b41a27ed84f40906e1dc418c3f0226049a778f25d8beb5a82a040eef5ee",
+  "refusals": [],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "phase2",
+  "schema_version": "v0.6.3.1-a2a-nhi-1",
+  "self_confidence": 1.0,
+  "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "termination_reason": "task_complete",
+  "timestamp_utc": "2026-05-02T17:58:25Z",
+  "tools_called": [],
+  "turn_id": "phase2-phase2-r1-t5"
+}

@@ -1,0 +1,47 @@
+{
+  "scenario": "S23",
+  "pass": true,
+  "expected_verdict": "RED",
+  "actual_verdict": "RED",
+  "expected_red_reason": "Issue #507 — config.toml ~ expansion (closes in Patch 2)",
+  "outputs": {
+    "tilde_boot_status_per_node": {
+      "node-4": "warn",
+      "node-2": "warn",
+      "node-3": "warn",
+      "node-1": "warn"
+    },
+    "absolute_boot_status_per_node": {
+      "node-4": "info",
+      "node-2": "info",
+      "node-3": "info",
+      "node-1": "info"
+    },
+    "tilde_db_field_per_node": {
+      "node-4": "",
+      "node-2": "",
+      "node-3": "",
+      "node-1": ""
+    },
+    "tilde_db_field_literal_tilde_per_node": {
+      "node-4": false,
+      "node-2": false,
+      "node-3": false,
+      "node-1": false
+    },
+    "tilde_doctor_storage_per_node": {
+      "node-4": "error",
+      "node-2": "error",
+      "node-3": "error",
+      "node-1": "error"
+    },
+    "absolute_doctor_storage_per_node": {
+      "node-4": "error",
+      "node-2": "error",
+      "node-3": "error",
+      "node-1": "error"
+    },
+    "interchange_holds": true
+  },
+  "reasons": []
+}
