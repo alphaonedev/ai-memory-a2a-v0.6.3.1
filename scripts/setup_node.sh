@@ -1047,6 +1047,56 @@ a2a_gate_profile_version: "1.0.0"
 EOF
     chmod 600 /root/.hermes/config.yaml
 
+    # ---- Verify ai-memory MCP is registered with hermes -------------
+    # Parallel to ironclaw's `mcp add` + `mcp list | grep memory` retry
+    # loop. Hermes-agent has no non-interactive `hermes mcp add` for
+    # stdio servers (the upstream subcommand drops into a curses
+    # checklist for tool selection on first connect — unsuitable for
+    # non-TTY droplet provisioning per
+    # NousResearch/hermes-agent/hermes_cli/mcp_config.py::cmd_mcp_add).
+    # The CANONICAL registration path per
+    # https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp
+    # is the YAML block we just wrote: `mcp_servers:` in
+    # ~/.hermes/config.yaml is auto-discovered at startup by
+    # `tui_gateway/entry.py` (it gates `discover_mcp_tools()` on the
+    # config dict being non-empty).
+    #
+    # `hermes mcp list` is non-interactive and prints a row per
+    # configured server. Grepping its stdout for `memory` confirms:
+    #   1. ~/.hermes/config.yaml is YAML-valid (hermes parses it)
+    #   2. The `memory` key is at the expected `mcp_servers.<name>` path
+    # If hermes mis-parses the file (silent fallback to {}), the grep
+    # misses and we surface a FATAL with the actual `mcp list` output.
+    #
+    # ASSUMPTION (2026-05-01): hermes parses YAML lazily on first
+    # subcommand. `hermes mcp list` immediately after the file write
+    # should observe the config (no caching like ai-memory's
+    # _RAW_CONFIG_CACHE because the mtime check there is per-process).
+    # TODO(droplet-validation): confirm on a live hermes droplet that
+    # the agent loop (`hermes chat -Q -q "..."`) actually surfaces
+    # mcp_memory_* tools to Grok. If the F2b canary still fails after
+    # this fix, the issue is downstream (likely tool-name prefix
+    # confusion: hermes registers MCP tools as `mcp_<server>_<tool>`,
+    # so `memory_store` becomes `mcp_memory_memory_store` — the
+    # f2b_prompt may need an explicit prefix hint, but that's
+    # drive_agent.sh territory and out of scope for this patch).
+    hermes_mcp_listed=false
+    for _attempt in 1 2 3 4 5; do
+      if hermes mcp list 2>/dev/null | grep -q memory; then
+        hermes_mcp_listed=true
+        break
+      fi
+      sleep 2
+    done
+    if [ "$hermes_mcp_listed" != "true" ]; then
+      log "FATAL: ai-memory MCP not registered with hermes after config write"
+      log "  hermes mcp list output (full, for diagnosis):"
+      hermes mcp list 2>&1 | sed 's/^/    [hermes-mcp-list] /' || true
+      log "  /root/.hermes/config.yaml head (first 30 lines):"
+      head -30 /root/.hermes/config.yaml 2>&1 | sed 's/^/    [hermes-config] /' || true
+      exit 1
+    fi
+
     # Hermes supports xAI natively via --provider xai (alias grok).
     # It reads XAI_API_KEY from env for that provider — no
     # OpenAI-compatible shim needed. drive_agent.sh sources this
