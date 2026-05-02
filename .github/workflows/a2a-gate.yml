@@ -729,6 +729,64 @@ jobs:
           printf '%s\n' "${SCENARIOS_RUN[@]}" > phase-reports/scenario-timings.txt
           echo "end_ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
 
+      # The v0.6.3.1-specific expected-RED canaries (S23 = #507 tilde
+      # expansion, S24 = #318 MCP stdio fanout) live under
+      # scenarios/v0.6.3.1/SXX/ and are bash runners that drive ssh + curl
+      # + jq directly against the live droplets — they don't reuse the
+      # Python testbook harness because they're proving the harness can
+      # detect KNOWN-OPEN OSS bugs (governance Principle 2: "S23 and S24
+      # must be RED on v0.6.3.1; if either turns GREEN the harness is
+      # broken"). These scenarios pass when they detect the bug exactly
+      # as documented (actual_verdict == expected_verdict == RED) and
+      # fail loudly if either #507 or #318 was silently fixed or if the
+      # harness has drifted away from the bug surface.
+      #
+      # Intentionally `|| true` per-runner: a single canary going green
+      # should NOT abort the rest of the campaign; the verdict is
+      # surfaced via the standard scenario JSON which collect_reports.sh
+      # rolls into a2a-summary.json (see step below).
+      - name: Run v0.6.3.1-specific expected-RED canaries
+        timeout-minutes: 10
+        if: steps.baseline.outputs.baseline_ok == 'true' && steps.probe_f3.outputs.f3_ok == 'true' && steps.phase0.outputs.phase0_ok == 'true'
+        env:
+          A2A_NODE_A: ${{ steps.wait.outputs.node1_ip }}
+          A2A_NODE_B: ${{ steps.wait.outputs.node2_ip }}
+          A2A_NODE_C: ${{ steps.wait.outputs.node3_ip }}
+          A2A_NODE_D: ${{ steps.wait.outputs.memory_ip }}
+          NODE1_IP: ${{ steps.wait.outputs.node1_ip }}
+          NODE2_IP: ${{ steps.wait.outputs.node2_ip }}
+          NODE3_IP: ${{ steps.wait.outputs.node3_ip }}
+          NODE4_IP: ${{ steps.wait.outputs.memory_ip }}
+          MEMORY_NODE_IP: ${{ steps.wait.outputs.memory_ip }}
+          TLS_MODE: ${{ github.event.inputs.tls_mode }}
+        run: |
+          set -e
+          mkdir -p phase-reports
+          for s in 23 24; do
+            runner="scenarios/v0.6.3.1/S${s}/runner.sh"
+            if [ ! -x "$runner" ] && [ -f "$runner" ]; then
+              chmod +x "$runner"
+            fi
+            if [ ! -f "$runner" ]; then
+              echo "::warning::v0.6.3.1 S${s} runner missing at $runner — skipping"
+              continue
+            fi
+            echo "::group::v0.6.3.1 S${s} expected-RED canary"
+            bash "$runner" \
+              > "phase-reports/v0631-S${s}.json" \
+              2> "phase-reports/v0631-S${s}.log" || true
+            # Echo the log to the job output so CI viewers see it too.
+            sed 's|^|[v0631-S'"$s"' log] |' "phase-reports/v0631-S${s}.log" 2>/dev/null || true
+            # And echo the result envelope (compact) for at-a-glance triage.
+            if jq -e . "phase-reports/v0631-S${s}.json" >/dev/null 2>&1; then
+              jq -c '{scenario, pass, expected_verdict, actual_verdict, reasons}' \
+                "phase-reports/v0631-S${s}.json" || true
+            else
+              echo "::warning::v0631-S${s}.json is not parseable JSON — see log"
+            fi
+            echo "::endgroup::"
+          done
+
       - name: Emit campaign.meta.json
         if: always()
         run: |

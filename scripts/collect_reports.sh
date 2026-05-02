@@ -44,7 +44,12 @@ extract_trailing_json() {
 scenarios=()
 skipped=()
 if [ -d "$DIR" ]; then
-  for f in "$DIR"/scenario-*.json; do
+  # Glob both classic testbook scenarios (scenario-*.json) and the
+  # v0.6.3.1-specific expected-RED canaries written by
+  # scenarios/v0.6.3.1/SXX/runner.sh (filename pattern v0631-S*.json).
+  # Both shapes share the same {scenario, pass, expected_verdict, ...}
+  # contract so they aggregate cleanly into a2a-summary.json.
+  for f in "$DIR"/scenario-*.json "$DIR"/v0631-S*.json; do
     [ -f "$f" ] || continue
     if blob=$(extract_trailing_json "$f"); then
       if [ -n "$blob" ]; then
