@@ -43,13 +43,33 @@ set -uo pipefail
 emit_error_json() {
   local reason="$1"
   local note="${2:-}"
-  # jq -n builds the JSON with proper escaping of the note string.
+  # Bound the note to the §7 schema 500-char ceiling so downstream
+  # phase3_autonomous parsers don't choke on oversized strings.
+  note="$(printf '%s' "$note" | tr '\n' ' ' | cut -c1-500)"
+  # jq -n builds the JSON with proper escaping of the note string. Always
+  # emit ALL §7 keys (tools_called, ai_memory_ops, claims_made,
+  # claims_grounded) so phase3_autonomous's record validator never sees
+  # a missing field for a "soft" failure.
   jq -cn \
     --arg reason "$reason" \
     --arg note "$note" \
-    '{tools_called:[], ai_memory_ops:[], termination_reason:$reason, notes:$note}'
+    '{tools_called:[], ai_memory_ops:[], claims_made:[], claims_grounded:[],
+      termination_reason:$reason, notes:$note}'
+  # Suppress the EXIT-trap diagnostic emitter — we just emitted a
+  # well-formed §7 record on stdout, so the cleanup hook should NOT
+  # double-print a generic "aborted before final emit" record.
+  FINAL_EMIT=1
   exit 0
 }
+
+# Last-ditch sentinel: tracks whether the normal success-path JSON has
+# been emitted. The EXIT trap (installed alongside cleanup at step 3)
+# uses this to decide whether it needs to emit a diagnostic record on
+# stdout in place of the silent empty-stdout failure that r15 saw.
+# `set -e` is intentionally off, so this only fires if the script
+# crashes on `set -u` (unbound variable), receives a signal, or some
+# unforeseen path skips step 10.
+FINAL_EMIT=0
 
 if [ ! -r /etc/ai-memory-a2a/env ]; then
   emit_error_json "error" "drive_agent_autonomous: /etc/ai-memory-a2a/env missing"
@@ -84,7 +104,26 @@ mkdir -p "$TMPDIR_RUN" 2>/dev/null || true
 
 # Cleanup hook so we don't leak per-run files. We keep stderr/stdout
 # of the agent CLI under TMPDIR_RUN until we've parsed them.
+#
+# This hook ALSO acts as a last-ditch diagnostic emitter: if the
+# script exits before FINAL_EMIT is set (i.e. we never reached the jq
+# -cn at step 10), phase3_autonomous would otherwise see empty stdout
+# and fall back to its synthetic error record with no `notes`. We
+# instead emit a §7-shaped JSON with a `notes` field describing the
+# crash site so the failure mode is visible in the run JSON.
 cleanup() {
+  local rc=$?
+  if [ "${FINAL_EMIT:-0}" -ne 1 ]; then
+    local note="drive_agent_autonomous: aborted before final emit rc=${rc}"
+    if command -v jq >/dev/null 2>&1; then
+      jq -cn --arg note "$note" \
+        '{tools_called:[], ai_memory_ops:[], claims_made:[], claims_grounded:[],
+          termination_reason:"error", notes:$note}' 2>/dev/null \
+        || printf '{"tools_called":[],"ai_memory_ops":[],"claims_made":[],"claims_grounded":[],"termination_reason":"error","notes":"%s"}\n' "$note"
+    else
+      printf '{"tools_called":[],"ai_memory_ops":[],"claims_made":[],"claims_grounded":[],"termination_reason":"error","notes":"%s"}\n' "$note"
+    fi
+  fi
   # Stop the stubbed-arm Python server if we started one.
   if [ -n "${STUB_PID:-}" ] && kill -0 "$STUB_PID" 2>/dev/null; then
     kill "$STUB_PID" 2>/dev/null || true
@@ -328,19 +367,37 @@ export MCP_CONFIG="$RUN_MCP_CONFIG"
 
 case "$AGENT_TYPE" in
   ironclaw)
-    # Headless prompt with JSON output and bounded tool rounds. Per
-    # docs.ironclaw / setup_node.sh: ironclaw spawns `ai-memory mcp`
-    # using the registration written via `ironclaw mcp add memory`.
-    # We can't redirect that registration mid-run, but ironclaw also
-    # honors AI_MEMORY_MCP_CONFIG/MCP_CONFIG when set in the env.
-    # NOTE: if ironclaw v0.x ignores AI_MEMORY_MCP_CONFIG, the cold/
-    # stubbed/isolated arm wiring may degrade — TODO: confirm against
-    # the running ironclaw version.
+    # Headless single-message invocation. Per `ironclaw run --help` on
+    # the deployed v0.27.x binary: there is NO `--non-interactive`,
+    # `--format json`, or `--max-tool-rounds` flag — earlier wiring
+    # used those names and the binary exited rc=2 with
+    # `error: unexpected argument '--non-interactive' found` BEFORE
+    # producing any stdout, which is exactly the symptom phase3 saw on
+    # r15 (every Phase 3 ironclaw cell collapsing to
+    # termination_reason="error" with empty arrays).
+    #
+    # The correct one-shot invocation is:
+    #   ironclaw run --no-onboard --auto-approve -m "<prompt>"
+    # which prints the assistant's final response to stdout (exit 0)
+    # and tool-execution traces interleaved on stderr. We rely on the
+    # claims_extractor_cli to parse this stream — for ironclaw the
+    # extractor's "raw fallback" path handles plain-text final output
+    # exactly the way it does for hermes -Q, and tool calls are
+    # reconstructed from the audit log (treatment/isolated arms) not
+    # from agent stdout.
+    #
+    # ironclaw spawns `ai-memory ... mcp` using the registration
+    # written via `ironclaw mcp add memory` in setup_node.sh. We can't
+    # redirect that registration mid-run, but ironclaw also honors
+    # AI_MEMORY_MCP_CONFIG/MCP_CONFIG when set in the env (exported
+    # above). NOTE: if ironclaw v0.27.x ignores AI_MEMORY_MCP_CONFIG,
+    # the cold/stubbed/isolated arm wiring degrades — that's a
+    # separate v0.6.3.1 gap tracked in the campaign repo, not a
+    # regression introduced by this fix.
     timeout 600 ironclaw run \
-      --non-interactive \
-      --format json \
-      --max-tool-rounds 12 \
-      -p "$PROMPT" \
+      --no-onboard \
+      --auto-approve \
+      -m "$PROMPT" \
       > "$AGENT_OUT" 2> "$AGENT_ERR"
     AGENT_RC=$?
     ;;
@@ -378,6 +435,30 @@ elif [ "$AGENT_RC" -ne 0 ]; then
   TERMINATION="error"
 else
   TERMINATION="task_complete"
+fi
+
+# ---------------------------------------------------------------------------
+# 7b. If the agent CLI failed, capture a tail of its stderr/stdout into
+#     ERR_NOTE so the failure mode is observable in the §7 JSON `notes`
+#     field. Without this, phase3_autonomous only sees empty arrays +
+#     termination_reason="error" and has no way to tell whether the
+#     binary was missing, the flags were wrong, or the model API barfed.
+#     (This is what r15 hit — every cell logged `notes:""` with no clue.)
+# ---------------------------------------------------------------------------
+ERR_NOTE=""
+if [ "$AGENT_RC" -ne 0 ] && [ "$AGENT_RC" -ne 124 ]; then
+  _err_tail=""
+  if [ -s "$AGENT_ERR" ]; then
+    _err_tail="$(tail -c 400 "$AGENT_ERR" 2>/dev/null | tr -d '\000' | tr '\n' ' ')"
+  fi
+  if [ -z "$_err_tail" ] && [ -s "$AGENT_OUT" ]; then
+    # Some CLIs (notably ironclaw on flag-parse errors) print to stdout.
+    _err_tail="$(tail -c 400 "$AGENT_OUT" 2>/dev/null | tr -d '\000' | tr '\n' ' ')"
+  fi
+  if [ -z "$_err_tail" ]; then
+    _err_tail="(both stdout and stderr empty)"
+  fi
+  ERR_NOTE="agent_fail rc=${AGENT_RC} stderr_tail=${_err_tail}"
 fi
 
 # ---------------------------------------------------------------------------
@@ -506,11 +587,18 @@ fi
 
 # ---------------------------------------------------------------------------
 # 10. Compose the final JSON. Note text is bounded to 500 chars per the
-#     §7 schema constraint on `notes`.
+#     §7 schema constraint on `notes`. ERR_NOTE (set in step 7b on agent
+#     failure) is prepended so the most diagnostic info survives the
+#     truncation when both ARM_NOTE and TOOLS_NOTE are present.
 # ---------------------------------------------------------------------------
-NOTES_FULL="${ARM_NOTE}${TOOLS_NOTE:+ | $TOOLS_NOTE} | wall=${WALL_SECS}s rc=${AGENT_RC} session=${SESSION_MARKER}"
-# Truncate to <= 500 chars defensively.
-NOTES_TRUNC=$(printf '%s' "$NOTES_FULL" | cut -c1-500)
+NOTES_FULL="${ERR_NOTE:+${ERR_NOTE} | }${ARM_NOTE}${TOOLS_NOTE:+ | $TOOLS_NOTE} | wall=${WALL_SECS}s rc=${AGENT_RC} session=${SESSION_MARKER}"
+# Strip newlines + truncate to <= 500 chars defensively.
+NOTES_TRUNC=$(printf '%s' "$NOTES_FULL" | tr '\n' ' ' | cut -c1-500)
+
+# Disarm the unexpected-exit trap: from this point on we own the JSON
+# emission, so any error after the jq -cn below should not produce a
+# duplicate diagnostic record.
+FINAL_EMIT=1
 
 jq -cn \
   --argjson tools_called "$TOOLS_CALLED_JSON" \
