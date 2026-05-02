@@ -112,10 +112,31 @@ body, .md-typeset {
   font-weight: 500;
   opacity: 0.85;
   letter-spacing: -0.005em;
+  white-space: nowrap;
 }
 .md-tabs__link--active,
 .md-tabs__link:hover {
   opacity: 1;
+}
+
+/* Defense in depth: when nav has more top-level items than fit, allow the
+   tab strip to scroll horizontally instead of clipping. Material's default
+   wraps to a 2nd line on wider screens but on narrower ones the rightmost
+   tabs disappear behind the page edge. */
+.md-tabs__list {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.md-tabs__list::-webkit-scrollbar {
+  height: 3px;
+}
+.md-tabs__list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+}
+.md-tabs__list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.30);
 }
 
 .md-header__title {
