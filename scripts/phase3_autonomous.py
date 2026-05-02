@@ -330,11 +330,16 @@ class ArmPolicy:
 # ----------------------------------------------------------------------------- #
 
 def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
-                 node_ip: str, prompt: str, policy: ArmPolicy) -> tuple[list[dict], list[dict], str]:
+                 node_ip: str, prompt: str, policy: ArmPolicy
+                 ) -> tuple[list[dict], list[dict], list[dict], list[dict], str]:
     """Drive the real IronClaw / Hermes runtime on a droplet via ssh+drive_agent.sh.
 
-    Returns (tools_called, ai_memory_ops, termination_reason). Caller emits
-    the §7 record and updates RunState bookkeeping.
+    Returns (tools_called, ai_memory_ops, claims_made, claims_grounded,
+    termination_reason). The claims arrays are populated by
+    drive_agent_autonomous.sh's claims_extractor_cli.py invocation
+    (PR #15 / r13 follow-up #28); without them Phase 4 sees null
+    grounding rate across all arms. Caller emits the §7 record and
+    updates RunState bookkeeping.
     """
     # The agent runtime on each droplet exposes drive_agent.sh which takes a
     # prompt + arm policy via env vars and emits a §7-shaped JSON to stdout.
@@ -354,16 +359,18 @@ def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
     remote_cmd = f"{env_block} bash /opt/ai-memory-a2a/drive_agent.sh"
     r = ctx.h.ssh_exec(node_ip, remote_cmd, stdin=prompt, timeout=WALL_CLOCK_TIMEOUT_S)
     if r.returncode == 124:
-        return [], [], "cap_reached_walltime"
+        return [], [], [], [], "cap_reached_walltime"
     raw = (r.stdout or "").strip()
     try:
         out = json.loads(raw)
     except json.JSONDecodeError:
         log(f"  !! drive_agent.sh non-JSON output (rc={r.returncode}): {raw[:200]!r}")
-        return [], [], "error"
+        return [], [], [], [], "error"
     return (
         out.get("tools_called", []),
         out.get("ai_memory_ops", []),
+        out.get("claims_made", []),
+        out.get("claims_grounded", []),
         out.get("termination_reason", "task_complete"),
     )
 
@@ -492,7 +499,10 @@ def _run_local_shim(ctx: Phase3Context, st: RunState, agent_id: str,
                 "duration_ms": dur, "ok": recalled is not None,
             })
         op_index += 1
-    return [], ai_memory_ops, "task_complete"
+    # local-shim doesn't run the claims_extractor (it's an agent-side tool);
+    # leave claims arrays empty here. The shim mode is dev-only and notes
+    # this in the §7 record.
+    return [], ai_memory_ops, [], [], "task_complete"
 
 
 # ----------------------------------------------------------------------------- #
@@ -520,14 +530,16 @@ def run_one(ctx: Phase3Context, scenario_id: str, arm: str, run_index: int) -> P
                         notes=notes_extra)
     else:
         if ctx.mode == "do-droplets":
-            tc, ops, term = _run_droplet(ctx, st, spec.sender_agent, sender_node,
-                                          spec.sender_prompt, sender_policy)
+            tc, ops, claims, grounded, term = _run_droplet(
+                ctx, st, spec.sender_agent, sender_node,
+                spec.sender_prompt, sender_policy)
         else:
-            tc, ops, term = _run_local_shim(ctx, st, spec.sender_agent,
-                                             spec.sender_prompt, sender_policy)
+            tc, ops, claims, grounded, term = _run_local_shim(
+                ctx, st, spec.sender_agent,
+                spec.sender_prompt, sender_policy)
         ctx.emit_record(st, agent_id=spec.sender_agent, prompt=spec.sender_prompt,
                         tools_called=tc, ai_memory_ops=ops,
-                        claims_made=[], claims_grounded=[], refusals=[],
+                        claims_made=claims, claims_grounded=grounded, refusals=[],
                         termination=term, self_confidence=0.85 if term == "task_complete" else 0.2,
                         notes=notes_extra)
         termination = term if term != "task_complete" else termination
@@ -551,14 +563,16 @@ def run_one(ctx: Phase3Context, scenario_id: str, arm: str, run_index: int) -> P
                         notes=notes_extra)
     else:
         if ctx.mode == "do-droplets":
-            tc, ops, term = _run_droplet(ctx, st, spec.receiver_agent, receiver_node,
-                                          receiver_prompt, receiver_policy)
+            tc, ops, claims, grounded, term = _run_droplet(
+                ctx, st, spec.receiver_agent, receiver_node,
+                receiver_prompt, receiver_policy)
         else:
-            tc, ops, term = _run_local_shim(ctx, st, spec.receiver_agent,
-                                             receiver_prompt, receiver_policy)
+            tc, ops, claims, grounded, term = _run_local_shim(
+                ctx, st, spec.receiver_agent,
+                receiver_prompt, receiver_policy)
         ctx.emit_record(st, agent_id=spec.receiver_agent, prompt=receiver_prompt,
                         tools_called=tc, ai_memory_ops=ops,
-                        claims_made=[], claims_grounded=[], refusals=[],
+                        claims_made=claims, claims_grounded=grounded, refusals=[],
                         termination=term, self_confidence=0.85 if term == "task_complete" else 0.2,
                         notes=notes_extra)
         termination = term if term != "task_complete" else termination
