@@ -14,7 +14,7 @@
 | Campaign repo | [alphaonedev/ai-memory-a2a-v0.6.3.1](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1) |
 | Verdict surface | `releases/v0.6.3.1/summary.json` |
 | Test node scope | This DigitalOcean node only |
-| Agent scope | IronClaw + Hermes (OpenClaw tested separately, out of scope) |
+| Agent scope | IronClaw + Hermes dispatched from this DigitalOcean orchestrator node. **OpenClaw is in scope** for v0.6.3.1 but dispatched separately from a higher-resource workstation via local Docker mesh (16 GB+ per container — General Purpose tier or workstation, not Basic-tier DO droplets). |
 | Cert cell | `ironclaw / mTLS` (target 48/48 substrate) |
 | Document audience | AI NHI Orchestrator (third Claude instance, no namespace access) |
 | Document role | Authoritative governance — overrides any conflicting stale convention |
@@ -74,7 +74,7 @@ The Orchestrator computes and publishes a **cross-layer consistency table** in t
 
 ### Principle 6 — Scope discipline; this node, these agents, this release
 
-Every artifact carries metadata: `node_id=do-<id>`, `agents=ironclaw,hermes`, `release=v0.6.3.1`, `campaign_id=<uuid>`. OpenClaw is out of scope and runs in a separate campaign. Cross-scope contamination — using OpenClaw logs to fill a gap in IronClaw evidence, or rolling forward findings without re-running — invalidates the artifact and the Orchestrator rejects it.
+Every artifact carries metadata: `node_id=do-<id>` (or `local-docker-mesh` for OpenClaw runs from the workstation), `agents=ironclaw,hermes` or `agents=openclaw`, `release=v0.6.3.1`, `campaign_id=<uuid>`. OpenClaw IS in scope for v0.6.3.1 but dispatched separately from a higher-resource node (16 GB+ per container) — the IronClaw/Hermes runs from this DigitalOcean orchestrator and the OpenClaw runs from the workstation produce *separate* per-framework artifacts that the Orchestrator joins via `release=v0.6.3.1` + `campaign_id` linkage. Cross-scope contamination — using one framework's logs to fill another framework's evidence gap, or rolling forward findings without re-running — invalidates the artifact and the Orchestrator rejects it.
 
 ### Principle 7 — Prime Directive enforcement
 
@@ -416,7 +416,7 @@ A campaign that produces a green badge but generates no findings, no consistency
 
 ## Appendix B — Out of scope (for absolute clarity)
 
-- OpenClaw — runs in a separate campaign per [#511](https://github.com/alphaonedev/ai-memory-mcp/issues/511) convention.
+- _(OpenClaw was previously listed here as out of scope; it has been re-classified as in-scope but dispatched-from-elsewhere — see "Agent scope" in §0 and Principle 6 in §2.)_
 - Infrastructure provisioning, authentication topology, mTLS cert management, Terraform — confirmed-good before Phase 0 by a separate process.
 - Auto-tagging via Ollama — opt-in feature requiring `s-4vcpu-16gb` droplet, deferred from this campaign per [ai2ai-gate README](https://github.com/alphaonedev/ai-memory-ai2ai-gate).
 - `memory_share` / issue #311 targeted-share scenario — depends on v0.6.0.1 capability that is upstream of v0.6.3.1 scope; revisit for v0.6.4.

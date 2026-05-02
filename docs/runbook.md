@@ -49,7 +49,7 @@ gh workflow run a2a-gate.yml -R "$REPO" \
   -f campaign_id="a2a-hermes-v0.6.3.1-r$(date +%s)"
 ```
 
-OpenClaw is **out of scope** for v0.6.3.1 per [governance Principle 6](governance.md#principle-6-scope-discipline-this-node-these-agents-this-release). Do not dispatch with `agent_group=openclaw` against this repo.
+OpenClaw **is in scope** for v0.6.3.1 — but it's dispatched from a higher-resource node (workstation with 16+ GB available per container, via the [local Docker mesh](local-docker-mesh.md)), not from the Basic-tier DigitalOcean droplets used here. From the workstation, dispatch via `make a2a-openclaw` (or run docker-compose directly per the local-docker-mesh page). Per Principle 6 (scope discipline), the OpenClaw run produces its own `campaign_id` and artifact set; the orchestrator joins IronClaw + Hermes + OpenClaw evidence via `release=v0.6.3.1` linkage but never collapses them across framework boundaries.
 
 ### Watch the run
 

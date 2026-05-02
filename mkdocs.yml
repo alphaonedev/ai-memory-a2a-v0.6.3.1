@@ -2,8 +2,10 @@ site_name: ai-memory A2A v0.6.3.1 campaign
 site_description: >-
   Per-release agent-to-agent (A2A) certification campaign for
   ai-memory-mcp v0.6.3.1 (tag cut 2026-04-30, schema v19). 4-node
-  DigitalOcean mesh. Scope: IronClaw + Hermes (OpenClaw runs in a
-  separate campaign per Principle 6). Governed by docs/governance.md.
+  DigitalOcean mesh dispatched from this node covers IronClaw + Hermes;
+  OpenClaw is in scope and runs separately via Docker mesh from a
+  higher-resource node (16 GB+ per container — General Purpose tier
+  or workstation). Governed by docs/governance.md.
 site_url: https://alphaonedev.github.io/ai-memory-a2a-v0.6.3.1/
 repo_url: https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1
 repo_name: alphaonedev/ai-memory-a2a-v0.6.3.1
@@ -98,7 +100,7 @@ nav:
   - Agents:
       - IronClaw: agents/ironclaw.md
       - Hermes: agents/hermes.md
-      - OpenClaw (out of scope): agents/openclaw.md
+      - OpenClaw: agents/openclaw.md
   - Operations:
       - Runbook: runbook.md
       - Reproducing (DO): reproducing.md
