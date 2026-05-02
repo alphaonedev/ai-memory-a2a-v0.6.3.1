@@ -1,0 +1,19 @@
+{
+  "scenario": "S31",
+  "title": "SQLCipher AES-256 encryption at rest",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "SQLCipher AES-256 ships in v0.6.3.1; DB header is opaque to plain sqlite3 and keyed open works",
+  "alternative_acceptable_verdicts": ["NOT_BUILT"],
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "db_header_opaque": "boolean",
+    "plain_open_rejected": "boolean",
+    "keyed_open_works": "boolean",
+    "passphrase_not_in_binary": "boolean",
+    "db_path": "string",
+    "db_header_hex": "string",
+    "plain_open_diagnostic": "string",
+    "keyed_open_table_names": "array<string>",
+    "passphrase_source": "string"
+  }
+}

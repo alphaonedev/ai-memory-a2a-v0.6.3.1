@@ -77,6 +77,7 @@ nav:
   - Specification:
       - Baseline configuration: baseline.md
       - Test book: testbook.md
+      - Capability domains: capabilities.md
       - Every test performed: tests.md
       - Architecture: architecture.md
       - Topology: topology.md

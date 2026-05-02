@@ -762,7 +762,7 @@ jobs:
         run: |
           set -e
           mkdir -p phase-reports
-          for s in 23 24; do
+          for s in 23 24 28 29 30 31; do
             runner="scenarios/v0.6.3.1/S${s}/runner.sh"
             if [ ! -x "$runner" ] && [ -f "$runner" ]; then
               chmod +x "$runner"

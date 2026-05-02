@@ -1,0 +1,18 @@
+{
+  "scenario": "S28",
+  "title": "NHI agent_id immutability across update / dedup / sync / import",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "NHI agent_id is defence-in-depth immutable across the four mutation surfaces in v0.6.3.1",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "update_immutability": "boolean",
+    "dedup_preserves": "boolean",
+    "sync_preserves": "boolean",
+    "import_preserves": "boolean",
+    "original_agent_id": "string",
+    "post_update_agent_id": "string",
+    "consolidated_source_agents": "array<string>",
+    "node2_synced_agent_id": "string",
+    "imported_agent_id": "string"
+  }
+}
