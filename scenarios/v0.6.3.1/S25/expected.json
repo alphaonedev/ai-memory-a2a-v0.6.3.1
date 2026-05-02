@@ -1,0 +1,12 @@
+{
+  "scenario": "S25",
+  "title": "Audit hash-chain integrity over a populated log",
+  "expected_verdict": "GREEN",
+  "expected_green_reason": "v0.6.3.1 audit substrate enabled; 25 HTTP writes per node must land in /var/log/ai-memory/audit.jsonl and verify clean",
+  "matrix_cell_default": "ironclaw_mtls",
+  "outputs": {
+    "per_node_audit": "object<node_id, {rc:int, ok:bool, line_count:int, head_hash:string}>",
+    "writes_per_node": "integer",
+    "total_writes": "integer"
+  }
+}

@@ -107,6 +107,28 @@ Pass/fail is computed deterministically by the Phase 4 meta-analyst from the §7
 
 A `safety_verdict=fail` cell is funneled at severity `highest` (the same tier as a cross-layer-inconsistent row in §8.3) and is the most-valuable safety signal the campaign can produce.
 
+### Principle 8 — Audit Trail Governance (forensic reproducibility)
+
+Every NHI memory operation is forensically reproducible **by definition** — it is a substrate property, not a per-test property. ai-memory v0.6.3.1 ships an opt-in (default OFF) audit substrate that emits one hash-chained, schema v1, append-only JSONL line per memory operation in `/var/log/ai-memory/audit.jsonl`. The campaign turns audit ON via `scripts/setup_node.sh`'s `[audit]` block; this is non-negotiable for v0.6.3.1 campaigns (regulators, auditors, and enterprise buyers cannot accept "we didn't log it" as an answer).
+
+The substrate ships with **compliance presets** for the four standards regulated workloads typically face: `[audit.compliance.soc2]`, `[audit.compliance.hipaa]`, `[audit.compliance.gdpr]`, and `[audit.compliance.fedramp]`. The campaign uses **SOC 2** because the campaign artefacts are AlphaOne internal trust evidence, not a regulated workload. A regulated deployment swaps presets at `setup_node.sh` time; the substrate's tamper-detection and append-only properties remain unchanged.
+
+Five audit properties are tested. Substrate canaries S25/S26/S27 prove the substrate; Phase 3 scenarios I/J prove the NHI-layer behaviour an external auditor would actually exercise:
+
+| Property | Substrate test | NHI-layer test |
+|---|---|---|
+| Hash-chain integrity | [S25](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/scenarios/v0.6.3.1/S25/contract.md) | — |
+| Tamper detection on byte mutation | [S26](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/scenarios/v0.6.3.1/S26/contract.md) | — |
+| OS append-only enforcement (`chattr +a`) | [S27](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/blob/main/scenarios/v0.6.3.1/S27/contract.md) | — |
+| Forensic reproducibility (Phase 3 ↔ audit) | — | Scenario I |
+| Forged-provenance detection | — | Scenario J |
+
+Phase 4 meta-analysis emits an `audit_forensics` block in `phase4-analysis.json` with: per-node chain heads, per-node line counts, tamper-detection-per-node, Phase 3 op-to-audit match rate, forged-provenance detection rate, and a deterministic `legal_admissibility_summary` prose sentence. The block is rendered on the [Forensic audit per-run matrix](forensics/index.md). See [docs/forensic-audit.md](forensic-audit.md) for the full explainer including the OS append-only mechanism, the chain-hash construction, and the compliance-preset semantics.
+
+A run's audit trail is captured into `runs/<campaign_id>/audit/node-{1,2,3,4}.audit.jsonl` before infrastructure teardown by the `Capture per-node audit logs` workflow step. Same secret-redaction pass that sweeps the rest of the campaign artefacts also sweeps these files. A run that completes without an `audit/` subdirectory is missing forensic evidence and the campaign verdict cannot make legal-admissibility claims about it.
+
+If `audit_forensics.phase3_op_to_audit_match_rate < 1.00` on any run, that is a high-severity finding: at least one NHI memory op did not land in the audit log, which directly violates the forensic-reproducibility property the substrate claims. The Phase 4 findings funnel flags it under `class=needs_review` for human / LLM-assisted classification.
+
 ---
 
 ## 3. Phase structure

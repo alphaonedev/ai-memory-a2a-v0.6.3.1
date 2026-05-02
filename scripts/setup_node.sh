@@ -523,6 +523,83 @@ else
   log "MiniLM already cached at $MINILM_DIR — reusing"
 fi
 
+# ---- Forensic audit trail config (ai-memory v0.6.3.1+) ---------------
+# v0.6.3.1 ships an opt-in (default OFF) audit substrate that emits
+# hash-chained, schema v1, append-only JSONL records for every memory
+# operation. The chain plus the OS-level append-only flag (chattr +a on
+# Linux) gives us a forensically reproducible, tamper-evident trail —
+# the legal-admissibility property S25/S26/S27 + Phase 3 I/J test.
+#
+# We enable audit BEFORE `ai-memory serve` starts so the daemon picks up
+# the config on its first read. The audit log path is fixed at
+# /var/log/ai-memory/audit.jsonl per docs/forensic-audit.md. The dir is
+# 0700 owned by the user ai-memory runs as (root on droplets — every
+# campaign provisions root-only access to /var/log/ai-memory/).
+#
+# redact_content=false: campaign uses synthetic test data only; redaction
+# would break the Scenario I forensic-reproducibility test (Phase 3
+# ai_memory_op content must be cross-correlatable with audit ENTRY
+# content).
+#
+# chattr +a is applied AFTER first write — the file is created lazily by
+# ai-memory on the first audit-emitting op. We background a watcher that
+# polls for the file and applies chattr once it exists. The watcher
+# terminates on its own once chattr succeeds.
+mkdir -p /var/log/ai-memory
+chmod 0700 /var/log/ai-memory
+chown root:root /var/log/ai-memory
+
+mkdir -p /root/.config/ai-memory
+AI_MEMORY_CONFIG_FILE="/root/.config/ai-memory/config.toml"
+# Idempotent: re-running setup_node.sh must not duplicate the [audit] block.
+if [ -f "$AI_MEMORY_CONFIG_FILE" ] && grep -q '^\[audit\]' "$AI_MEMORY_CONFIG_FILE" 2>/dev/null; then
+  log "ai-memory config.toml already has [audit] block — leaving in place (idempotent)"
+else
+  cat >> "$AI_MEMORY_CONFIG_FILE" <<'AUDIT_TOML'
+
+# --- Forensic audit trail (a2a-v0.6.3.1 campaign) ---------------------
+# Hash-chained line-by-line, schema v1, OS append-only enforcement.
+# Every memory operation lands one JSONL line; the chain head hash
+# can be recomputed deterministically by `ai-memory audit verify`.
+# See docs/forensic-audit.md for the legal-admissibility properties.
+[audit]
+enabled = true
+path = "/var/log/ai-memory/audit.jsonl"
+schema_version = 1
+hash_chain = true
+append_only = true
+redact_content = false  # campaign uses synthetic test data; redaction would break forensic reproducibility
+
+[audit.compliance.soc2]
+applied = true
+AUDIT_TOML
+  log "wrote [audit] block to $AI_MEMORY_CONFIG_FILE (path=/var/log/ai-memory/audit.jsonl)"
+fi
+
+# Background a watcher that applies chattr +a as soon as the audit log
+# is created by ai-memory's first write. `chattr +a` makes the file
+# append-only at the kernel level — even root cannot overwrite or
+# truncate without first running `chattr -a`. This is the OS-level
+# enforcement S27 verifies. On filesystems without chattr (containers,
+# overlayfs) the call returns non-zero; we log and continue rather than
+# fail the provision step, since the hash chain alone still detects
+# tamper (S26).
+(
+  for _attempt in $(seq 1 60); do
+    if [ -f /var/log/ai-memory/audit.jsonl ]; then
+      if chattr +a /var/log/ai-memory/audit.jsonl 2>/dev/null; then
+        echo "[audit-watcher] chattr +a applied to /var/log/ai-memory/audit.jsonl after $_attempt iterations"
+      else
+        echo "[audit-watcher] chattr +a returned non-zero on /var/log/ai-memory/audit.jsonl (filesystem may not support attrs); hash-chain tamper detection still active"
+      fi
+      exit 0
+    fi
+    sleep 1
+  done
+  echo "[audit-watcher] /var/log/ai-memory/audit.jsonl never appeared in 60s — first audit op may not have fired yet; manual chattr can be applied later"
+) >>/var/log/ai-memory-audit-watcher.log 2>&1 &
+disown
+
 log "starting ai-memory serve scheme=$SERVE_SCHEME tls_mode=$TLS_MODE peers=$PEER_URLS"
 # ai-memory serve does NOT accept a --tier flag (that's only on mcp /
 # store / recall / list / forget subcommands). effective_tier() defaults

@@ -538,6 +538,178 @@ def _render_nhi_per_run_matrix(root: Path) -> str:
     return "\n".join(lines)
 
 
+def _fmt_pct(value: Any) -> str:
+    """Render a 0..1 ratio as 'NN%' or '—' if non-numeric."""
+    try:
+        f = float(value)
+    except (TypeError, ValueError):
+        return "—"
+    return f"{f * 100:.0f}%"
+
+
+def _trunc_hash(s: Any, n: int = 16) -> str:
+    if not isinstance(s, str) or not s:
+        return "—"
+    return f"`{s[:n]}…`" if len(s) > n else f"`{s}`"
+
+
+def _tamper_cell(node: str, tamper_block: dict[str, Any]) -> str:
+    """Render the per-node tamper-detection cell.
+
+    `tamper_block` is one entry from `audit_forensics.tamper_detection_per_node`.
+    """
+    rc = tamper_block.get("verify_rc")
+    ok = tamper_block.get("ok")
+    if rc is None and ok is None:
+        return "—"
+    parts: list[str] = []
+    if isinstance(rc, (int, float)):
+        parts.append(f"rc={int(rc)}")
+    if isinstance(ok, bool):
+        parts.append("ok" if ok else "**not ok**")
+    fired = tamper_block.get("tamper_detection_fired_on_node_1_substrate")
+    inferred = tamper_block.get("tamper_detection_inferred_uniform")
+    if fired is True:
+        parts.append("S26 ✅ fired")
+    elif fired is False:
+        parts.append("S26 ❌ no-fire")
+    elif inferred:
+        parts.append("S26 inferred-fired")
+    return ", ".join(parts) if parts else "—"
+
+
+def _render_latest_audit_forensics(root: Path) -> str:
+    """Render the most-recent run's audit_forensics block as Markdown.
+
+    Used by docs/forensic-audit.md if/when a "latest run" panel is added;
+    not currently called by the index.md but available for inclusion.
+    """
+    runs = _discover_phase4_runs(root)
+    if not runs:
+        return (
+            '!!! warning "No audit-forensics analysis published yet"\n\n'
+            "    No `runs/<campaign>/phase4-analysis.json` carrying an\n"
+            "    `audit_forensics` block was found. Once Phase 4 runs land,\n"
+            "    this section auto-renders the most recent run's chain heads,\n"
+            "    op-to-audit match rate, and forged-provenance detection rate.\n"
+        )
+    run_dir, data = runs[0]
+    run_id = run_dir.name
+    af = data.get("audit_forensics") or {}
+    if not af:
+        return (
+            f'!!! info "Latest run `{run_id}` predates audit-forensics"\n\n'
+            "    The most-recent `phase4-analysis.json` does not contain an\n"
+            "    `audit_forensics` block. New runs (post-PR\n"
+            "    `feat/forensic-audit-trail-tests`) populate it automatically.\n"
+        )
+    lines: list[str] = []
+    lines.append(f"**Run:** `{run_id}`")
+    lines.append("")
+    lines.append("**Per-node chain heads + line counts:**")
+    lines.append("")
+    lines.append("| Node | Chain head (sha256:0..16) | Lines | Audit status |")
+    lines.append("|---|---|---|---|")
+    head_map = af.get("per_node_chain_head") or {}
+    count_map = af.get("per_node_line_count") or {}
+    status_map = af.get("per_node_audit_status") or {}
+    for node in sorted(head_map.keys()):
+        lines.append(
+            f"| `{node}` | {_trunc_hash(head_map.get(node))} "
+            f"| {count_map.get(node, '—')} "
+            f"| `{status_map.get(node, '—')}` |"
+        )
+    lines.append("")
+    lines.append("**Tamper detection per node:**")
+    lines.append("")
+    lines.append("| Node | Verify state | S26 substrate canary |")
+    lines.append("|---|---|---|")
+    tamper_map = af.get("tamper_detection_per_node") or {}
+    for node in sorted(tamper_map.keys()):
+        lines.append(f"| `{node}` | {_tamper_cell(node, tamper_map[node])} | |")
+    lines.append("")
+    lines.append("**NHI-layer metrics:**")
+    lines.append("")
+    lines.append("| Metric | Value |")
+    lines.append("|---|---|")
+    lines.append(f"| Phase 3 op→audit match rate | {_fmt_pct(af.get('phase3_op_to_audit_match_rate'))} "
+                 f"({af.get('phase3_writes_matched', 0)}/{af.get('phase3_writes_total', 0)}) |")
+    lines.append(f"| Forged-provenance detection rate (Scenario J) | {_fmt_pct(af.get('forged_provenance_detection_rate'))} "
+                 f"({af.get('scenario_j_runs_detected', 0)}/{af.get('scenario_j_runs_total', 0)}) |")
+    lines.append(f"| Scenario I grounded-receiver rate | "
+                 f"{af.get('scenario_i_runs_grounded', 0)}/{af.get('scenario_i_runs_total', 0)} |")
+    lines.append("")
+    summary = af.get("legal_admissibility_summary") or "—"
+    lines.append("**Legal admissibility summary:**")
+    lines.append("")
+    lines.append(f"> {summary}")
+    return "\n".join(lines)
+
+
+def _render_audit_per_run(root: Path) -> str:
+    """Render the per-run forensics matrix (one row per run)."""
+    runs = _discover_phase4_runs(root)
+    if not runs:
+        return (
+            '!!! info "No audit-forensics per-run data yet"\n\n'
+            "    No campaign run has produced a `phase4-analysis.json` with\n"
+            "    an `audit_forensics` block. Once new runs land, every run\n"
+            "    gets a row here automatically.\n"
+        )
+
+    rows_with_af: list[tuple[Path, dict[str, Any]]] = []
+    for run_dir, data in runs:
+        if data.get("audit_forensics"):
+            rows_with_af.append((run_dir, data))
+
+    if not rows_with_af:
+        return (
+            '!!! info "No audit-forensics block found in existing runs"\n\n'
+            "    The runs in `runs/` predate `feat/forensic-audit-trail-tests`.\n"
+            "    Future runs will populate this matrix automatically.\n"
+        )
+
+    lines: list[str] = []
+    lines.append("## Per-run forensics matrix")
+    lines.append("")
+    header_cells = [
+        "Run", "node-1 head", "node-2 head", "node-3 head", "node-4 head",
+        "Lines (1/2/3/4)", "Op→audit", "Forged-prov", "Summary",
+    ]
+    lines.append("| " + " | ".join(header_cells) + " |")
+    lines.append("|" + "|".join(["---"] * len(header_cells)) + "|")
+
+    for run_dir, data in rows_with_af:
+        run_id = run_dir.name
+        af = data.get("audit_forensics") or {}
+        head_map = af.get("per_node_chain_head") or {}
+        count_map = af.get("per_node_line_count") or {}
+        h1 = _trunc_hash(head_map.get("node-1"))
+        h2 = _trunc_hash(head_map.get("node-2"))
+        h3 = _trunc_hash(head_map.get("node-3"))
+        h4 = _trunc_hash(head_map.get("node-4"))
+        lines_str = "/".join(str(count_map.get(f"node-{n}", "—")) for n in (1, 2, 3, 4))
+        match = _fmt_pct(af.get("phase3_op_to_audit_match_rate"))
+        match_n = af.get("phase3_writes_total") or 0
+        match_m = af.get("phase3_writes_matched") or 0
+        match_cell = f"{match} ({match_m}/{match_n})" if match_n else match
+        forged = _fmt_pct(af.get("forged_provenance_detection_rate"))
+        forged_n = af.get("scenario_j_runs_total") or 0
+        forged_m = af.get("scenario_j_runs_detected") or 0
+        forged_cell = f"{forged} ({forged_m}/{forged_n})" if forged_n else "—"
+        summary = (af.get("legal_admissibility_summary") or "—").replace("|", "\\|")
+        if len(summary) > 240:
+            summary = summary[:237] + "…"
+        lines.append(
+            f"| `{run_id}` | {h1} | {h2} | {h3} | {h4} "
+            f"| {lines_str} | {match_cell} | {forged_cell} | {summary} |"
+        )
+
+    lines.append("")
+    lines.append(f"*Total runs with `audit_forensics`:* **{len(rows_with_af)}**")
+    return "\n".join(lines)
+
+
 def define_env(env):  # noqa: D401 — mkdocs-macros entry point
     """Bind release helpers into the Jinja env used by mkdocs-macros."""
     repo_root = Path(env.project_dir)
@@ -571,3 +743,11 @@ def define_env(env):  # noqa: D401 — mkdocs-macros entry point
     @env.macro
     def render_nhi_per_run_matrix() -> str:
         return _render_nhi_per_run_matrix(repo_root)
+
+    @env.macro
+    def render_latest_audit_forensics() -> str:
+        return _render_latest_audit_forensics(repo_root)
+
+    @env.macro
+    def render_audit_per_run() -> str:
+        return _render_audit_per_run(repo_root)
