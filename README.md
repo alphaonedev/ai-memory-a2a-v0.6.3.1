@@ -8,7 +8,7 @@ Per-release **agent-to-agent (A2A) integration certification** campaign for [`ai
 
 > **Status.** First-Principles refactor in flight. Prior r1 archived under `runs/_archive/r1-pre-governance/`.
 > **Subject under test.** ai-memory `v0.6.3.1` (tag pinned).
-> **Agent scope.** IronClaw + Hermes (OpenClaw runs in a separate campaign per Principle 6).
+> **Agent scope.** IronClaw + Hermes from this DigitalOcean orchestrator. **OpenClaw IS in scope** for v0.6.3.1 but dispatched separately from a higher-resource workstation via the [local Docker mesh](docs/local-docker-mesh.md) (16 GB+ per container; not Basic-tier droplets). Per Principle 6, each framework's artifacts stay scope-tagged and are joined via `release=v0.6.3.1` linkage.
 > **Authoritative governance.** [`docs/governance.md`](docs/governance.md) — overrides any conflicting stale convention.
 > **Funnel.** Findings roll into [**Patch 2** (`v0.6.3.2`)](https://github.com/alphaonedev/ai-memory-mcp/issues/511) via the umbrella tracking issue.
 
@@ -41,7 +41,7 @@ Eight base scenarios from the umbrella's testbook (S1 per-agent write+read, S2 s
 |---|---|---|---|
 | **ironclaw** | regression | regression | **CERT cell** (target 48 / 48) |
 | **hermes** | regression | regression | regression |
-| **openclaw** | _out of scope_ | _out of scope_ | _out of scope (separate campaign)_ |
+| **openclaw** | regression _(workstation Docker mesh)_ | regression _(workstation Docker mesh)_ | regression _(workstation Docker mesh)_ |
 | mixed (ironclaw↔hermes) | regression | regression | stretch |
 
 ### Class B — v0.6.3.1-specific (new surfaces)

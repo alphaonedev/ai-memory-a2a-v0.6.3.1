@@ -26,10 +26,7 @@ In scope (Principle 6 — scope discipline; see [governance §2.6](governance.md
 
 - **IronClaw** — Rust framework, primary cert agent.
 - **Hermes** — counterpart agent for cross-framework substrate cells and Phase 3 NHI playbook.
-
-Out of scope:
-
-- **OpenClaw** — runs in a separate per-release campaign per [`#511`](https://github.com/alphaonedev/ai-memory-mcp/issues/511) convention. Cross-scope contamination (using OpenClaw logs to fill an IronClaw / Hermes evidence gap) invalidates the artifact.
+- **OpenClaw** — first-class third agent framework, in scope for v0.6.3.1 but **dispatched separately from a higher-resource workstation via the [local Docker mesh](local-docker-mesh.md)** (16 GB+ per container — Basic-tier DO droplets used for IronClaw/Hermes don't have enough memory). Per Principle 6, OpenClaw runs produce their own scope-tagged artifacts; the Orchestrator joins all three frameworks via `release=v0.6.3.1` linkage but never collapses them across framework boundaries (cross-scope contamination invalidates the artifact).
 
 ## What carries forward from the v0.6.3 cert
 
@@ -79,7 +76,6 @@ Sixteen scenarios `S9` – `S24` exercise the surfaces added in this release:
 
 Per [governance Appendix B](governance.md#appendix-b-out-of-scope-for-absolute-clarity), this campaign deliberately does not cover:
 
-- **OpenClaw.** Separate campaign per Principle 6.
 - **Infrastructure provisioning, mTLS cert management, Terraform.** Confirmed-good before Phase 0 by a separate process.
 - **Auto-tagging via Ollama.** Opt-in feature requiring `s-4vcpu-16gb` droplet; deferred per the [ai2ai-gate README](https://github.com/alphaonedev/ai-memory-ai2ai-gate).
 - **`memory_share` / [#311](https://github.com/alphaonedev/ai-memory-mcp/issues/311) targeted-share scenario.** Depends on a v0.6.0.1 capability upstream of v0.6.3.1; revisit for v0.6.4.
