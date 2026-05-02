@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r4",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-fast-non-reasoning",
+  "for_c_level": "This run represents a complete infrastructure failure with zero valid results, elevating risk in our testing pipeline and delaying validation of ai-memory v0.6.3.1's production readiness; customer claims on agent memory sharing remain unverified from this iteration. Compared to prior runs, this introduces regression in harness reliability, necessitating immediate fixes before scaling deployments. Overall posture shifts to high caution on release timelines.",
+  "for_non_technical": "This test run aimed to check if AI agents could reliably share memories across a network, but it didn't work because the system couldn't generate any usable results from the planned checks. No evidence was gathered on whether agents share memory reliably or not. It's like trying to test a car's engine but the diagnostic tool breaks first.",
+  "for_sme": "No scenarios yielded results due to 'no scenario reports recovered', with only scenario-1.json marked unparseable, likely indicating a serialization or logging bug in the harness (harness_sha: ba4d782b12937abf508ebb4b29d7e4bb16ace2c3) during the 4-node DigitalOcean setup; affected primitives unknown as no probes (S#) completed. Probable root cause is incomplete CI workflow execution, given empty ended_at timestamp and overall_pass=false. No specific failure modes in ai-memory primitives identifiable without data.",
+  "headline": "Campaign run failed due to no recoverable scenario reports",
+  "next_run_change": "Fix harness reporting bug to ensure all scenario JSONs are parseable and recoverable before re-running the campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered, only unparseable data",
+  "what_it_proved": "The testing infrastructure failed to produce or recover any valid scenario results, demonstrating a critical breakdown in the campaign harness rather than in the ai-memory system itself.",
+  "what_it_tested": "The run requested 31 scenarios (1,1b,2,4-6,9-18,22-25,28-42) covering transport protocols, framework integrations, and memory primitives in a 4-node DigitalOcean federation mesh with hermes agents, but no scenarios executed successfully due to reporting failure."
+}
