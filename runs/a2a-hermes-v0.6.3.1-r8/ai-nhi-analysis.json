@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r8",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "High risk from broken audit trails and policy controls limits production readiness and violates security claims for customers. Core sharing is stable, but these regressions in v0.6.3.1 versus prior builds demand urgent fixes before deployment. No change in overall posture, but audit failures worsen viability.",
+  "for_non_technical": "The AI agents successfully shared and recalled simple memories with each other over the network. However, features meant to secure and track those memories, like approvals and logs, did not work properly. This means the system is okay for basic use but not yet reliable for secure sharing.",
+  "for_sme": "Key failures in S25 (audit verify rc=2, zero lines, empty head_hash across nodes), S26 (tamper not detected, restore rc=2 ok=false), S28 (import drops agent_id to empty), S29 (policy install 404, pending state ignored), S30 (subscription deserialize error, no inbox/fanout). Probable root causes include audit substrate disabled (per S25/S26), missing API handlers (#507, #318), and webhook bugs; partial in S24 with 2/7 tools leaking. Testbook probes S23-S31 highlight security gaps.",
+  "headline": "Core memory sharing reliable, but audit and security features fail",
+  "next_run_change": "Enable and verify audit substrate configuration before next campaign.",
+  "verdict": "PARTIAL \u2014 35/44 scenarios pass, audit/policy/notify red",
+  "what_it_proved": "Proved consistent sharing and recall for basic operations across agents, but exposed failures in audit verification, tamper detection, policy enforcement, and notification delivery.",
+  "what_it_tested": "Tested 44 scenarios exercising memory CRUD, federation sync, semantic recall, links, deletions, promotions, and security primitives over HTTP in 4-node mesh."
+}
