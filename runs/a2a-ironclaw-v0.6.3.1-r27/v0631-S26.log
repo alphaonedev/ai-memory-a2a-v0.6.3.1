@@ -1,0 +1,4 @@
+[s26] begin S26 probe on node-1 (104.236.229.51)
+[s26]   before: rc=2 ok=false head=… lines=155
+[s26]   after:  rc=2 ok=false tamper=false err='empty-verify-output'
+[s26]   restored: rc=2 ok=false head=… lines=155

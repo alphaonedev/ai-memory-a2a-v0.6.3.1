@@ -1,0 +1,23 @@
+{
+  "scenario": "S28",
+  "pass": false,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "RED",
+  "outputs": {
+    "update_immutability": true,
+    "dedup_preserves": true,
+    "sync_preserves": true,
+    "import_preserves": false,
+    "original_agent_id": "",
+    "post_update_agent_id": "ai:alice",
+    "consolidated_source_agents": [
+      "ai:alice",
+      "ai:bob"
+    ],
+    "node2_synced_agent_id": "ai:alice",
+    "imported_agent_id": ""
+  },
+  "reasons": [
+    "step4: imported memory has agent_id='', expected 'ai:alice'"
+  ]
+}

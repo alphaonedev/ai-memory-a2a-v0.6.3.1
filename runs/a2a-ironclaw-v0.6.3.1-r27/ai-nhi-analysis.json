@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r27",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "Basic federation poses low risk for production rollout with 34/35 core scenarios green; however, audit, policy, and notify failures block compliance-sensitive claims and customer features. This run regressed on bulk ops vs prior (new loss on node2) while confirming known gaps in v0.6.3.1\u2014prioritize audit fixes for viability.",
+  "for_non_technical": "The AI agents successfully shared memories in most simple tests, like storing and reading information across the group without issues. However, in some cases like large batch updates, one part of the system missed a tiny bit of data, and advanced security checks didn't work as expected. Overall, basic memory sharing is reliable, but some features need fixes for full trust.",
+  "for_sme": "Bulk failure in #40 (node2 499/500 rows post-fanout, probable F#318 bypass); audit red in S25/S26 (verify rc=2, lines=0, empty head_hash across nodes, linked to S#507 tilde expansion); immutability break in S28 (import drops agent_id); policy 404 in S29 (PUT/POST fail); notify deserial+fanout fails in S30. Root causes: incomplete impl for audit/policy/notify in v0.6.3.1, testbook S25-S30.",
+  "headline": "Federated AI memory shares basics well, fails audit and policies.",
+  "next_run_change": "Enable audit logging with full chain verification and fix bulk fanout before next campaign.",
+  "verdict": "FAIL \u2014 7/44 scenarios red, audit/policy/notify broken.",
+  "what_it_proved": "Proved reliable basic sharing and replication in 37 scenarios but exposed failures in bulk fanout (499/500 rows), audit verification (rc=2, empty logs), import immutability, policy installation (404), and notifications (deserial errors, no delivery).",
+  "what_it_tested": "Tested 44 scenarios exercising memory store/recall/delete/link/consolidate/bulk, federation sync/recovery, audit/security/policy/notify primitives over HTTP in 4-node mesh."
+}
