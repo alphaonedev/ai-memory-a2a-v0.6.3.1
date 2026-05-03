@@ -48,10 +48,28 @@ agent_cli() { command -v "$AGENT_TYPE" >/dev/null 2>&1; }
 #   --max-tool-rounds bound the agent loop per scenario call
 #   Config lives in ~/.openclaw/openclaw.json (MCP + provider).
 #
-# hermes: hermes chat -Q --provider xai --model $A2A_GATE_LLM_MODEL -q "<prompt>"
+# hermes: hermes -z "<prompt>" --provider xai --model $A2A_GATE_LLM_MODEL
 #   Source /etc/ai-memory-a2a/hermes.env first for XAI_API_KEY.
 #   Model SKU parameterized via $A2A_GATE_LLM_MODEL (default grok-4-0709 =
 #   Grok 4.2 reasoning). Override for cost-optimized runs (#4).
+#
+# ── why -z (oneshot) and not `chat -Q -q` (a2a-hermes-v0.6.3.1-r5) ──
+# `hermes chat` (even with -Q -q) routes through hermes_cli/main.py::cmd_chat
+# → cli.py::main(), which unconditionally sets HERMES_INTERACTIVE=1 (cli.py
+# line ~11824) and wires interactive callbacks for tool approvals + first-run
+# setup prompts. Under non-TTY ssh execution (no stdin) those input() calls
+# block forever; the per-call 60s ssh timeout in a2a_harness.py::drive_agent
+# fires before the agent ever issues the MCP store call. Surfaced by r5
+# scenario-1 — every store call hit __TIMEOUT_60s__ and zero rows landed.
+#
+# `hermes -z "<prompt>"` (hermes_cli/oneshot.py::run_oneshot) is the
+# upstream-supported headless entry point: it bypasses cli.py entirely,
+# auto-sets HERMES_YOLO_MODE=1 + HERMES_ACCEPT_HOOKS=1, never sets
+# HERMES_INTERACTIVE, and wires a non-blocking clarify callback. The final
+# response is written to stdout; tool/banner/spinner output is suppressed.
+# This is the analogue of openclaw's `run --non-interactive -p` and
+# ironclaw's `chat -p`. If a future hermes build moves the oneshot entry
+# point or renames the flag, update here.
 : "${A2A_GATE_LLM_MODEL:=grok-4-0709}"
 
 # MCP tool names surface to the LLM under framework-specific aliases.
@@ -81,10 +99,13 @@ agent_prompt() {
       ;;
     hermes)
       set -a; . /etc/ai-memory-a2a/hermes.env; set +a
-      hermes chat -Q \
+      # -z / --oneshot is hermes-agent's non-interactive entry point.
+      # It bypasses cli.py (no HERMES_INTERACTIVE, no input() prompts),
+      # auto-approves tool calls, and prints only the final response to
+      # stdout. See r5 post-mortem in the comment block above.
+      hermes -z "$1" \
         --provider xai \
-        --model "$A2A_GATE_LLM_MODEL" \
-        -q "$1"
+        --model "$A2A_GATE_LLM_MODEL"
       ;;
     ironclaw)
       # ironclaw headless prompt. xAI OpenAI-compatible backend is

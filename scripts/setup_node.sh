@@ -58,7 +58,11 @@ log() { printf '[setup-node-%s %s] %s\n' "$NODE_INDEX" "$(date -u +%H:%M:%S)" "$
 TIMEOUT_INSTALL_SH=600     # 10 min — openclaw install via curl | bash
 TIMEOUT_NPM=300            # 5 min
 TIMEOUT_PIP=180            # 3 min
-TIMEOUT_AGENT_CLI=60       # 1 min — F2b canary (agent reasoning + tool call)
+TIMEOUT_AGENT_CLI=120      # 2 min — F2b/F3b canary (agent reasoning + tool call).
+                           # Bumped from 60 in fix/hermes-store-hang: hermes
+                           # via Grok-4 oneshot (-z) commonly needs 60–90s for
+                           # a single store-and-summarize round; ironclaw stays
+                           # well under this ceiling.
 TIMEOUT_XAI_CURL=20        # 20s — F1 xAI chat probe (already enforced inline)
 
 # ---- Base packages -------------------------------------------------
@@ -1174,11 +1178,14 @@ EOF
         sha256sum /root/.hermes/config.yaml 2>&1 || true
         head -80 /root/.hermes/config.yaml 2>&1 || true
         echo
-        echo "## tool catalog dry-probe (hermes chat -Q --list-tools or equivalent)"
-        # Several upstream builds print the loaded tool catalog when
-        # given an empty prompt under -Q with --debug; this is best-
-        # effort and should not fail the setup.
-        timeout 15 hermes chat -Q --debug -q "list available tools" 2>&1 | head -200 || true
+        echo "## tool catalog dry-probe (hermes -z list-available-tools)"
+        # `hermes -z` is the headless oneshot entry point; under non-TTY
+        # exec the chat-mode entry blocks on interactive callbacks (see
+        # the F2b post-mortem above). This dry-probe is best-effort and
+        # should not fail the setup.
+        set -a; . /etc/ai-memory-a2a/hermes.env 2>/dev/null; set +a
+        timeout 30 hermes -z "List available tools." \
+          --provider xai --model "$A2A_GATE_LLM_MODEL" 2>&1 | head -200 || true
       } > /var/log/hermes-debug/setup-snapshot.txt 2>&1 || true
       log "HERMES_DEBUG=1: snapshot written to /var/log/hermes-debug/setup-snapshot.txt"
     fi
@@ -1681,15 +1688,20 @@ case "$AGENT_TYPE" in
     ;;
   hermes)
     set -a; . /etc/ai-memory-a2a/hermes.env; set +a
+    # `hermes -z` (oneshot) is the headless entry point — bypasses
+    # cli.py's interactive callbacks + tool-approval prompts that
+    # would block on `input()` under non-TTY ssh exec. See the
+    # drive_agent.sh hermes branch for the r5 post-mortem on why
+    # `chat -Q -q "..."` hangs here.
     if [ "${HERMES_DEBUG:-0}" = "1" ]; then
       mkdir -p /var/log/hermes-debug
-      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q --debug --provider xai --model "$A2A_GATE_LLM_MODEL" -q "$F2B_PROMPT" \
+      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes -z "$F2B_PROMPT" --provider xai --model "$A2A_GATE_LLM_MODEL" \
         >/tmp/canary-hermes.log 2>/var/log/hermes-debug/f2b-stderr.log || \
           log "  F2b: hermes returned non-zero or timed out (${TIMEOUT_AGENT_CLI}s) — proceeding"
       log "  HERMES_DEBUG=1: f2b stderr at /var/log/hermes-debug/f2b-stderr.log (head):"
       head -c 2000 /var/log/hermes-debug/f2b-stderr.log 2>/dev/null | sed 's/^/    [hermes-f2b-stderr] /' || true
     else
-      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q --provider xai --model "$A2A_GATE_LLM_MODEL" -q "$F2B_PROMPT" > /tmp/canary-hermes.log 2>&1 || \
+      timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes -z "$F2B_PROMPT" --provider xai --model "$A2A_GATE_LLM_MODEL" > /tmp/canary-hermes.log 2>&1 || \
         log "  F2b: hermes returned non-zero or timed out (${TIMEOUT_AGENT_CLI}s) — proceeding"
     fi
     ;;
@@ -1736,9 +1748,12 @@ if [ "$AGENT_TYPE" = "hermes" ] && [ "$f2b_functional" = "true" ]; then
   F3B_PROMPT="Use the ai-memory MCP mcp_memory_memory_store tool to save a memory with namespace=${F3B_NS}, title=peer-canary-${AGENT_ID}, content=${F3B_UUID}. Respond with DONE when the tool call completes."
   log "  F3b (hermes-only): agent stores via mcp_memory_memory_store, peers asked to recall"
   set -a; . /etc/ai-memory-a2a/hermes.env; set +a
-  timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes chat -Q \
+  # See F2b above + drive_agent.sh hermes branch: -z (oneshot) is
+  # the only headless-safe entry point. `chat -Q -q` hangs on
+  # interactive callbacks under non-TTY exec.
+  timeout -k 10 "$TIMEOUT_AGENT_CLI" hermes -z "$F3B_PROMPT" \
     --provider xai --model "$A2A_GATE_LLM_MODEL" \
-    -q "$F3B_PROMPT" >/tmp/canary-hermes-f3b.log 2>&1 || \
+    >/tmp/canary-hermes-f3b.log 2>&1 || \
     log "  F3b: hermes invocation rc!=0 (proceeding to read-back check)"
   sleep 5
   # Read-back from THIS node's local serve. The federation push to

@@ -890,6 +890,12 @@ jobs:
           cp phase-reports/*.json "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp phase-reports/*.log  "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp -r phase-reports/baselines "$CAMPAIGN_DIR/" 2>/dev/null || true
+          # Persist hermes-debug snapshots when present (only the
+          # hermes_debug=true dispatch path produces this dir; r5
+          # post-mortem: the snapshot was scp'd into phase-reports/
+          # but never copied into runs/, so the artifact never landed
+          # on main and reviewers had no forensic surface).
+          cp -r phase-reports/hermes-debug "$CAMPAIGN_DIR/" 2>/dev/null || true
           cp a2a-summary.json "$CAMPAIGN_DIR/" 2>/dev/null || true
 
       # Capture per-node audit logs for legal-admissibility evidence.

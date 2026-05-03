@@ -344,11 +344,18 @@ class Harness:
     # -------- drive_agent.sh passthrough (for S1 MCP path) --------
 
     def drive_agent(self, node_ip: str, verb: str, *args: str,
-                    timeout: int = 60) -> subprocess.CompletedProcess:
+                    timeout: int = 180) -> subprocess.CompletedProcess:
         """Invoke /root/drive_agent.sh <verb> on a remote droplet (used by S1).
 
         drive_agent.sh is installed on every agent droplet by setup_node.sh
         and abstracts over ironclaw/hermes/openclaw MCP invocations.
+
+        Default timeout 180s accommodates the full LLM tool-call cycle
+        (model reasoning + MCP store + model summary). ironclaw's Rust
+        path typically returns in <30s; hermes (Grok-4 via xAI) commonly
+        needs 60–120s for a single store. This is the per-call ssh budget
+        only — the outer scenario step in a2a-gate.yml retains its
+        25-minute budget.
         """
         argv = " ".join(shlex.quote(a) for a in (verb, *args))
         remote = f"source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh {argv}"
