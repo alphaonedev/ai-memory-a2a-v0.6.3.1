@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r23",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "High risk in production due to broken audit and policy enforcement; not ready for customer claims on security/compliance. Degraded vs prior runs with new reds in audit (S25/S26) and approvals (S29/S30).",
+  "for_non_technical": "Agents can share simple memories reliably across the network most of the time. However, advanced features like checking for tampering or approving shared info don't work yet, so not all memories are secure or controlled properly.",
+  "for_sme": "Failures in audit verify (S25: all nodes rc=2, empty hashes), tamper detection (S26: restore failed), immutability (S28: import drops agent_id), approvals (S29: 404 on policy/approve), notifications (S30: subscription fails deserialization, no fanout); probable causes include missing SQLCipher (S31) and #318 MCP bypass.",
+  "headline": "Audit and policy features fail in federated memory sharing test.",
+  "next_run_change": "Integrate SQLCipher for encrypted DB and fix audit verify to pass on clean writes.",
+  "verdict": "FAIL \u2014 8 scenarios red including audit, approvals, notifications.",
+  "what_it_proved": "Demonstrated reliable basic sharing and replication but proved audit verification, tamper detection, policy enforcement, and notifications are broken or unimplemented.",
+  "what_it_tested": "Exercised 43 scenarios covering memory store/recall, federation sync, audit trails, permissions, notifications across HTTP transport in 4-node mesh."
+}

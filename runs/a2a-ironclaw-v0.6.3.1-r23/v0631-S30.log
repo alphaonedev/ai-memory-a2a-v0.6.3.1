@@ -1,0 +1,7 @@
+[s30] step 1 — subscribe ai:bob on node-2 (ns_pattern=test/S30/20260502223839-4355/**)
+[s30] step 2 — alice notifies bob from node-1
+[s30]   bob notif_id=<none>
+[s30] step 4 — HMAC-signed webhook delivery
+[s30]   charlie sub_id=<none>
+[s30]   charlie notif_id=<none>
+[s30] step 5 — federation fanout (notify@node-1 → subscriber@node-3)
