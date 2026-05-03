@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r5",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "This complete test failure indicates high risk in the infrastructure, blocking production readiness and any customer-facing claims about agent memory sharing. No progress or changes can be assessed versus prior runs due to lack of data. Immediate investigation into the harness is needed to restore testing cadence.",
+  "for_non_technical": "This test run didn't produce any results because no reports from the scenarios were recovered. We couldn't check if agents can reliably share memories with each other. It looks like there was a problem in how the tests were set up or run.",
+  "for_sme": "No scenarios completed successfully, with only one skipped report noted as 'scenario-1.json:unparseable' and all others missing. This impacts all requested scenarios (S1 to S42, excluding some gaps), likely due to a root cause in the harness failing to collect or parse reports (harness_sha: aecab95805c959750fa44015ae62374ce8486f7d). No specific failure modes or primitives can be analyzed without results; probe identifiers are unavailable.",
+  "headline": "Campaign failed with no scenario reports recovered.",
+  "next_run_change": "Debug the testing harness to ensure scenario reports are generated, collected, and parsed correctly before the next campaign.",
+  "verdict": "FAIL \u2014 no scenario reports recovered",
+  "what_it_proved": "The run demonstrated a critical failure in the testing harness, as no scenario results were collected or parsed successfully.",
+  "what_it_tested": "Attempted to exercise 35 scenarios covering various transports, frameworks, and primitives in a 4-node federation mesh, but none produced reports."
+}

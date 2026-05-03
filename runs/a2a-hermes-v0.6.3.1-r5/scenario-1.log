@@ -1,0 +1,34 @@
+phase A: each agent writes 10 memories via MCP
+  ai:alice on 104.131.187.8
+  !! ssh timeout (60s): root@104.131.187.8 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w1-ai:alice 'scenario1 write 1 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=1: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@104.131.187.8 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w2-ai:alice 'scenario1 write 2 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=2: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@104.131.187.8 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w3-ai:alice 'scenario1 write 3 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=3: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@104.131.187.8 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w6-ai:alice 'scenario1 write 6 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=6: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@104.131.187.8 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w7-ai:alice 'scenario1 write 7 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=7: __TIMEOUT_60s__
+  ai:bob on 138.197.28.227
+  !! ssh timeout (60s): root@138.197.28.227 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w1-ai:bob 'scenario1 write 1 from ai:bob' scenario1-ai:bob
+  !! drive_agent store failed for ai:bob i=1: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@138.197.28.227 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w2-ai:bob 'scenario1 write 2 from ai:bob' scenario1-ai:bob
+  !! drive_agent store failed for ai:bob i=2: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@138.197.28.227 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w3-ai:bob 'scenario1 write 3 from ai:bob' scenario1-ai:bob
+  !! drive_agent store failed for ai:bob i=3: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@138.197.28.227 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w4-ai:bob 'scenario1 write 4 from ai:bob' scenario1-ai:bob
+  !! drive_agent store failed for ai:bob i=4: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@138.197.28.227 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w10-ai:bob 'scenario1 write 10 from ai:bob' scenario1-ai:bob
+  !! drive_agent store failed for ai:bob i=10: __TIMEOUT_60s__
+  ai:charlie on 167.172.243.204
+  !! ssh timeout (60s): root@167.172.243.204 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w1-ai:charlie 'scenario1 write 1 from ai:charlie' scenario1-ai:charlie
+  !! drive_agent store failed for ai:charlie i=1: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@167.172.243.204 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w2-ai:charlie 'scenario1 write 2 from ai:charlie' scenario1-ai:charlie
+  !! drive_agent store failed for ai:charlie i=2: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@167.172.243.204 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w3-ai:charlie 'scenario1 write 3 from ai:charlie' scenario1-ai:charlie
+  !! drive_agent store failed for ai:charlie i=3: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@167.172.243.204 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w4-ai:charlie 'scenario1 write 4 from ai:charlie' scenario1-ai:charlie
+  !! drive_agent store failed for ai:charlie i=4: __TIMEOUT_60s__
+  !! ssh timeout (60s): root@167.172.243.204 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w5-ai:charlie 'scenario1 write 5 from ai:charlie' scenario1-ai:charlie
+  !! drive_agent store failed for ai:charlie i=5: __TIMEOUT_60s__
