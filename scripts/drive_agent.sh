@@ -156,7 +156,16 @@ openclaw_driver() {
 }
 
 hermes_driver() {
-  if agent_cli; then
+  # Hermes scenarios use HTTP direct against the local ai-memory by
+  # default — same audit chain (synthesis_source=http_body), same
+  # federation behavior, same memory_store handler. Each per-scenario
+  # write+read costs ~1s instead of ~95s (90s LLM timeout + ~5s HTTP).
+  # The hermes LLM-mediated MCP path is independently certified by the
+  # baseline F2b probe and the scenarios E-J Phase 3 cells — not by
+  # Phase 1 substrate scenarios. Set HERMES_FORCE_LLM=1 to opt back
+  # into LLM-driven scenario writes (needed when investigating an LLM
+  # regression specifically).
+  if [ "${HERMES_FORCE_LLM:-0}" = "1" ] && agent_cli; then
     case "$ACTION" in
       store)
         title="${1:?title required}"; content="${2:?content required}"
