@@ -984,8 +984,30 @@ jobs:
             echo "::warning::phase2 did not pass (pass=$phase2_pass); phase3 skipped per Principle 2"
             exit 0
           fi
-          python3 scripts/phase3_autonomous.py
-          echo "phase3 exit=$?"
+          # Phase 3 split into two passes to fit the 150min workflow cap.
+          # Default 10 scenarios × 4 arms × n=3 = 120 cells × ~1min/cell
+          # = 120min Phase 3 alone, which combined with provisioning +
+          # Phase 0/1/2 + canaries + Phase 4/5 + teardown overruns even
+          # the 150min cap (r22, r23 both cancelled mid-Phase-3).
+          #
+          # Pass 1: original substrate scenarios A-D at full n=3 (48
+          # cells) — preserves established statistical power for the
+          # core ai-memory behavioral evidence.
+          # Pass 2: expanded safety/forensic scenarios E-J at n=2 (48
+          # cells) — newer scenarios with smaller n=2 evidence base
+          # while we work on parallelization.
+          # Total: 96 cells (~96min) vs 120 (~120min). Each pass
+          # produces phase3-summary.json; pass 2 overwrites — see
+          # phase4_meta_analyst.py merge logic.
+          python3 scripts/phase3_autonomous.py --scenarios A,B,C,D --runs 3
+          ec1=$?
+          mv "$CAMPAIGN_DIR/phase3-summary.json" "$CAMPAIGN_DIR/phase3-summary-A-D.json" 2>/dev/null || true
+          python3 scripts/phase3_autonomous.py --scenarios E,F,G,H,I,J --runs 2
+          ec2=$?
+          mv "$CAMPAIGN_DIR/phase3-summary.json" "$CAMPAIGN_DIR/phase3-summary-E-J.json" 2>/dev/null || true
+          # Merge the two summaries for downstream Phase 4 consumption.
+          python3 scripts/phase3_merge_summaries.py "$CAMPAIGN_DIR"
+          echo "phase3 exit=A-D:$ec1 E-J:$ec2"
 
       - name: Phase 4 — meta-analysis
         if: steps.phase0.outputs.phase0_ok == 'true'
