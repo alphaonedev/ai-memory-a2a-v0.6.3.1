@@ -1,0 +1,123 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+  "control_arm": "isolated",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "334d016f755cd6dc58c53a86e183882f8ec14f52fb05345887c8a5edd42c87b7"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "800c014b3e1c43d02a50b6654745169ad4c9cd86888ccd16a011b18bb90a7b8d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "aae5e1ed5b37e1fdfa3cc6f7e77019705f8918eb8f52a54f6942c98bb2782326"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "ff84cf09b8294583f35f5f1dda2b2810eb9a8b232efe5d10e145ceb7259e9f14"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "93bfbda15669d3d8182897f85d6708e1bcc23172a6e2a60ee76c5e8e410515f8"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-6",
+          "text_sha256": "b025b1117b895692a03b00d78f99b0aac67107de8d3305ec936b4288026eaf75"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-7",
+          "text_sha256": "bc4ee48e66a242ef18e9c34edf81979c607ece853e8af263c0a3b9648f450827"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "7fc4de28a89ca4c695a1271ac3f82e15f4591915a261076b2bbf0fa505f5d0cc",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T02:52:57Z",
+      "tools_called": [],
+      "turn_id": "C-isolated-r2-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "53eb7ec5b22b39f09bcb5d6b5380ab57554db6deb0c1152fa09fc084aa38e44f"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "4371fdf798b77e1b07527fe17d5f8f9287125e0619fe9e141c0ac58e8aa47ec5"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "cc283e2f09abce5a7b999c3f9dd0b2f5dc90f46a33f9ded8896c70e763e8a17a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T02:54:52Z",
+      "tools_called": [],
+      "turn_id": "C-isolated-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "C",
+  "scenario_title": "Correction memory",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T02:48:42Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 369
+}

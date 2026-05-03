@@ -1,0 +1,4 @@
+[s27] begin S27 probe on node-1 (64.225.24.120)
+[s27]   lsattr_flags='-----a----------------' chattr_supported=true
+[s27]   nonroot_blocked=true root_dd_blocked=true root_trunc_blocked=true
+[s27]   append_worked=true lines: 157 -> 158

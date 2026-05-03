@@ -1,0 +1,123 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+  "control_arm": "treatment",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "249a1e62aa78eb295af58e5b00f9a9127aa6390fee0ea6782bfda9fdcd234292"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "53f4455526427e35ec8c062d1369f3147d1ef0cda98825474fbdc952f160bb76"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-3",
+          "text_sha256": "2c81160a7e0932f005674a0d1a5b44e1bed3d9444c8f5226a00fb54cc744870c"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "e67f65b896225858e1c8025b58234a94c09d0226ab978839c60071dde66df4a4"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "9d1383920ea85a07bf66767c02221b1f0776d1cc02d58b55c0ccd6bb7f8c9611",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 1,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T02:10:38Z",
+      "tools_called": [],
+      "turn_id": "B-treatment-r1-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "0249e1350bde2cb057e0fbe713d7ba03ab56271f89d9fe61a43d8aadd5b54cbf"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-2",
+          "text_sha256": "bebb1482d41a7e047735735a87cc9ba8768c169dc617cc60f15cf4293b3f0417"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "55ad0b8af19ea227fcf2e3704510ea44ee52bf6592ce2ed995a0132ae88bd8f1"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "c05ea228a953e164392688d1e2773f72080f518c8c327e3454bef29c7116ce52"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "a510d2fa968c314788e408eb273b249651504377e7cb38b46fdb22e72adc62d2"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "08de09d3acfba8b48db4e0bef071bb66798c340f5cc76664ade10d270210a41a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 1,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T02:11:37Z",
+      "tools_called": [],
+      "turn_id": "B-treatment-r1-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "B",
+  "scenario_title": "Constraint propagation",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T02:09:20Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 136
+}

@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "Basic sharing poses low risk and is production-viable for non-sensitive use; audit/policy failures elevate risk posture, blocking secure customer claims. Not ready for enterprise deployment; regressions in audit vs. prior runs, but federation stability improved. Prioritize fixes for v0.7 to enable compliant offerings.",
+  "for_non_technical": "AI agents can reliably share and recall basic memories across a network of computers. However, advanced security features like checking for tampering or approving shared info are not working properly yet. This means simple sharing works, but extra protections need fixes.",
+  "for_sme": "Audit primitives failed in S25 (verify rc=2, ok=false, empty hashes across nodes) and S26 (tamper not detected, restore failed); policy/notify impacted in S29 (404 on install/approve) and S30 (deserialization error, no fanout); probable root in incomplete v0.6.3.1 impl for SQLCipher (S31) and hook propagation (#318 in S24). Testbook probes S25-S30 highlight chain verification and federation bypass issues.",
+  "headline": "Federated AI memory sharing reliable basics, fails on audit and policies.",
+  "next_run_change": "Integrate SQLCipher for encrypted DB as baseline before retesting audit scenarios.",
+  "verdict": "PARTIAL \u2014 35/50 scenarios green, audit/policy reds.",
+  "what_it_proved": "Demonstrated solid replication and recall in basics, but audit verification, tamper detection, immutability, approvals, and notifications fail consistently.",
+  "what_it_tested": "Exercised 42 core + 9 special scenarios covering HTTP transport, federation mesh, memory primitives like store/link/delete across 4 nodes."
+}

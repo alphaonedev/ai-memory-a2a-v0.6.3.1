@@ -1,0 +1,19 @@
+{
+  "scenario": "S27",
+  "pass": true,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "GREEN",
+  "expected_green_reason": "OS append-only flag must block non-append writes from root + non-root while permitting legitimate audit-hook appends",
+  "run_id": "20260503010943-4240",
+  "outputs": {
+    "lsattr_flags": "-----a----------------",
+    "chattr_supported": true,
+    "nonroot_write_blocked": true,
+    "root_dd_blocked": true,
+    "root_truncate_blocked": true,
+    "append_legitimate_worked": true,
+    "lines_before": 157,
+    "lines_after_append": 158
+  },
+  "reasons": []
+}

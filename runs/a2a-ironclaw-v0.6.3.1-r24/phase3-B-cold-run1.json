@@ -1,0 +1,138 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+  "control_arm": "cold",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "16a8c4a9c5dbd8d0bdf2e041a1db61a4f4ea067431b1aef127041b9720bd3a16"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "334d016f755cd6dc58c53a86e183882f8ec14f52fb05345887c8a5edd42c87b7"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "800c014b3e1c43d02a50b6654745169ad4c9cd86888ccd16a011b18bb90a7b8d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "54c54db922db2f06cf0f1700da5444e24649ec021ae607e38869a5b9334ec30f"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "4c922eea768fe1db1c8b4a24893c8408916e6b8117a294ab1c167a0c6149927d"
+        }
+      ],
+      "control_arm": "cold",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "9d1383920ea85a07bf66767c02221b1f0776d1cc02d58b55c0ccd6bb7f8c9611",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 1,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T01:43:55Z",
+      "tools_called": [],
+      "turn_id": "B-cold-r1-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r24",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "00f87bece67c31e546ba52a8571b9b94d6349095d225b244ef9c7d265b62d793"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-2",
+          "text_sha256": "2c81160a7e0932f005674a0d1a5b44e1bed3d9444c8f5226a00fb54cc744870c"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "e7562d4e1b0ac6d7c1767349f71d5c43734ad4b4873f4ee79e701674f46060a9"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "f5c34601ca284a5870ce424f713fbf559c36a3457e60bfaff8464cfcdd2a1ed2"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "ad35560eb13a4cf6fcac2589f7eba770bf93b923e64c923f6de18abbaf5c3803"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-6",
+          "text_sha256": "d777a801c6ca403c100907efdb299d96ca58804d56c77affa53aa3120dda3330"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-7",
+          "text_sha256": "b69996a7e5190b55691d4318081aabbaa93f03896d602444bf4e5272cfd36b9f"
+        }
+      ],
+      "control_arm": "cold",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "08de09d3acfba8b48db4e0bef071bb66798c340f5cc76664ade10d270210a41a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 1,
+      "scenario_id": "B",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T01:45:00Z",
+      "tools_called": [],
+      "turn_id": "B-cold-r1-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 1,
+  "scenario_id": "B",
+  "scenario_title": "Constraint propagation",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T01:43:00Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 120
+}
