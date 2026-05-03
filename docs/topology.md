@@ -47,15 +47,15 @@ a node-4 crash doesn't stop the campaign.
 
 | Droplet | Public | Private | Image | Size | Role |
 |---|---|---|---|---|---|
-| `node-1` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-2vcpu-8gb`** | agent (ai:alice) + serve peer |
-| `node-2` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-2vcpu-8gb`** | agent (ai:bob) + serve peer |
-| `node-3` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-2vcpu-8gb`** | agent (ai:charlie) + serve peer |
+| `node-1` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-4vcpu-8gb`** | agent (ai:alice) + serve peer |
+| `node-2` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-4vcpu-8gb`** | agent (ai:bob) + serve peer |
+| `node-3` | SSH only | `10.260.0.x` | Ubuntu 24.04 | ironclaw: `s-2vcpu-4gb` / **hermes: `s-4vcpu-8gb`** | agent (ai:charlie) + serve peer |
 | `node-4` | SSH only | `10.260.0.x` | Ubuntu 24.04 | `s-2vcpu-4gb` | memory-only (serve peer, no agent) |
 
 Sizes are **per-agent-group**:
 
 - `agent_group=ironclaw` → `s-2vcpu-4gb` agents (proven on r25/26/27).
-- `agent_group=hermes`   → `s-2vcpu-8gb` agents — **hard-coded** by the workflow,
+- `agent_group=hermes`   → `s-4vcpu-8gb` agents — **hard-coded** by the workflow,
   see [#41](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/issues/40) for
   the rationale. The Python LLM stack needs 8GB headroom; the
   `agent_droplet_size` workflow input is ignored when
