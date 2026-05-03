@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r10",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "This campaign run failed entirely due to missing scenario reports, increasing risk posture from unverified changes in v0.6.3.1. Production readiness is stalled; no customer-facing claims can be updated based on this. Results unchanged from prior successful runs.",
+  "for_non_technical": "The test run didn't work at all because no results were collected from any of the planned checks. This means we have no new information on whether agents can reliably share memories with each other. Previous tests' findings remain unchanged.",
+  "for_sme": "Failure mode: complete absence of scenario reports for all 35 requested (S1, S1b, S2, S4-S6, S9-S18, S22-S25, S28-S42), with overall_pass false and reason 'no scenario reports recovered'. Impacts all primitives as nothing was tested; probable root cause is harness or CI workflow failure (harness_sha 526e48e8cd221aa862e484799cd5469f87dba0e5). No specific testbook/probe identifiers available due to missing reports.",
+  "headline": "Campaign failed: no scenario reports recovered.",
+  "next_run_change": "Fix scenario report recovery mechanism in the CI harness to ensure reports are captured and aggregated.",
+  "verdict": "FAIL \u2014 no scenarios executed",
+  "what_it_proved": "The results demonstrated a complete failure in recovering scenario reports, proving nothing about AI memory functionality.",
+  "what_it_tested": "No scenarios were exercised as reports were not recovered, despite requesting 35 scenarios covering various transport, framework, and primitive axes."
+}
