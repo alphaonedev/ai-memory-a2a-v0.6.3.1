@@ -1539,8 +1539,11 @@ esac
 log "PROBE 1/2: xAI Grok reachability + auth"
 xai_functional=false
 xai_content=""
-sleep $((RANDOM % 5))
-for attempt in 1 2 3 4 5; do
+sleep $((RANDOM % 8))
+# Retry budget: 10 attempts. Backoff caps at 15s/attempt so worst-case
+# total wait is ~6 cumulative minutes, generous for the per-droplet-IP
+# rate limit / per-region cloud hiccups observed across r20/r21/r10.
+for attempt in 1 2 3 4 5 6 7 8 9 10; do
   xai_resp=$(curl -sS --max-time 20 \
     -X POST https://api.x.ai/v1/chat/completions \
     -H "Authorization: Bearer $XAI_API_KEY" \
@@ -1554,9 +1557,13 @@ for attempt in 1 2 3 4 5; do
     break
   fi
   log "  PROBE 1 attempt $attempt FAIL — response head: $(echo "$xai_resp" | head -c 200)"
-  [ "$attempt" -lt 5 ] && sleep $((attempt * 3))  # 3,6,9,12s backoff
+  if [ "$attempt" -lt 10 ]; then
+    backoff=$((attempt * 3))
+    [ "$backoff" -gt 15 ] && backoff=15
+    sleep "$backoff"
+  fi
 done
-[ "$xai_functional" = "true" ] || log "  PROBE 1 FAIL after 5 attempts"
+[ "$xai_functional" = "true" ] || log "  PROBE 1 FAIL after 10 attempts"
 
 # Probe F2a — DETERMINISTIC substrate canary (no LLM). Direct HTTP
 # POST to local serve. Proves the federation-side write path works
