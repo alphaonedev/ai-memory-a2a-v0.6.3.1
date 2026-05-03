@@ -1,0 +1,5 @@
+phase A: each agent writes 10 memories via MCP
+  ai:alice on 64.225.51.226
+  !! ssh timeout (180s): root@64.225.51.226 source /etc/ai-memory-a2a/env 2>/dev/null; bash /root/drive_agent.sh store w10-ai:alice 'scenario1 write 10 from ai:alice' scenario1-ai:alice
+  !! drive_agent store failed for ai:alice i=10: __TIMEOUT_180s__
+  ai:bob on 159.203.171.107
