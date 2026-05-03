@@ -51,8 +51,9 @@ input; default `grok-4-0709`.
 | Resource | Pin | Notes |
 |---|---|---|
 | Droplet base image | `ubuntu-24-04-x64` | DO's Ubuntu 24.04 LTS ("noble") image |
-| Agent droplet size | `s-2vcpu-4gb` | Basic tier, 2 vCPU, 4 GB RAM, ~$0.03/hr |
-| Memory node droplet size | `s-2vcpu-4gb` (hard-coded in terraform/main.tf) | matches agent droplets — no upsell needed |
+| Agent droplet size — ironclaw | `s-2vcpu-4gb` | Basic tier, 2 vCPU, 4 GB RAM, ~$0.03/hr — proven on the 3-green r25/26/27 streak |
+| Agent droplet size — hermes  | **`s-2vcpu-8gb` (hard-coded; see [#41](https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/issues/40))** | Basic tier, 2 vCPU, 8 GB RAM, ~$0.06/hr — Python LLM stack needs 8GB headroom; agent_droplet_size workflow input is **ignored** for `agent_group=hermes` |
+| Memory node droplet size | `s-2vcpu-4gb` (hard-coded in terraform/main.tf) | matches ironclaw agents — no upsell needed |
 | Region | `nyc3` (default; overridable via workflow input) | |
 | VPC CIDR — ironclaw campaigns | `10.251.0.0/24` | primary Rust agent (replaces openclaw) |
 | VPC CIDR — hermes campaigns | `10.252.0.0/24` | Python agent |
