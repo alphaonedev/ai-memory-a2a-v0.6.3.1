@@ -55,7 +55,7 @@ log() { printf '[setup-node-%s %s] %s\n' "$NODE_INDEX" "$(date -u +%H:%M:%S)" "$
 # Bound every long-running subprocess so a hang on one node can't
 # stall the whole provision step (previous r11 symptom: 37+ min with
 # no progress — the GitHub Actions runner timeout was about to fire).
-TIMEOUT_INSTALL_SH=600     # 10 min — openclaw install via curl | bash
+TIMEOUT_INSTALL_SH=1200    # 20 min — openclaw + hermes install via curl | bash. Bumped 600→1200 after hermes r10/r11 hit 10 min cap on s-4vcpu-8gb (likely transient pip+git slowness; the install is bound by upstream artifact fetch, not local compute).
 TIMEOUT_NPM=300            # 5 min
 TIMEOUT_PIP=180            # 3 min
 TIMEOUT_AGENT_CLI=120      # 2 min — F2b/F3b canary (agent reasoning + tool call).
