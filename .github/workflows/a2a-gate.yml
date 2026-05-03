@@ -47,9 +47,9 @@ on:
         required: false
         default: "1 1b 2 4 5 6 9 10 11 12 13 14 15 16 17 18 22 23 24 25 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42"
       agent_droplet_size:
-        description: "Agent droplet size. Default s-2vcpu-4gb (Basic 4GB). Sufficient for ironclaw (Rust, ~500MB) AND hermes (Python, ~1GB). Override for openclaw dispatches on DO (needs >8GB, General Purpose tier) — or run openclaw via the local Docker mesh to sidestep the tier bump. Basic-tier only; -intel/-amd suffix variants are NOT needed at 4GB."
+        description: "Agent droplet size. Blank → per-agent default: ironclaw=s-2vcpu-4gb (Rust, ~500MB resident; 3-green proven on 4GB), hermes=s-2vcpu-8gb (Python LLM stack benefits from 8GB headroom; 4GB observed slow on r5–r8). OpenClaw needs >8GB and runs via the local Docker mesh, not DO. Override only when explicitly tuning."
         required: false
-        default: "s-2vcpu-4gb"
+        default: ""
       ironclaw_install_cmd:
         description: "Shell command to install IronClaw on a droplet. Blank = default (official installer script from github.com/nearai/ironclaw releases)."
         required: false
@@ -116,7 +116,10 @@ jobs:
       TF_VAR_ai_memory_git_ref: ${{ github.event.inputs.ai_memory_git_ref }}
       TF_VAR_tls_mode: ${{ github.event.inputs.tls_mode }}
       TF_VAR_region: ${{ github.event.inputs.region }}
-      TF_VAR_agent_droplet_size: ${{ github.event.inputs.agent_droplet_size }}
+      # Per-agent default when no explicit override. ironclaw stays on
+      # 4GB (3-green streak proven). Hermes uses 8GB — Python LLM stack
+      # observed slow on 4GB (r5–r8 hangs/timeouts).
+      TF_VAR_agent_droplet_size: ${{ github.event.inputs.agent_droplet_size != '' && github.event.inputs.agent_droplet_size || (github.event.inputs.agent_group == 'hermes' && 's-2vcpu-8gb' || 's-2vcpu-4gb') }}
       CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
       AGENT_GROUP: ${{ github.event.inputs.agent_group }}
       AI_MEMORY_GIT_REF: ${{ github.event.inputs.ai_memory_git_ref }}
