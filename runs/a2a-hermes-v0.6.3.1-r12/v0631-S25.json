@@ -1,0 +1,56 @@
+{
+  "scenario": "S25",
+  "pass": false,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "RED",
+  "expected_green_reason": "v0.6.3.1 audit substrate enabled; HTTP writes must produce a chained, verifiable trail",
+  "run_id": "20260503162250-4104",
+  "outputs": {
+    "per_node_audit": {
+      "node-1": {
+        "rc": 2,
+        "ok": false,
+        "lines": 0,
+        "head_hash": ""
+      },
+      "node-2": {
+        "rc": 2,
+        "ok": false,
+        "lines": 0,
+        "head_hash": ""
+      },
+      "node-3": {
+        "rc": 2,
+        "ok": false,
+        "lines": 0,
+        "head_hash": ""
+      },
+      "node-4": {
+        "rc": 2,
+        "ok": false,
+        "lines": 0,
+        "head_hash": ""
+      }
+    },
+    "writes_per_node": 25,
+    "total_writes": 100
+  },
+  "reasons": [
+    "node-1 verify rc=2 (expected 0)",
+    "node-1 verify ok=false (expected true)",
+    "node-1 line_count=0 (expected >=25)",
+    "node-1 head_hash empty (expected non-empty)",
+    "node-2 verify rc=2 (expected 0)",
+    "node-2 verify ok=false (expected true)",
+    "node-2 line_count=0 (expected >=25)",
+    "node-2 head_hash empty (expected non-empty)",
+    "node-3 verify rc=2 (expected 0)",
+    "node-3 verify ok=false (expected true)",
+    "node-3 line_count=0 (expected >=25)",
+    "node-3 head_hash empty (expected non-empty)",
+    "node-4 verify rc=2 (expected 0)",
+    "node-4 verify ok=false (expected true)",
+    "node-4 line_count=0 (expected >=25)",
+    "node-4 head_hash empty (expected non-empty)"
+  ]
+}

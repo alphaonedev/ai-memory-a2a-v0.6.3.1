@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r12",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "Run verdict pass. Detailed narrative synthesis unavailable (LLM call failed: xAI HTTP 429: {\"code\":\"Some resource has been exhausted\",\"error\":\"Your team 406ee526-41d2-4b73-bf58-d35c12860ed4 has eit). Counts are reliable; consult the per-scenario PASS/FAIL and the testbook for primitive-level mapping.",
+  "for_non_technical": "This run exercised 35 tests of AI-agent-to-AI-agent communication through ai-memory. 35 worked correctly, 0 did not, and 0 were intentionally skipped because prerequisites weren't met.",
+  "for_sme": "Scenario outcomes: pass=35 fail=0 skip=0 of 35 total. First failure reasons are persisted on each scenario-N.json. LLM narrative unavailable: xAI HTTP 429: {\"code\":\"Some resource has been exhausted\",\"error\":\"Your team 406ee526-41d2-4b73-bf58-d35c12860ed4 has eit.",
+  "headline": "35/35 scenarios passed; 0 failed, 0 skipped",
+  "next_run_change": "Investigate the LLM-call failure or re-run with XAI_API_KEY verified; counts are unaffected.",
+  "verdict": "PASS \u2014 auto-generated (LLM unavailable: xAI HTTP 429: {\"code\":\"Some resource has been exhausted\",\"error\":\"Your team 406ee526-41d2-4b73-bf58-d35c12860ed4 has eit)",
+  "what_it_proved": "Direct counts: pass=35, fail=0, skip=0.",
+  "what_it_tested": "Campaign a2a-hermes-v0.6.3.1-r12 ran 35 testbook scenarios across transport, primitives, and cross-cutting axes."
+}
