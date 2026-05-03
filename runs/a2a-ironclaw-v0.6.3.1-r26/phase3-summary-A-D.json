@@ -1,0 +1,315 @@
+{
+  "actual_runs": 48,
+  "agent_group": "ironclaw",
+  "arms": [
+    "cold",
+    "isolated",
+    "stubbed",
+    "treatment"
+  ],
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r26",
+  "expected_runs": 48,
+  "generated_at_utc": "2026-05-03T04:44:07Z",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "release": "v0.6.3.1",
+  "runs": [
+    {
+      "control_arm": "cold",
+      "file": "phase3-A-cold-run1.json",
+      "run_index": 1,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-A-cold-run2.json",
+      "run_index": 2,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-A-cold-run3.json",
+      "run_index": 3,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-A-isolated-run1.json",
+      "run_index": 1,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-A-isolated-run2.json",
+      "run_index": 2,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-A-isolated-run3.json",
+      "run_index": 3,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-A-stubbed-run1.json",
+      "run_index": 1,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-A-stubbed-run2.json",
+      "run_index": 2,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-A-stubbed-run3.json",
+      "run_index": 3,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-A-treatment-run1.json",
+      "run_index": 1,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-A-treatment-run2.json",
+      "run_index": 2,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-A-treatment-run3.json",
+      "run_index": 3,
+      "scenario_id": "A"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-B-cold-run1.json",
+      "run_index": 1,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-B-cold-run2.json",
+      "run_index": 2,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-B-cold-run3.json",
+      "run_index": 3,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-B-isolated-run1.json",
+      "run_index": 1,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-B-isolated-run2.json",
+      "run_index": 2,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-B-isolated-run3.json",
+      "run_index": 3,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-B-stubbed-run1.json",
+      "run_index": 1,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-B-stubbed-run2.json",
+      "run_index": 2,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-B-stubbed-run3.json",
+      "run_index": 3,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-B-treatment-run1.json",
+      "run_index": 1,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-B-treatment-run2.json",
+      "run_index": 2,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-B-treatment-run3.json",
+      "run_index": 3,
+      "scenario_id": "B"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-C-cold-run1.json",
+      "run_index": 1,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-C-cold-run2.json",
+      "run_index": 2,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-C-cold-run3.json",
+      "run_index": 3,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-C-isolated-run1.json",
+      "run_index": 1,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-C-isolated-run2.json",
+      "run_index": 2,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-C-isolated-run3.json",
+      "run_index": 3,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-C-stubbed-run1.json",
+      "run_index": 1,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-C-stubbed-run2.json",
+      "run_index": 2,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-C-stubbed-run3.json",
+      "run_index": 3,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-C-treatment-run1.json",
+      "run_index": 1,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-C-treatment-run2.json",
+      "run_index": 2,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-C-treatment-run3.json",
+      "run_index": 3,
+      "scenario_id": "C"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-D-cold-run1.json",
+      "run_index": 1,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-D-cold-run2.json",
+      "run_index": 2,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "cold",
+      "file": "phase3-D-cold-run3.json",
+      "run_index": 3,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-D-isolated-run1.json",
+      "run_index": 1,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-D-isolated-run2.json",
+      "run_index": 2,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "isolated",
+      "file": "phase3-D-isolated-run3.json",
+      "run_index": 3,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-D-stubbed-run1.json",
+      "run_index": 1,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-D-stubbed-run2.json",
+      "run_index": 2,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "stubbed",
+      "file": "phase3-D-stubbed-run3.json",
+      "run_index": 3,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-D-treatment-run1.json",
+      "run_index": 1,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-D-treatment-run2.json",
+      "run_index": 2,
+      "scenario_id": "D"
+    },
+    {
+      "control_arm": "treatment",
+      "file": "phase3-D-treatment-run3.json",
+      "run_index": 3,
+      "scenario_id": "D"
+    }
+  ],
+  "runs_per_cell": 3,
+  "scenarios": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "schema": "phase3-summary/v1",
+  "tls_mode": "off"
+}

@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-ironclaw-v0.6.3.1-r26",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "Risk posture elevated due to audit chain and approval failures, limiting production readiness for compliance-heavy deployments; customer claims on core sharing viable but avoid audit/immutability promises. Versus prior runs, v0.6.3.1 introduced audit substrate but with verification bugs; prioritize fixes for regulated use cases.",
+  "for_non_technical": "The AI agents were able to share and recall memories reliably in most basic tests, like storing and retrieving information across a network of computers. However, some advanced security features, such as logging changes securely and approving new memories, did not work as expected and need fixes. Overall, the system handles everyday memory sharing well but isn't fully secure yet.",
+  "for_sme": "Failures in S25 (audit verify rc=2, ok=false across nodes), S26 (tamper detection silent, restore failed), S28 (import drops agent_id), S29 (policy install/approve/reject at 404, no propagation), S30 (subscription deserialization error, no fanout/webhook); impacts audit, permissions, pubsub primitives; probable root causes include incomplete impl per issues #318/#507 and missing SQLCipher linkage; testbook refs S25-S30.",
+  "headline": "Core memory sharing reliable; audit and approvals degraded in v0.6.3.1",
+  "next_run_change": "Integrate SQLCipher for DB encryption and fix audit verify chain before next campaign.",
+  "verdict": "PARTIAL \u2014 35/35 functional green; 5/9 security probes red",
+  "what_it_proved": "Demonstrated reliable core primitives like store, recall, and federation fanout, but exposed failures in audit verification (S25/S26), agent_id preservation on import (S28), approval workflows (S29), and notification fanout (S30).",
+  "what_it_tested": "Exercised 35 functional scenarios for memory store/recall/delete/link/consolidate/recovery over HTTP transport in 4-node federation, plus 9 security probes on audit integrity, immutability, approvals, notifications, and encryption."
+}
