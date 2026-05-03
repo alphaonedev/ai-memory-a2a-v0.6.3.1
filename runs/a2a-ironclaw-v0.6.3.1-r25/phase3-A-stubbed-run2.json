@@ -1,0 +1,93 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+  "control_arm": "stubbed",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "e3d1f626e40bc47118f474a919a2162db1cc50a5acb51ed6ca059d6b94afcedb"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "854ca2a4273242a860108b0fdb3bac8bfe8ac92079365f3215a7b24fee9eecbe"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "8861a098b888067f701c6218713ceec7dec43713e628df613048688418904bdd",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "A",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T03:51:30Z",
+      "tools_called": [],
+      "turn_id": "A-stubbed-r2-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "b860769ba7b6322a4d4690636f2c21c00c4426f428d0afd468ad78bbff795919"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "a50e2b27c9d4ba25dceb8dfeff36a9feb099b9d6b6886f6f09b335be75ac5f1b",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "A",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T03:52:01Z",
+      "tools_called": [],
+      "turn_id": "A-stubbed-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "A",
+  "scenario_title": "Decision provenance",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T03:45:22Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 399
+}

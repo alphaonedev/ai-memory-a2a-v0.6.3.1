@@ -1,0 +1,93 @@
+{
+  "agent_group": "ironclaw",
+  "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+  "control_arm": "isolated",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "constraint",
+          "claim_id": "c1-1",
+          "text_sha256": "405194e22c45f23172c10e9d808cb549b780c085e7dcf919facd2ff324c1eaad"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-2",
+          "text_sha256": "5b8918ae2887c85c00433060ed04606f7a60cbe4b0bbb60ba9f0184814e6b259"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "42c647f543b48d033c9e69cb09dbe97de073a74b009dcace09e3093890226032",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "I",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T04:01:52Z",
+      "tools_called": [],
+      "turn_id": "I-isolated-r2-t1"
+    },
+    {
+      "agent_framework": "ironclaw",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-ironclaw-v0.6.3.1-r25",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "constraint",
+          "claim_id": "c1-1",
+          "text_sha256": "77d977b9c0a123ef3709d11b6abe7b08066a8b5d21521e2fdae459ffea5465e6"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-ironclaw-a2a-ironclaw-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "d05bebd3cb99f227c31ff60cfc5fb701ab4fe64255951e95bf3b1c27e8c6c55e",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "I",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T04:03:40Z",
+      "tools_called": [],
+      "turn_id": "I-isolated-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "I",
+  "scenario_title": "Forensic reproducibility (Phase 3 \u2194 audit cross-correlation)",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T03:56:03Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 456
+}

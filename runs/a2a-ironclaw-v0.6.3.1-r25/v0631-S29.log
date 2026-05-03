@@ -1,0 +1,8 @@
+[s29] step 1 — install approval policy on governed/test/20260503034333-4405
+[s29] step 2 — alice writes; expect 202 Pending
+[s29]   alice POST: code=201 id=cd43f4b1-95c4-44fe-9e66-94d317dbd097 state=<none>
+[s29] step 3 — operator approves alice's write
+[s29]   approve code=404
+[s29]   settle 8s for federation
+[s29] step 4 — bob writes (parallel reject path)
+[s29]   reject code=404

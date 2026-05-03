@@ -1,0 +1,1 @@
+{"agent_group": "ironclaw", "delete_http_code": 200, "m1_id": "2a618daa-ce20-4635-971d-ec89169f1a66", "pass": true, "post_delete_hits": {"node-2": 0, "node-3": 0, "node-4": 0}, "post_delete_still_visible_peers": 0, "pre_delete_visible_peers": 3, "reasons": [], "scenario": "10", "skipped": false, "tls_mode": "off", "uuid": "d-274a836b07e74a30a7ae79a380210167"}
