@@ -38,11 +38,13 @@ Outputs:
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import hashlib
 import json
 import os
 import secrets
 import sys
+import threading
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -658,7 +660,8 @@ def _run_droplet(ctx: Phase3Context, st: RunState, agent_id: str,
     try:
         out = json.loads(raw)
     except json.JSONDecodeError:
-        log(f"  !! drive_agent_autonomous.sh non-JSON output (rc={r.returncode}): {raw[:200]!r}")
+        log(f"  !! [{st.scenario.id}/{st.arm}/r{st.run_index}] drive_agent_autonomous.sh "
+            f"non-JSON output (rc={r.returncode}): {raw[:200]!r}")
         return [], [], [], [], "error"
     return (
         out.get("tools_called", []),
@@ -891,17 +894,50 @@ def run_one(ctx: Phase3Context, scenario_id: str, arm: str, run_index: int) -> P
         "records": st.records,
     }
     out.write_text(json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8")
-    log(f"phase3: {spec.id}/{arm}/r{run_index} -> {out.name} (termination={termination})")
+    log(f"phase3: [{spec.id}/{arm}/r{run_index}] -> {out.name} "
+        f"(termination={termination}, wall={int(time.time() - st.started_at)}s)")
+    return out
+
+
+def _run_cell(ctx: Phase3Context, scenario: str, arm: str, runs: int) -> list[dict]:
+    """Execute the n runs for one (scenario, arm) cell, sequentially.
+
+    Returns a list of summary entries for the cell. Sequential within the cell
+    preserves the per-cell turn ordering that consumers may rely on (each run
+    sees a fresh RunState, but operators have historically read the JSONL in
+    cell-major order); parallelism happens *across* cells in the caller.
+    """
+    out: list[dict] = []
+    for n in range(1, runs + 1):
+        tag = f"{scenario}/{arm}/r{n}"
+        try:
+            out_path = run_one(ctx, scenario, arm, n)
+            out.append({
+                "scenario_id": scenario, "control_arm": arm, "run_index": n,
+                "file": str(out_path.relative_to(ctx.run_out_dir)),
+            })
+        except RuntimeError as e:
+            log(f"phase3: [{tag}] aborted: {e}")
+            out.append({
+                "scenario_id": scenario, "control_arm": arm, "run_index": n,
+                "error": str(e),
+            })
     return out
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--scenarios", default=",".join(SCENARIOS),
-                    help="Comma-separated scenarios (default A,B,C,D)")
+                    help="Comma-separated scenarios (default A,B,C,D,E,F,G,H,I,J)")
     ap.add_argument("--arms", default=",".join(ARMS),
                     help="Comma-separated arms (default cold,isolated,stubbed,treatment)")
     ap.add_argument("--runs", type=int, default=3, help="n per cell (default 3)")
+    ap.add_argument("--max-workers", type=int,
+                    default=int(os.environ.get("PHASE3_MAX_WORKERS", "3")),
+                    help="Parallel (scenario,arm) cells executed concurrently "
+                         "(default 3, env PHASE3_MAX_WORKERS). Cells map to ssh "
+                         "fanout against node1+node2; the n runs within a cell "
+                         "stay sequential. 1 = legacy serial behavior.")
     args = ap.parse_args(argv)
 
     scenarios = [s.strip() for s in args.scenarios.split(",") if s.strip()]
@@ -911,6 +947,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     if invalid_s or invalid_a:
         log(f"phase3: invalid scenarios={invalid_s} arms={invalid_a}")
         return 2
+    if args.max_workers < 1:
+        log(f"phase3: --max-workers must be >= 1 (got {args.max_workers})")
+        return 2
 
     try:
         ctx = Phase3Context.from_env()
@@ -918,25 +957,51 @@ def main(argv: Sequence[str] | None = None) -> int:
         log(f"phase3: setup error: {e}")
         return 2
 
+    cells = [(s, a) for s in scenarios for a in arms]
+    workers = min(args.max_workers, len(cells)) or 1
     log(f"phase3: campaign_id={ctx.campaign_id} mode={ctx.mode} "
-        f"scenarios={scenarios} arms={arms} runs={args.runs}")
+        f"scenarios={scenarios} arms={arms} runs={args.runs} "
+        f"cells={len(cells)} max_workers={workers}")
 
-    summary_runs = []
-    for s in scenarios:
-        for a in arms:
-            for n in range(1, args.runs + 1):
+    # Phase3Context is constructed once and shared across worker threads:
+    #   * Harness has no mutable instance state — every method allocates its
+    #     own subprocess; ssh_exec doesn't hold a persistent connection.
+    #   * schema_validator is a Draft202012Validator; iter_errors() is
+    #     read-only and threadsafe.
+    #   * Each run_one() call allocates its own RunState + (in shim mode)
+    #     its own _LocalShimMemory, so per-cell state never crosses threads.
+    # Output files use the (scenario,arm,run) tuple as filename and never
+    # collide across cells. summary_runs is the only main-thread shared
+    # mutable list — guarded below.
+    summary_runs: list[dict] = []
+    summary_lock = threading.Lock()
+
+    if workers == 1:
+        # Preserve legacy ordering for single-worker invocations (CI, debug).
+        for scenario, arm in cells:
+            summary_runs.extend(_run_cell(ctx, scenario, arm, args.runs))
+    else:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=workers, thread_name_prefix="phase3-cell"
+        ) as pool:
+            futures = {
+                pool.submit(_run_cell, ctx, s, a, args.runs): (s, a)
+                for s, a in cells
+            }
+            for fut in concurrent.futures.as_completed(futures):
+                s, a = futures[fut]
                 try:
-                    out_path = run_one(ctx, s, a, n)
-                    summary_runs.append({
+                    cell_results = fut.result()
+                except Exception as e:  # noqa: BLE001 — surface anything from worker
+                    log(f"phase3: cell {s}/{a} crashed: {e!r}")
+                    cell_results = [{
                         "scenario_id": s, "control_arm": a, "run_index": n,
-                        "file": str(out_path.relative_to(ctx.run_out_dir)),
-                    })
-                except RuntimeError as e:
-                    log(f"phase3: {s}/{a}/r{n} aborted: {e}")
-                    summary_runs.append({
-                        "scenario_id": s, "control_arm": a, "run_index": n,
-                        "error": str(e),
-                    })
+                        "error": f"worker exception: {e!r}",
+                    } for n in range(1, args.runs + 1)]
+                with summary_lock:
+                    summary_runs.extend(cell_results)
+        # Sort to keep summary deterministic regardless of completion order.
+        summary_runs.sort(key=lambda r: (r["scenario_id"], r["control_arm"], r["run_index"]))
 
     summary = {
         "schema": "phase3-summary/v1",
