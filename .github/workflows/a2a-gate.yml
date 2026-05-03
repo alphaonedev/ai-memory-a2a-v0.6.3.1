@@ -47,7 +47,7 @@ on:
         required: false
         default: "1 1b 2 4 5 6 9 10 11 12 13 14 15 16 17 18 22 23 24 25 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42"
       agent_droplet_size:
-        description: "Agent droplet size. **Hermes is HARD-CODED to s-2vcpu-8gb** and ignores this input (see #40 for rationale — Python LLM stack needs 8GB headroom; 4GB observed slow/hung on r5–r8). For ironclaw, blank → s-2vcpu-4gb (3-green proven on 4GB; r25/26/27); explicit override accepted. OpenClaw needs >8GB and runs via local Docker mesh, not DO."
+        description: "Agent droplet size. **Hermes is HARD-CODED to s-4vcpu-8gb** and ignores this input (see #40 for rationale — Python LLM stack needs 8GB headroom; 4GB observed slow/hung on r5–r8). For ironclaw, blank → s-2vcpu-4gb (3-green proven on 4GB; r25/26/27); explicit override accepted. OpenClaw needs >8GB and runs via local Docker mesh, not DO."
         required: false
         default: ""
       ironclaw_install_cmd:
@@ -116,13 +116,13 @@ jobs:
       TF_VAR_ai_memory_git_ref: ${{ github.event.inputs.ai_memory_git_ref }}
       TF_VAR_tls_mode: ${{ github.event.inputs.tls_mode }}
       TF_VAR_region: ${{ github.event.inputs.region }}
-      # Hermes is HARD-CODED to s-2vcpu-8gb regardless of any explicit
+      # Hermes is HARD-CODED to s-4vcpu-8gb regardless of any explicit
       # agent_droplet_size override. Per issue #40 (the operator
       # directive): Python LLM stack observed slow/hung on 4GB across
       # r5–r8. The 8GB floor is part of the hermes harness contract,
       # not a tunable knob. Ironclaw still honors the input (proven on
       # 4GB; can opt up).
-      TF_VAR_agent_droplet_size: ${{ github.event.inputs.agent_group == 'hermes' && 's-2vcpu-8gb' || (github.event.inputs.agent_droplet_size != '' && github.event.inputs.agent_droplet_size || 's-2vcpu-4gb') }}
+      TF_VAR_agent_droplet_size: ${{ github.event.inputs.agent_group == 'hermes' && 's-4vcpu-8gb' || (github.event.inputs.agent_droplet_size != '' && github.event.inputs.agent_droplet_size || 's-2vcpu-4gb') }}
       CAMPAIGN_ID: ${{ github.event.inputs.campaign_id }}
       AGENT_GROUP: ${{ github.event.inputs.agent_group }}
       AI_MEMORY_GIT_REF: ${{ github.event.inputs.ai_memory_git_ref }}
