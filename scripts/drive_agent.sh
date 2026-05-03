@@ -103,9 +103,18 @@ agent_prompt() {
       # It bypasses cli.py (no HERMES_INTERACTIVE, no input() prompts),
       # auto-approves tool calls, and prints only the final response to
       # stdout. See r5 post-mortem in the comment block above.
-      hermes -z "$1" \
-        --provider xai \
-        --model "$A2A_GATE_LLM_MODEL"
+      #
+      # Internal hard timeout: r6 showed hermes -z calls exceeding the
+      # 180s outer ssh timeout, with NO fallback firing because the
+      # entire driver was killed by ssh. Bound the LLM call at 90s here
+      # so when grok-4-0709 is slow (genuine cloud latency), this
+      # function returns nonzero in time for fallback_driver (HTTP
+      # direct) to take over inside the same ssh session. --kill-after
+      # collects orphans; --signal=TERM lets hermes flush partial output.
+      timeout --kill-after=10s --signal=TERM 90s \
+        hermes -z "$1" \
+          --provider xai \
+          --model "$A2A_GATE_LLM_MODEL"
       ;;
     ironclaw)
       # ironclaw headless prompt. xAI OpenAI-compatible backend is
