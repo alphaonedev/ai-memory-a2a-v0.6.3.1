@@ -78,9 +78,58 @@ release available at campaign-dispatch time. Override via a
 workflow input when intentionally testing against a specific
 version.
 
+## Reality-check findings (v0.6.3.1, 2026-05-04)
+
+These are observed during the v0.6.3.1 OpenClaw campaign — important context for anyone re-using this harness:
+
+### 1. OpenClaw config schema changed substantially between 2026.4.x and 2026.5.x
+
+The `docker/entrypoint.sh` openclaw.json shape that worked through the v0.6.0–v0.6.2 cert era — top-level `providers`, `defaultProvider`, `mcpServers`, `agentToAgent`, `toolAllowlist`, `nodeHosts`, `remoteMode`, `subAgent`, `agentTeams`, `sharedServices`, `a2aGateProfile` — is **rejected by both OpenClaw 2026.4.22 and 2026.5.2** with `Unrecognized keys` errors. Modern OpenClaw is **gateway-centric**: `gateway.{mode,auth,port,bind,tailscale}`, `agents.defaults`, `models`, `tools`, `bindings`, `acp`, `cron`, `commitments`, etc.
+
+### 2. The fictional `openclaw run` invocation never worked
+
+`docker/drive_agent.sh:94` invokes `openclaw run --non-interactive --format json --max-tool-rounds 20 -p "<prompt>"`. **Neither OpenClaw 2026.4.22 nor 2026.5.2 has a `run` subcommand.** The actual subcommand is `openclaw agent` with options `--local --json --message <text> --session-id <id> --agent <agent>`. The `drive_agent.sh` openclaw branch silently fails and falls through to `fallback_driver` (HTTP-direct against ai-memory) — which is why Phase 0–1 substrate scenarios pass even with a non-functional openclaw runtime.
+
+### 3. The validated 2026.5.x setup recipe
+
+```bash
+# 1. Onboard with xAI provider, accepting the risk acknowledgement
+openclaw onboard --non-interactive --accept-risk --mode local --skip-health \
+  --auth-choice xai-api-key \
+  --xai-api-key "$XAI_API_KEY"
+
+# 2. Register ai-memory MCP server
+openclaw mcp set memory '{
+  "command": "ai-memory",
+  "args": ["--db", "/var/lib/ai-memory/a2a.db", "mcp", "--tier", "semantic"],
+  "env": {"AI_MEMORY_AGENT_ID": "ai:alice"}
+}'
+
+# 3. Verify
+openclaw mcp list
+openclaw config validate --json
+
+# 4. Drive an agent turn (the actual modern invocation)
+openclaw agent --local --json --agent main --session-id <sid> \
+  --message "<prompt>" --timeout 200
+```
+
+This recipe is the **substrate of the OpenClaw behavioral assessment** — see [openclaw v0.6.3.1 behavioral assessment](../nhi/openclaw-behavioral-v0.6.3.1.md) for the full Tier 1–4 instrument run against this configuration.
+
+### 4. Identity propagation is not automatic
+
+Container env carries `AGENT_ID=ai:alice|ai:bob|ai:charlie`. OpenClaw `agent --local` does NOT read this env to set the agent's verbal identity. In the behavioral assessment, agents on `a2a-node-1` (env `AGENT_ID=ai:alice`) sometimes self-identify as `ai:bob` if the system-prompt / SOUL.md flow doesn't anchor them. **MCP write metadata is correct** (the `AI_MEMORY_AGENT_ID` env in the openclaw.json `mcpServers.memory.env` block flows through to ai-memory writes), but the LLM's verbal self-reference can drift. Caveat for prompt design.
+
+### 5. End-to-end xAI Grok ↔ ai-memory MCP roundtrip — VERIFIED
+
+Phase C of the v0.6.3.1 assessment proves: xAI `grok-4.3` (provider=`xai`, OpenAI-Responses API at `api.x.ai/v1`) → openclaw `agent --local` runtime → MCP stdio → `ai-memory mcp` server → write/read on local SQLite + federated quorum-fanout. Roundtrip ~46 s, ~25 K tokens (mostly cached after first turn). Working configuration captured under PR #46.
+
 ## Related
 
 - [Hermes agent](hermes.md) — the other framework under test.
-- [Topology](../topology.md) — where OpenClaw agents sit in the
-  VPC.
+- [IronClaw agent](ironclaw.md) — primary cert agent.
+- [OpenClaw v0.6.3.1 behavioral assessment](../nhi/openclaw-behavioral-v0.6.3.1.md) — Tier 1–4 evidence.
+- [OpenClaw v0.6.3.1 substrate cert](../../releases/v0.6.3.1/openclaw-local-docker-cert.md) — 3-green substrate streak.
+- [Local Docker mesh](../local-docker-mesh.md) — reproducibility spec.
+- [Topology](../topology.md) — where OpenClaw agents sit.
 - [Methodology](../methodology.md) — the full scenario matrix.
