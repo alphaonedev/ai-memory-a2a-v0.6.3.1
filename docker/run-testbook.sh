@@ -245,11 +245,22 @@ export NODE2_IP="a2a-node-2"
 export NODE3_IP="a2a-node-3"
 export NODE4_IP="a2a-node-4"
 export MEMORY_NODE_IP="a2a-node-4"
-export NODE1_PRIV="10.88.1.11"
-export NODE2_PRIV="10.88.1.12"
-export NODE3_PRIV="10.88.1.13"
-export MEMORY_PRIV="10.88.1.14"
-export AGENT_GROUP="openclaw"
+# AGENT_GROUP and bridge subnet depend on which framework is active.
+# Default to openclaw (10.88.1.x). Caller can override via env or by
+# passing AGENT_GROUP=ironclaw / hermes inline. The harness uses
+# NODE*_IP (container names) for docker exec; PRIV IPs are only
+# rendered in baseline attestation metadata.
+export AGENT_GROUP="${AGENT_GROUP:-openclaw}"
+case "$AGENT_GROUP" in
+  openclaw) BRIDGE_OCTET=1 ;;
+  ironclaw) BRIDGE_OCTET=2 ;;
+  hermes)   BRIDGE_OCTET=3 ;;
+  *)        BRIDGE_OCTET=1 ;;
+esac
+export NODE1_PRIV="10.88.${BRIDGE_OCTET}.11"
+export NODE2_PRIV="10.88.${BRIDGE_OCTET}.12"
+export NODE3_PRIV="10.88.${BRIDGE_OCTET}.13"
+export MEMORY_PRIV="10.88.${BRIDGE_OCTET}.14"
 export TLS_MODE="$TLS_MODE_ARG"
 
 SCENARIOS_RUN=()

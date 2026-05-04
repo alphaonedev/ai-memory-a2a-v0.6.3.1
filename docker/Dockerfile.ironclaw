@@ -1,0 +1,70 @@
+# Copyright 2026 AlphaOne LLC
+# SPDX-License-Identifier: Apache-2.0
+#
+# IronClaw agent image on top of ai-memory-base:local.
+# IronClaw is NEAR AI's Rust agent runtime; uses PostgreSQL 15 +
+# pgvector for its OWN memory (separate from ai-memory's SQLite
+# substrate which we test through MCP). v0.27.0 release tarball
+# from https://github.com/nearai/ironclaw/releases/.
+#
+# Build:
+#   docker build --network host -t ai-memory-ironclaw:local \
+#     --build-arg AI_MEMORY_BASE=ai-memory-base:local \
+#     -f Dockerfile.ironclaw .
+#
+# Per-container memory budget: 8 GB (per operator directive 2026-05-04).
+# Postgres + ironclaw + ai-memory all together fit comfortably in 8 GB.
+
+ARG AI_MEMORY_BASE=ai-memory-base:local
+FROM ${AI_MEMORY_BASE}
+
+# ---- PostgreSQL 15 + pgvector via PGDG apt repo ----------------------
+# Ubuntu 24.04 noble's stock postgresql-common gives us the PGDG helper.
+# Without PGDG, postgresql-15-pgvector isn't on the default apt sources
+# on noble (r1 v0.6.0 fallback to postgresql-16 without pgvector). PGDG
+# is the canonical solution per setup_node.sh:line ~ironclaw branch.
+RUN set -eux; \
+    DEBIAN_FRONTEND=noninteractive apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        postgresql-common ca-certificates curl gnupg; \
+    /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y; \
+    DEBIAN_FRONTEND=noninteractive apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        postgresql-15 postgresql-15-pgvector postgresql-contrib-15; \
+    rm -rf /var/lib/apt/lists/*
+
+# Configure Postgres to listen on localhost only and trust local
+# connections — Postgres is per-container, never exposed beyond.
+RUN set -eux; \
+    PGCONF=$(ls /etc/postgresql/15/main/postgresql.conf); \
+    PGHBA=$(ls /etc/postgresql/15/main/pg_hba.conf); \
+    sed -i "s/^#listen_addresses.*/listen_addresses = 'localhost'/" "$PGCONF"; \
+    echo "host all all 127.0.0.1/32 trust" > "$PGHBA"; \
+    echo "local all all trust" >> "$PGHBA"
+
+# ---- IronClaw v0.27.0 release binary (Linux x86_64) ------------------
+# Pinned per setup_node.sh ironclaw branch. The Rust binary is ~50 MB
+# stripped — much smaller install footprint than openclaw's npm tree.
+ENV IRONCLAW_VERSION=v0.27.0
+RUN set -eux; \
+    cd /tmp; \
+    curl -fsSL --max-time 120 \
+        "https://github.com/nearai/ironclaw/releases/download/ironclaw-${IRONCLAW_VERSION}/ironclaw-x86_64-unknown-linux-gnu.tar.gz" \
+        -o ironclaw.tar.gz; \
+    curl -fsSL --max-time 30 \
+        "https://github.com/nearai/ironclaw/releases/download/ironclaw-${IRONCLAW_VERSION}/ironclaw-x86_64-unknown-linux-gnu.tar.gz.sha256" \
+        -o ironclaw.tar.gz.sha256; \
+    EXPECTED=$(awk '{print $1}' ironclaw.tar.gz.sha256); \
+    ACTUAL=$(sha256sum ironclaw.tar.gz | awk '{print $1}'); \
+    [ "$EXPECTED" = "$ACTUAL" ] || { echo "FATAL: ironclaw sha256 mismatch"; exit 1; }; \
+    tar -xzf ironclaw.tar.gz; \
+    install -m 0755 */ironclaw /usr/local/bin/ironclaw; \
+    rm -rf /tmp/ironclaw* ; \
+    /usr/local/bin/ironclaw --version
+
+# Per-container Postgres data directory + setup script.
+RUN mkdir -p /var/lib/postgresql/15/main /run/postgresql; \
+    chown -R postgres:postgres /var/lib/postgresql /run/postgresql
+
+# Ironclaw config + Postgres init + ai-memory MCP wiring all happen at
+# entrypoint.sh runtime — needs AGENT_ID + XAI_API_KEY from env.

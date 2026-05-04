@@ -1,0 +1,152 @@
+# Copyright 2026 AlphaOne LLC
+# SPDX-License-Identifier: Apache-2.0
+#
+# Local 4-node hermes + ai-memory mesh. 4 nodes × 16 GB per operator
+# directive 2026-05-04. Topology mirrors the OpenClaw mesh:
+#   3 hermes agent nodes + 1 memory-only aggregator
+#   Bridge subnet 10.88.3.0/24.
+#
+# Bring-up:
+#   cd docker/
+#   docker build --network host -t ai-memory-hermes:local \
+#     --build-arg AI_MEMORY_BASE=ai-memory-base:local \
+#     -f Dockerfile.hermes .
+#   XAI_API_KEY=$YOUR_KEY docker compose -f docker-compose.hermes.yml up -d
+#   ./smoke.sh
+#   bash run-testbook.sh a2a-hermes-v0.6.3.1-local-docker-r1
+
+name: a2a-hermes-local
+
+networks:
+  mesh:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.88.3.0/24
+          gateway: 10.88.3.1
+
+services:
+  node-1:
+    image: ai-memory-hermes:local
+    container_name: a2a-node-1
+    hostname: node-1
+    networks:
+      mesh:
+        ipv4_address: 10.88.3.11
+    environment:
+      NODE_INDEX: "1"
+      ROLE: "agent"
+      AGENT_TYPE: "hermes"
+      AGENT_ID: "ai:alice"
+      PEER_URLS: "http://node-2:9077,http://node-3:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 16g
+    memswap_limit: 16g
+    volumes:
+      - node-1-data:/var/lib/ai-memory
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-1:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+  node-2:
+    image: ai-memory-hermes:local
+    container_name: a2a-node-2
+    hostname: node-2
+    networks:
+      mesh:
+        ipv4_address: 10.88.3.12
+    environment:
+      NODE_INDEX: "2"
+      ROLE: "agent"
+      AGENT_TYPE: "hermes"
+      AGENT_ID: "ai:bob"
+      PEER_URLS: "http://node-1:9077,http://node-3:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 16g
+    memswap_limit: 16g
+    volumes:
+      - node-2-data:/var/lib/ai-memory
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-2:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+  node-3:
+    image: ai-memory-hermes:local
+    container_name: a2a-node-3
+    hostname: node-3
+    networks:
+      mesh:
+        ipv4_address: 10.88.3.13
+    environment:
+      NODE_INDEX: "3"
+      ROLE: "agent"
+      AGENT_TYPE: "hermes"
+      AGENT_ID: "ai:charlie"
+      PEER_URLS: "http://node-1:9077,http://node-2:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 16g
+    memswap_limit: 16g
+    volumes:
+      - node-3-data:/var/lib/ai-memory
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-3:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+  node-4:
+    image: ai-memory-base:local
+    container_name: a2a-node-4
+    hostname: node-4
+    networks:
+      mesh:
+        ipv4_address: 10.88.3.14
+    environment:
+      NODE_INDEX: "4"
+      ROLE: "memory-only"
+      PEER_URLS: "http://node-1:9077,http://node-2:9077,http://node-3:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+    mem_limit: 16g
+    memswap_limit: 16g
+    volumes:
+      - node-4-data:/var/lib/ai-memory
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-4:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+volumes:
+  node-1-data:
+  node-2-data:
+  node-3-data:
+  node-4-data:
