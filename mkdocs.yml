@@ -64,6 +64,7 @@ extra:
 
 nav:
   - Home: index.md
+  - Testing corpus: testing-corpus.md
   - Governance:
       - First-Principles governance: governance.md
       - Prime Directive (safety): prime-directive.md

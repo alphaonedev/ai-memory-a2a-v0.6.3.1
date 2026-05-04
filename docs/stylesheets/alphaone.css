@@ -253,3 +253,304 @@ body, .md-typeset {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ============================================================
+   PROFESSIONAL DESIGN LAYER (added 2026-05-04)
+   Hero metric cards · status pills · result tables · grids ·
+   callout banners · responsive table behavior.
+   ============================================================ */
+
+/* ---- Headline metric cards (the big numbers above the fold) ---- */
+
+.a1-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.a1-metric {
+  position: relative;
+  padding: 1.5rem 1.25rem;
+  border-radius: var(--a1-radius);
+  background: var(--a1-bg-card);
+  border: 1px solid var(--a1-border);
+  overflow: hidden;
+}
+.a1-metric::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.04));
+  pointer-events: none;
+}
+.a1-metric-value {
+  position: relative;
+  display: block;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--a1-primary-light), var(--a1-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.4rem;
+}
+.a1-metric-label {
+  position: relative;
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a1-text-muted);
+  margin-bottom: 0.25rem;
+}
+.a1-metric-sub {
+  position: relative;
+  display: block;
+  font-size: 0.875rem;
+  color: var(--a1-text-dim);
+  line-height: 1.4;
+}
+
+/* Light-mode tuning */
+[data-md-color-scheme="default"] .a1-metric {
+  background: white;
+  border-color: rgba(0,0,0,0.08);
+}
+[data-md-color-scheme="default"] .a1-metric::before {
+  background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(6,182,212,0.02));
+}
+
+/* ---- Status pills (PASS / FAIL / CERT / PENDING) ---- */
+
+.a1-pill {
+  display: inline-block;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border: 1px solid currentColor;
+}
+.a1-pill--pass    { color: #10b981; background: rgba(16,185,129,0.1); }
+.a1-pill--fail    { color: #ef4444; background: rgba(239,68,68,0.1); }
+.a1-pill--cert    { color: var(--a1-accent); background: rgba(6,182,212,0.1); }
+.a1-pill--pending { color: #f59e0b; background: rgba(245,158,11,0.1); }
+.a1-pill--info    { color: var(--a1-primary-light); background: rgba(99,102,241,0.1); }
+
+/* ---- Result-card grid (instruments / test playbooks) ---- */
+
+.a1-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.a1-card {
+  padding: 1.25rem;
+  border-radius: var(--a1-radius);
+  background: var(--a1-bg-card);
+  border: 1px solid var(--a1-border);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.a1-card:hover {
+  border-color: var(--a1-border-hover);
+  transform: translateY(-2px);
+}
+.a1-card-eyebrow {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--a1-accent);
+  margin-bottom: 0.5rem;
+}
+.a1-card-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--a1-text);
+}
+.a1-card-desc {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--a1-text-muted);
+  line-height: 1.5;
+}
+.a1-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+}
+
+[data-md-color-scheme="default"] .a1-card {
+  background: white;
+  border-color: rgba(0,0,0,0.08);
+}
+
+/* ---- Callout banner (single-claim hero) ---- */
+
+.a1-banner {
+  position: relative;
+  padding: 1.25rem 1.5rem;
+  margin: 1.25rem 0;
+  border-radius: var(--a1-radius);
+  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(6,182,212,0.06));
+  border: 1px solid rgba(99,102,241,0.25);
+}
+.a1-banner-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a1-primary-light);
+  margin-bottom: 0.3rem;
+}
+.a1-banner-body {
+  font-size: 1.05rem;
+  color: var(--a1-text);
+  line-height: 1.55;
+}
+
+/* ---- Result tables (campaign runs index, etc.) ---- */
+
+.md-typeset table:not([class]) {
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+.md-typeset table:not([class]) th {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  background: var(--a1-bg-card);
+  border-bottom: 2px solid var(--a1-border-hover);
+  position: sticky;
+  top: 0;
+}
+.md-typeset table:not([class]) td {
+  padding: 0.6rem 0.85rem;
+}
+.md-typeset table:not([class]) tr:hover td {
+  background: var(--a1-surface);
+}
+.md-typeset table:not([class]) td:first-child {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Allow campaign tables to scroll horizontally on narrow viewports
+   gracefully — material already does this but we make the indicator
+   visible. */
+.md-typeset__scrollwrap {
+  border-radius: var(--a1-radius);
+}
+.md-typeset__table {
+  border-radius: var(--a1-radius);
+  overflow: hidden;
+}
+
+/* ---- Inline KPI strip (use on per-page top-of-fold) ---- */
+
+.a1-kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--a1-border);
+  border-bottom: 1px solid var(--a1-border);
+  margin: 1.5rem 0 2rem;
+}
+.a1-kpi {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+.a1-kpi-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--a1-primary-light), var(--a1-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.a1-kpi-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--a1-text-muted);
+  margin-top: 0.2rem;
+}
+
+/* ---- Section dividers (numbered) ---- */
+
+.a1-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3rem 0 1.5rem;
+}
+.a1-divider-num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--a1-accent);
+}
+.a1-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--a1-border);
+}
+
+/* ---- Mobile responsive: card layout for narrow tables ---- */
+
+@media (max-width: 720px) {
+  .a1-metric-grid { gap: 0.75rem; }
+  .a1-metric-value { font-size: 1.75rem; }
+  .a1-cards { grid-template-columns: 1fr; }
+  .a1-kpis { gap: 1rem; }
+  .a1-kpi { min-width: 100px; }
+  .a1-kpi-value { font-size: 1.2rem; }
+}
+
+/* ---- Subtle link affordance on landing pages ---- */
+
+.md-typeset a:not(.md-button):hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* ---- Code excerpt styling for verbatim agent quotes ---- */
+
+.a1-quote {
+  position: relative;
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+  border-left: 3px solid var(--a1-accent);
+  background: var(--a1-bg-card);
+  border-radius: 0 var(--a1-radius) var(--a1-radius) 0;
+  font-style: italic;
+  color: var(--a1-text);
+}
+.a1-quote-attr {
+  display: block;
+  margin-top: 0.5rem;
+  font-style: normal;
+  font-size: 0.8rem;
+  color: var(--a1-text-muted);
+}
+.a1-quote-attr::before { content: "— "; }

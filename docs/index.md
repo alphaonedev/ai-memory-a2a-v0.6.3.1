@@ -9,6 +9,20 @@
 -->
 {{ render_current_release() }}
 
+<div class="a1-banner" markdown>
+<div class="a1-banner-title">PROOF, NOT SLIDE DECK</div>
+<div class="a1-banner-body">
+Reproducible AI-to-AI integration testing for <a href="https://github.com/alphaonedev/ai-memory-mcp">ai-memory-mcp</a>. Three agent frameworks (IronClaw / Hermes / OpenClaw), three transports, five evidence streams, every claim backed by a committed artifact. <strong><a href="testing-corpus/">Open the Testing Corpus →</a></strong>
+</div>
+</div>
+
+<div class="a1-kpis" markdown>
+<div class="a1-kpi"><span class="a1-kpi-value">9 / 9</span><span class="a1-kpi-label">Substrate streaks (3 frameworks × 3 runs)</span></div>
+<div class="a1-kpi"><span class="a1-kpi-value">52</span><span class="a1-kpi-label">Behavioral probes (Tier 1–4)</span></div>
+<div class="a1-kpi"><span class="a1-kpi-value">1.000</span><span class="a1-kpi-label">recall@1 · durability · trust calibration</span></div>
+<div class="a1-kpi"><span class="a1-kpi-value">3</span><span class="a1-kpi-label">RoadMap signals → v0.6.4 (this week)</span></div>
+</div>
+
 ## What this campaign proves — and what it uncovered
 
 Three claims, each backed by **data committed to this repo**, not a slide deck. Click any number to land on the receipts.
