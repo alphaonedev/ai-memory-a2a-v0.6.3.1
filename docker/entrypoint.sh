@@ -229,24 +229,26 @@ EOF
     # The ironclaw runtime requires PostgreSQL 15 + pgvector for its
     # internal memory store. ai-memory remains the substrate-under-test
     # over MCP — Postgres is just ironclaw's per-node working state.
+    # `runuser` (util-linux) replaces sudo (not in base image) for the
+    # postgres-user invocations.
     log "starting per-node postgres for ironclaw"
+    # `pg_ctlcluster 15 main start` is Ubuntu's canonical wrapper —
+    # handles the /etc/postgresql/15/main config + /var/lib/postgresql/15/main
+    # data + correct user-switching automatically. Replaces the manual
+    # pg_ctl + initdb + runuser dance.
     if [ ! -s /var/lib/postgresql/15/main/PG_VERSION ]; then
-      sudo -u postgres /usr/lib/postgresql/15/bin/initdb -D /var/lib/postgresql/15/main 2>&1 \
-        | sed 's/^/[pg-initdb] /' || log "pg initdb non-zero; continuing"
+      pg_createcluster 15 main 2>&1 | sed 's/^/[pg-create] /' || log "pg createcluster non-zero; continuing"
     fi
-    sudo -u postgres /usr/lib/postgresql/15/bin/pg_ctl \
-      -D /var/lib/postgresql/15/main \
-      -l /var/log/postgresql.log \
-      -o "-c listen_addresses=localhost -c hba_file=/etc/postgresql/15/main/pg_hba.conf" \
-      start 2>&1 | sed 's/^/[pg-ctl] /' || log "pg start non-zero; continuing (may already be up)"
+    pg_ctlcluster 15 main start 2>&1 | sed 's/^/[pg-ctl] /' \
+      || log "pg start non-zero; continuing (may already be up)"
     # Wait for postgres ready
     for attempt in $(seq 1 30); do
-      sudo -u postgres psql -c 'SELECT 1' >/dev/null 2>&1 && break
+      pg_isready -h localhost >/dev/null 2>&1 && break
       sleep 1
     done
-    sudo -u postgres psql -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
-    sudo -u postgres psql -c "CREATE DATABASE ironclaw" >/dev/null 2>&1 || true
-    sudo -u postgres psql -d ironclaw -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
+    runuser -u postgres -- psql -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
+    runuser -u postgres -- psql -c "CREATE DATABASE ironclaw" >/dev/null 2>&1 || true
+    runuser -u postgres -- psql -d ironclaw -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
     log "postgres + pgvector ready for ironclaw"
 
     # ---- IronClaw config (.env + mcp registration) ----
@@ -262,18 +264,24 @@ DATABASE_URL=postgresql://postgres@localhost:5432/ironclaw
 EOF
     chmod 600 /root/.ironclaw/.env
 
-    # Register ai-memory MCP via the canonical CLI surface so `ironclaw
-    # mcp list | grep memory` returns true (baseline F2b probe path).
+    # Register ai-memory MCP. ironclaw 0.27.0's clap parser rejects
+    # flag-shaped values without `=` form (e.g. `--arg --db` errors with
+    # "unexpected argument '--db' found"). Equals form passes the value
+    # literally through clap.
     ironclaw mcp add memory \
-      --command ai-memory \
-      --arg "--db=/var/lib/ai-memory/a2a.db" \
-      --arg "mcp" \
-      --arg "--tier=semantic" \
-      --env "AI_MEMORY_AGENT_ID=${AGENT_ID}" 2>&1 | sed 's/^/[ironclaw-mcp] /' \
+      --transport=stdio \
+      --command=ai-memory \
+      --arg=--db \
+      --arg=/var/lib/ai-memory/a2a.db \
+      --arg=mcp \
+      --arg=--tier \
+      --arg=semantic \
+      --env=AI_MEMORY_AGENT_ID=${AGENT_ID} 2>&1 | sed 's/^/[ironclaw-mcp] /' \
       || log "ironclaw mcp add non-zero (may already be registered)"
 
     # Pin all peer A2A channels OFF — only ai-memory MCP path is
     # allowed. Same thesis-integrity stance as openclaw.
+    # ironclaw config set <PATH> <VALUE> per the 0.27.0 CLI surface.
     for ch in telegram discord slack matrix; do
       ironclaw config set "channels.${ch}.enabled" false 2>/dev/null || true
     done
