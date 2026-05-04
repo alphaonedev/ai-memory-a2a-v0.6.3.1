@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r15",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "Risk posture elevated due to audit tampering vulnerabilities and policy failures, rendering production deployment inadvisable without patches. Customer claims on secure, verifiable federation not viable yet; this run regresses vs. prior on security primitives. Prioritize fixes to unblock v0.7 readiness.",
+  "for_non_technical": "Agents can share memories reliably in simple setups, like storing and recalling facts across a network. However, security features meant to protect and verify these memories don't work fully, leading to potential risks in real use. Overall, the system is good for basics but needs fixes for advanced safety.",
+  "for_sme": "Audit chain fails verification in S25 (rc=2, ok=false, zero lines across nodes) and tamper detection in S26 misses restores; policy install 404s in S29, notifications fail registration/fanout in S30. Impacts store/update primitives under federation; probable root in incomplete v0.6.3.1 impl for approval/memory_reflection features. Probes S23-S31 highlight ~ expansion, MCP fanout, and SQLCipher absence.",
+  "headline": "Federated memory sharing passes basics but fails audit and policy tests.",
+  "next_run_change": "Patch audit verify logic and policy endpoints before re-running S25-S30 block.",
+  "verdict": "FAIL \u2014 8/52 scenarios red, audit chain and approvals broken.",
+  "what_it_proved": "Demonstrated reliable basic memory propagation across agents but exposed critical gaps in audit verification, policy enforcement, and notification delivery.",
+  "what_it_tested": "Exercised 42 core scenarios plus 9 security probes on HTTP transport in 4-node mesh, covering store/recall/link/delete primitives and federation fanout."
+}

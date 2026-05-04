@@ -1,0 +1,88 @@
+{
+  "campaign_id": "a2a-hermes-v0.6.3.1-r15",
+  "agent_group": "hermes",
+  "ai_memory_git_ref": "v0.6.3.1",
+  "infra": {
+    "provider": "digitalocean",
+    "region": "nyc3",
+    "droplet_size": "",
+    "topology": "4-node federation mesh (W=2/N=4)",
+    "nodes": [
+      {
+        "index": 1,
+        "role": "agent",
+        "agent_id": "ai:alice",
+        "public_ip": "159.203.174.69",
+        "private_ip": "10.11.0.2"
+      },
+      {
+        "index": 2,
+        "role": "agent",
+        "agent_id": "ai:bob",
+        "public_ip": "143.198.5.73",
+        "private_ip": "10.11.0.3"
+      },
+      {
+        "index": 3,
+        "role": "agent",
+        "agent_id": "ai:charlie",
+        "public_ip": "167.71.107.5",
+        "private_ip": "10.11.0.5"
+      },
+      {
+        "index": 4,
+        "role": "memory-only",
+        "agent_id": null,
+        "public_ip": "45.55.225.76",
+        "private_ip": "10.11.0.4"
+      }
+    ]
+  },
+  "scenarios_requested": [
+    "1",
+    "1b",
+    "2",
+    "4",
+    "5",
+    "6",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "22",
+    "23",
+    "24",
+    "25",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38",
+    "39",
+    "40",
+    "41",
+    "42"
+  ],
+  "timing": {
+    "started_at": "2026-05-03T22:28:56Z",
+    "ended_at": "2026-05-03T22:39:40Z"
+  },
+  "ci": {
+    "actor": "alphaonedev",
+    "workflow_url": "https://github.com/alphaonedev/ai-memory-a2a-v0.6.3.1/actions/runs/25292383783",
+    "harness_sha": "ac08cb14d33b688c6d1773bbec345c2232cfada0",
+    "runner_os": "Linux"
+  }
+}

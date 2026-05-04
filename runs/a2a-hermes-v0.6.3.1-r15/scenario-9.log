@@ -1,0 +1,8 @@
+alice writes M1 content=v1-6c167bc11f054b13a47bc6fa34cc7d18 on node-1
+  M1 id=c5bdbd8d-dee2-4e8b-9a32-ab18302cf898
+settle 5s for initial replication
+bob updates M1 content=v2-08a641e1def64c5cb0fa467c71fa2ce7 on node-2 via PUT
+  PUT returned HTTP 200
+settle 8s for update fanout
+charlie reads M1 on node-3 and checks content + provenance
+  charlie sees content="v2-08a641e1def64c5cb0fa467c71fa2ce7" agent_id="ai:alice"

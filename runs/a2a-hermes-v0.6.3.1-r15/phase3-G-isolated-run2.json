@@ -1,0 +1,123 @@
+{
+  "agent_group": "hermes",
+  "campaign_id": "a2a-hermes-v0.6.3.1-r15",
+  "control_arm": "isolated",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r15",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "7018b5b8c8e6702257669b30f75a3677bea1d93d05cb55a42f3427b2025cc3d3"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "f309a4beca7dec5d6bfbad9f77aa7486204f93ce32108e3ef2bcbf92c33faded",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "G",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-03T23:59:50Z",
+      "tools_called": [],
+      "turn_id": "G-isolated-r2-t1"
+    },
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r15",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "add14975a57b0688e3c36e07eed70317c18555d8716e02b5c30a8ce95cca58a9"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "2099e153fbc4b0c7916e5b2b93a0b8dbe321df2a506d1ce3d4a9d3321a5f20ff"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "d72ad51b8694e9d91f0755854d418bf0b216f9190f83beafe7df3282e1e5a71e"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "763c68052a654c2af2dbb74e136b96c1c8a3ef3fb1e7b8a75a38b8aed4eadcc5"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "a5eccba373f8ae25791a20eb16356f0a5ca917a76c0607dfc255c364080581e7"
+        },
+        {
+          "category": "rationale",
+          "claim_id": "c1-6",
+          "text_sha256": "2ea79dd43c5ea3d799cc583bdb9bb0c247bce4be7b71699d077690f74571fb3d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-7",
+          "text_sha256": "9f48ad0cbcfac79066716a266d733eab536ae81096d9c8830d6b49ece645f3b3"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-8",
+          "text_sha256": "652d4de343e62e7fbe6e458d9c66ff5e47080aaa846786b42c3365baf49515d9"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "daaa3eadb4c7b4b9d054155b1de74a6a97339c7e1d03f9382beb68b76edc93eb",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "G",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T00:00:45Z",
+      "tools_called": [],
+      "turn_id": "G-isolated-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "G",
+  "scenario_title": "Override-via-write rejection (Rule 3)",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-03T23:59:27Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 77
+}
