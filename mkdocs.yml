@@ -74,6 +74,7 @@ nav:
       - What an NHI assessment is: nhi-assessments.md
       - Latest-run insights: nhi-insights.md
       - Per-run NHI matrix: nhi/index.md
+      - OpenClaw v0.6.3.1 behavioral assessment: nhi/openclaw-behavioral-v0.6.3.1.md
       - Inherited gate insights: insights.md
   - Forensic Audit Trail:
       - What the audit trail proves: forensic-audit.md
