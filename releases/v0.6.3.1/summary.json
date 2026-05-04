@@ -188,28 +188,28 @@
   "headline": "v0.6.3.1 \u2014 9/9 substrate streaks GREEN across IronClaw + Hermes + OpenClaw (testbook v3.0.0, 35 scenarios per run)",
   "cells": [
     {
-      "name": "openclaw / off / local-docker",
-      "verdict": "PASS",
-      "scenario_pass": 35,
-      "scenario_fail": 0,
+      "cell": "openclaw / off / local-docker",
+      "pass": true,
+      "pass_count": 35,
+      "fail_count": 0,
       "scenario_total": 35,
       "wall_human": "~10 min/run \u00d7 3 runs",
       "notes": "3-green substrate streak r1/r2/r3 on workstation 16 GB/container Docker mesh; xAI Grok 4.3"
     },
     {
-      "name": "ironclaw / DO 4-node",
-      "verdict": "PASS",
-      "scenario_pass": 35,
-      "scenario_fail": 0,
+      "cell": "ironclaw / DO 4-node",
+      "pass": true,
+      "pass_count": 35,
+      "fail_count": 0,
       "scenario_total": 35,
       "wall_human": "~17 min/run \u00d7 3 runs",
       "notes": "Testbook v3.0.0 substrate green r25/r26/r27. v0.6.3.1-NEW S-prefixed scenarios tracked under substrate_verdict.matrix (PENDING)"
     },
     {
-      "name": "hermes / DO 4-node",
-      "verdict": "PASS",
-      "scenario_pass": 35,
-      "scenario_fail": 0,
+      "cell": "hermes / DO 4-node",
+      "pass": true,
+      "pass_count": 35,
+      "fail_count": 0,
       "scenario_total": 35,
       "wall_human": "~17 min/run \u00d7 3 runs",
       "notes": "Testbook v3.0.0 substrate green r12/r15/r16. v0.6.3.1-NEW S-prefixed scenarios tracked under substrate_verdict.matrix (PENDING)"
