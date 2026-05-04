@@ -283,9 +283,24 @@
           <p><a href="./f3-peer-a2a.json">raw file</a></p>
         </details>
       </section>
+      <section class="run-focus">
+        <p class="label">Run focus</p>
+        <h2>Reproducible green — patched state-reset (compose down -v) holds; same 35/35</h2>
+        <p><strong>What this campaign tested:</strong> OpenClaw substrate testbook v3.0.0 (35 scenarios) on release/v0.6.3.1 binary against the local-docker mesh — 4 nodes, 16 GB per openclaw container, all on a single 93 GB / 14-CPU workstation. Scope=openclaw per Principle 6 — Phase 0 (preflight), F3 peer-A2A canary, then 35 substrate scenarios across MCP stdio + HTTP REST surfaces. Different scope from DO IronClaw/Hermes runs which exercise the v0.6.3.1-new S-prefixed scenarios additionally.</p>
+        <p><strong>What it demonstrated:</strong> ai-memory v0.6.3.1 (binary 0.6.3+patch.1) holds the testbook v3.0.0 invariants on the openclaw mesh under federation (W=2 of N=4 quorum). Scenario 1 (per-agent MCP write+read), 1b (HTTP write+read), 2 (handoff), 4 (federation burst), 11 (link integrity), 13 (concurrent contention), 14 (partition tolerance), 15 (read-your-writes), 17 (stats consistency), 22-24 (security/byzantine), 28-42 (full MCP + HTTP surface) all green. Cross-cluster identity stamping intact. F3 peer canary green.</p>
+      </section>
       <section class="ai-insight">
-        <h2>AI NHI analysis</h2>
-        <p class="muted">No per-campaign narrative recorded yet. <code>scripts/analyze_run.py</code> will generate one on the next dispatch.</p>
+        <p class="tag">AI NHI analysis &middot; Claude Opus 4.7</p>
+        <h2>Reproducible green — patched state-reset (compose down -v) holds; same 35/35</h2>
+        <p class="verdict">GREEN. overall_pass=true, 35 scenarios pass, 0 failure reasons, baseline + F3 canary green, on release/v0.6.3.1 binary, scope=openclaw, topology=local-docker.</p>
+        <h3>For three audiences</h3>
+        <div class="audiences">
+          <article><h4>Non-technical end users</h4><p>ai-memory v0.6.3.1 was tested with a different agent framework (OpenClaw) on a different infrastructure (one workstation instead of cloud) and passed every test. Same release, same software, three runs in a row, no failures. This is the kind of evidence that says "this runs reliably," because the test was run multiple times and the result was the same every time.</p></article>
+          <article><h4>C-level decision makers</h4><p>Cost control + reproducibility. By running OpenClaw on a workstation Docker mesh instead of DigitalOcean General Purpose tier (16 GB+ droplets), we avoid the per-test infrastructure cost while preserving the technical fidelity of the test. Three consecutive green runs satisfy the streak criterion. Operationally: OpenClaw evidence joins IronClaw + Hermes via release linkage at the verdict layer, never collapsed.</p></article>
+          <article><h4>Engineers &amp; architects</h4><p>scripts/scenarios/{1..42}_*.py exercised on docker-compose.openclaw.yml mesh (10.88.1.0/24 bridge, ai-memory-base:local + ai-memory-openclaw:local images rebuilt today against /root/ai-memory-mcp/target/release/ai-memory v0.6.3+patch.1). State-reset between rounds via `docker compose down -v &amp;&amp; up -d` (the in-place `rm -f a2a.db*` pattern was non-functional — see PR #46 for RCA). All three runs: overall_pass=true, baseline_pass=true (all 4 nodes), F3 pass=true (W=2 quorum verified). agent_id stamping verified across 3 framework_is_authentic + mcp_server_ai_memory_registered + llm_backend_is_xai_grok attestations.</p></article>
+        </div>
+        <h3>What changes going into the next campaign</h3>
+        <p>Substrate-only path is now stable. Next: openclaw Phase 3 NHI behavioral evidence (currently out-of-scope per drive_agent_autonomous.sh:84). Requires entrypoint.sh openclaw config rewrite to match 2026.5.x gateway-centric schema (existing schema rejected even by 2026.4.22). Also TLS / mTLS retest on local-docker for full v0.6.3.1 cell parity.</p>
       </section>
       <section class="tests-performed">
         <h2>Tests performed in this run</h2>
