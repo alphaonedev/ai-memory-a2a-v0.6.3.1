@@ -1,0 +1,98 @@
+{
+  "agent_group": "hermes",
+  "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+  "control_arm": "treatment",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "bf98e31041065f96edc073b4bf812364ca27dd9bb74712de5e456fde499a7b2d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "57ca64121cc658a8b19650039927d89db216e99034b83f93915fbaafcc00a548"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "7fc4de28a89ca4c695a1271ac3f82e15f4591915a261076b2bbf0fa505f5d0cc",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:40:05Z",
+      "tools_called": [],
+      "turn_id": "C-treatment-r2-t1"
+    },
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "295f0c5ba873c7938b7215063ef0794b7fac9c81b87ed1aec3bf9a3fe9526ed6"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "f98ed6fde4d67cc6b3f3646df5a68c73c6084243357071e06f3e138b237335f1"
+        }
+      ],
+      "control_arm": "treatment",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "cc283e2f09abce5a7b999c3f9dd0b2f5dc90f46a33f9ded8896c70e763e8a17a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:41:08Z",
+      "tools_called": [],
+      "turn_id": "C-treatment-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "C",
+  "scenario_title": "Correction memory",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-04T01:34:18Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 410
+}

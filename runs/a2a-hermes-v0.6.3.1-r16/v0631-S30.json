@@ -1,0 +1,26 @@
+{
+  "scenario": "S30",
+  "pass": false,
+  "expected_verdict": "GREEN",
+  "actual_verdict": "RED",
+  "outputs": {
+    "notify_inbox_roundtrip": false,
+    "hmac_verified": false,
+    "federation_fanout": false,
+    "subscription_id_bob": "",
+    "subscription_id_charlie": "",
+    "notification_id_bob": "",
+    "notification_id_charlie": "",
+    "inbox_unread_count_bob": 0,
+    "webhook_body_captured": false,
+    "webhook_signature_header": "",
+    "webhook_recomputed_hmac": "",
+    "node3_inbox_count_charlie": 0
+  },
+  "reasons": [
+    "step1: bob's subscription not registered — response head: Failed to deserialize the JSON body into the target type: events: invalid type: sequence, expected a string at line 1 column 84",
+    "step3: bob's inbox on node-2 had no matching item after 8s settle (inbox_count=0)",
+    "step4: webhook listener captured nothing on node-3:19030 — subscription's webhook may not be honoured by this build",
+    "step5: federation fanout did not deliver — charlie's inbox on node-3 had no matching item (count=0)"
+  ]
+}

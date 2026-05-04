@@ -1,0 +1,108 @@
+{
+  "agent_group": "hermes",
+  "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+  "control_arm": "stubbed",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "bf98e31041065f96edc073b4bf812364ca27dd9bb74712de5e456fde499a7b2d"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "445a87e55a2628a7c5c451cbb1c32118759be8e16179143ffef36830a058d03b"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "9013fb8cb68334ac68312732c2d7708d5a26da1dd56480412c534029e468c195"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "7fc4de28a89ca4c695a1271ac3f82e15f4591915a261076b2bbf0fa505f5d0cc",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:26:59Z",
+      "tools_called": [],
+      "turn_id": "C-stubbed-r2-t1"
+    },
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "2f75cae20abc04fc864e7de8a8eb2008da821c1002b1de77e4664037f519f837"
+        },
+        {
+          "category": "rationale",
+          "claim_id": "c1-2",
+          "text_sha256": "fdc704e077e1cc9df2b55dc4f542141cd9f14b4cb2e4cb8c8efedc25f5fe0881"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "5ae27181d5c141aad0f61ce21b3437932e8bb993c71b513e559a2d6abb9b2b29"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "cc283e2f09abce5a7b999c3f9dd0b2f5dc90f46a33f9ded8896c70e763e8a17a",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "C",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:28:17Z",
+      "tools_called": [],
+      "turn_id": "C-stubbed-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "C",
+  "scenario_title": "Correction memory",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-04T01:25:54Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 142
+}

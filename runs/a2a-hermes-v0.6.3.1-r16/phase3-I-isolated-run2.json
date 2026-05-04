@@ -1,0 +1,117 @@
+{
+  "agent_group": "hermes",
+  "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+  "control_arm": "isolated",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "42c647f543b48d033c9e69cb09dbe97de073a74b009dcace09e3093890226032",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "I",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T02:19:10Z",
+      "tools_called": [],
+      "turn_id": "I-isolated-r2-t1"
+    },
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "e9f3175354d132085a219aa8608db3562c0f9e6de10122b9b2ddaeb93b1e4b48"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "e41fd197d3fb1fc94a424efb39e6363b408a6cafdd76a2e478e311721e4fe48b"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "acd367c675c4e1510f59e655371bfee1d6144b21c15380aa485fa3fec1328478"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "cb148289096eef1f834e735a1779565e6fbcdfa45fa92723bc7b0fb25c89374a"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-5",
+          "text_sha256": "b1ca1abeaa3a625a8ecaf945aaaa215e1eb3cc53ba78edc9cbd497ed7f94a776"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-6",
+          "text_sha256": "729465c46135c10b4274fc971d08db63b210e1fbf2176aec22b8abf6400361bc"
+        },
+        {
+          "category": "rationale",
+          "claim_id": "c1-7",
+          "text_sha256": "18927a7e6ce83a349e73376a7172d929df234f12e18899f89a2480d5bf672be4"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-8",
+          "text_sha256": "ea444c188639bc2351437a37f00ea62a30eda6d5b0ed96d7c75871e55349fe87"
+        }
+      ],
+      "control_arm": "isolated",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "d05bebd3cb99f227c31ff60cfc5fb701ab4fe64255951e95bf3b1c27e8c6c55e",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "I",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T02:21:19Z",
+      "tools_called": [],
+      "turn_id": "I-isolated-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "I",
+  "scenario_title": "Forensic reproducibility (Phase 3 \u2194 audit cross-correlation)",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-04T02:14:55Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 383
+}

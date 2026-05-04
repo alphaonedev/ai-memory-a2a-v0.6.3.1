@@ -1,0 +1,13 @@
+{
+  "_campaign_id": "a2a-hermes-v0.6.3.1-r16",
+  "_generated_by": "scripts/analyze_run.py",
+  "_model": "grok-4-0709",
+  "for_c_level": "High risk from audit and policy failures blocks production readiness; customer claims on security and immutability not viable until fixed. No major regression vs. prior runs, but patch.1 did not resolve key issues like #318 and #507. Prioritize security primitives for next release to enable enterprise adoption.",
+  "for_non_technical": "Agents can reliably share and recall basic memories across the network in most cases. However, advanced features for securing and notifying about memories do not work properly yet. This means the system is good for simple sharing but not fully secure or complete.",
+  "for_sme": "Audit verification fails with rc=2 and empty hashes (S25), tamper detection misses mutations without triggering errors (S26), import drops agent_id immutability (S28), policy install returns 404 (S29), notifications fail registration and fanout (S30); probable root in incomplete audit hook and API implementations. Reference probes S23-S31 for repro.",
+  "headline": "Core memory federation stable, but audit and notifications fail in patch.1",
+  "next_run_change": "Add SQLCipher integration and retest S31 to enforce DB encryption at rest.",
+  "verdict": "PARTIAL \u2014 35/44 scenarios green, security probes red",
+  "what_it_proved": "Demonstrated reliable basic memory propagation and recall in federation, but exposed failures in audit verification, tamper detection, policy enforcement, and notification fanout, confirming v0.6.3.1 patch incompleteness.",
+  "what_it_tested": "Exercised 44 scenarios covering basic sharing, deletion, linking, recovery, hybrid recall, and security audits across HTTP transport in 4-node federation mesh with core primitives like store, update, consolidate."
+}

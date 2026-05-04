@@ -1,0 +1,108 @@
+{
+  "agent_group": "hermes",
+  "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+  "control_arm": "stubbed",
+  "mode": "do-droplets",
+  "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+  "ops_per_agent": {
+    "ai:alice": 0,
+    "ai:bob": 0
+  },
+  "records": [
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:alice",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "d05f6fe0d4759840f6306a3a14a44005902b4613b9b84ce967ef6bbea2cdf320"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "8861a098b888067f701c6218713ceec7dec43713e628df613048688418904bdd",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "A",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:01:49Z",
+      "tools_called": [],
+      "turn_id": "A-stubbed-r2-t1"
+    },
+    {
+      "agent_framework": "hermes",
+      "agent_id": "ai:bob",
+      "ai_memory_ops": [],
+      "campaign_id": "a2a-hermes-v0.6.3.1-r16",
+      "claims_grounded": [],
+      "claims_made": [
+        {
+          "category": "factual",
+          "claim_id": "c1-1",
+          "text_sha256": "23ed6e78339e21be8161f73236d1f463ca81aaf575556a0af109dfda84ba2bbd"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-2",
+          "text_sha256": "c2daa08232ce3b1e57cec7feb2801eea787995fae7d117a535a3436c9b1931d2"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-3",
+          "text_sha256": "e4392907dcee395490f2997cb3d5a52dd9f6e786816f0b02820568d541d3666b"
+        },
+        {
+          "category": "factual",
+          "claim_id": "c1-4",
+          "text_sha256": "b66741813523a44f29e0c612b5d7eabfe66bc8207ebf62d9f7ef75ba6b162940"
+        },
+        {
+          "category": "constraint",
+          "claim_id": "c1-5",
+          "text_sha256": "71268a61d00a7a8825eda83ad17907c8f602412d03719e720e6909abaf00f3f2"
+        }
+      ],
+      "control_arm": "stubbed",
+      "llm_model_sku": "grok-4-0709",
+      "node_id": "do-aim-a2a-hermes-a2a-hermes-v0",
+      "notes": "",
+      "phase": 3,
+      "prompt_sha256": "a50e2b27c9d4ba25dceb8dfeff36a9feb099b9d6b6886f6f09b335be75ac5f1b",
+      "refusals": [],
+      "release": "v0.6.3.1",
+      "run_index": 2,
+      "scenario_id": "A",
+      "schema_version": "v0.6.3.1-a2a-nhi-1",
+      "self_confidence": 0.85,
+      "system_prompt_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "termination_reason": "task_complete",
+      "timestamp_utc": "2026-05-04T01:03:03Z",
+      "tools_called": [],
+      "turn_id": "A-stubbed-r2-t2"
+    }
+  ],
+  "release": "v0.6.3.1",
+  "run_index": 2,
+  "scenario_id": "A",
+  "scenario_title": "Decision provenance",
+  "schema": "phase3-run/v1",
+  "started_at_utc": "2026-05-04T01:01:06Z",
+  "termination_reason": "task_complete",
+  "tls_mode": "off",
+  "turns_per_agent": {
+    "ai:alice": 1,
+    "ai:bob": 1
+  },
+  "wall_seconds": 116
+}

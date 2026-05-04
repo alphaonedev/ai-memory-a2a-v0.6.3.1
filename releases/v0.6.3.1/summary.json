@@ -5,7 +5,7 @@
       "hermes"
     ],
     "governance_doc": "docs/governance.md",
-    "last_run_id": "a2a-hermes-v0.6.3.1-r15",
+    "last_run_id": "a2a-hermes-v0.6.3.1-r16",
     "out_of_scope": [
       "openclaw"
     ],
@@ -20,7 +20,7 @@
         "verdict": "FAIL"
       }
     ],
-    "updated_at": "2026-05-04T00:29:33Z"
+    "updated_at": "2026-05-04T02:41:17Z"
   },
   "cross_layer_consistency": {
     "table": [
@@ -78,7 +78,7 @@
   "nhi_verdict": {
     "evidence_type": "behavioral, statistical (n=3 per cell, 48 runs total)",
     "phase": 3,
-    "phase4_analysis_path": "runs/a2a-hermes-v0.6.3.1-r15/phase4-analysis.json",
+    "phase4_analysis_path": "runs/a2a-hermes-v0.6.3.1-r16/phase4-analysis.json",
     "scenarios": {
       "A": {
         "title": "Decision provenance",
