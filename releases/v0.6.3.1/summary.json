@@ -118,7 +118,7 @@
     "v1 had a single `campaign.verdict` field that collapsed substrate + NHI evidence; v2 separates them into `substrate_verdict` (Phase 1, S1\u2013S24, binary/reproducible) and `nhi_verdict` (Phase 3, behavioral, statistical).",
     "Reader convention: use `substrate_verdict` for ship/no-ship gating; use `nhi_verdict` to assess utility delta of ai-memory under realistic agent workloads.",
     "`version` + `verdict` at top level are flat shims for the existing release-summary-gate.yml workflow; they mirror `subject.tag` and a derived collapse of substrate+nhi (pass iff substrate \u2208 {PASS, 'PARTIAL \u2014 pending Patch 2'} AND nhi=PASS, else fail/pending).",
-    "2026-05-04: top-level verdict set to 'pass' reflecting the 9/9 testbook v0.6.3.1 substrate streaks (3 IronClaw + 3 Hermes + 3 OpenClaw). The deeper v0.6.3.1-NEW S-prefixed scenarios (S25-S30) remain PENDING in substrate_verdict.matrix per Principle 1 \u2014 substrate_verdict and nhi_verdict are never collapsed into top-level verdict; they live in their own keys for independent audit. The OpenClaw substrate cert is the most recently completed streak (a2a-openclaw-v0.6.3.1-r3, 2026-05-04). Adding openclaw to v0.6.3.1 testbook substrate cell does NOT promote openclaw into the umbrella v0.6.3.1 substrate_verdict.matrix (which remains ironclaw/hermes-only); openclaw evidence joins the umbrella release via release-tag linkage only per Principle 6 (scope discipline)."
+    "2026-05-04 (truthful audit): cert standard per operator directive is '3 consecutive runs at 100% pass' (overall_pass=true with 0 failed scenarios). Audit of every run's a2a-summary.json: OpenClaw r1/r2/r3 = 3/3 at 100%; IronClaw r25/r26/r27 = 0/3 at 100% (each had 5-6 failed scenarios); Hermes r12/r15/r16 = 0/3 at 100% (each had 5 failed scenarios). The OpenClaw cell is the only one that satisfies the standard. IronClaw + Hermes failed scenarios are concentrated on v0.6.3.1-NEW S-prefixed (S25/S26/S28/S29/S30) which are known gaps scheduled for Patch 2 (v0.6.3.2). Per Principle 1 the per-scenario truth lives in substrate_verdict.matrix (PENDING for ironclaw_* and hermes_* cells); top-level verdict is the derived collapse for the macro and release-summary-gate workflow. Earlier 2026-05-04 entries claiming all-three-cells-pass have been superseded by this entry."
   ],
   "schema_version": 2,
   "subject": {
@@ -179,40 +179,40 @@
   "verdict": "pass",
   "version": "v0.6.3.1",
   "date": "2026-05-04",
-  "pass_count": 9,
-  "fail_count": 0,
-  "wall_human": "9 substrate streaks complete",
+  "pass_count": 1,
+  "fail_count": 2,
+  "wall_human": "OpenClaw cert green; IronClaw + Hermes pending Patch 2",
   "campaign_run_id": "a2a-openclaw-v0.6.3.1-r3",
   "ai_memory_commit": "b7437de",
   "ai_memory_git_ref": "release/v0.6.3.1",
-  "headline": "v0.6.3.1 \u2014 9/9 substrate streaks GREEN across IronClaw + Hermes + OpenClaw (testbook v3.0.0, 35 scenarios per run)",
+  "headline": "v0.6.3.1 \u2014 OpenClaw substrate cert GREEN: 3 of 3 runs at 100% pass (105 / 105 scenarios). IronClaw + Hermes campaigns ran 3 each but did NOT achieve 100% pass on any \u2014 v0.6.3.1-NEW S-prefixed scenarios (S25 / S26 / S28 / S29 / S30) RED on every run. Carry-forward to Patch 2 (v0.6.3.2). Per-scenario detail in substrate_verdict.matrix.",
   "cells": [
     {
-      "cell": "openclaw / off / local-docker",
+      "cell": "openclaw / off / local-docker \u2014 3 of 3 at 100% pass (r1/r2/r3)",
       "pass": true,
-      "pass_count": 35,
+      "pass_count": 105,
       "fail_count": 0,
-      "scenario_total": 35,
-      "wall_human": "~10 min/run \u00d7 3 runs",
-      "notes": "3-green substrate streak r1/r2/r3 on workstation 16 GB/container Docker mesh; xAI Grok 4.3"
+      "scenario_total": 105,
+      "wall_human": "~30 min total",
+      "notes": "Cert criterion satisfied: 3 consecutive runs at 100% scenario pass (35/35 each, 0 failure reasons). overall_pass=true on every run. Workstation 16 GB/container Docker mesh, xAI Grok 4.3, ai-memory 0.6.3+patch.1."
     },
     {
-      "cell": "ironclaw / DO 4-node",
-      "pass": true,
-      "pass_count": 35,
-      "fail_count": 0,
-      "scenario_total": 35,
-      "wall_human": "~17 min/run \u00d7 3 runs",
-      "notes": "Testbook v3.0.0 substrate green r25/r26/r27. v0.6.3.1-NEW S-prefixed scenarios tracked under substrate_verdict.matrix (PENDING)"
+      "cell": "ironclaw / DO 4-node \u2014 0 of 3 at 100% pass (r25/r26/r27)",
+      "pass": false,
+      "pass_count": 116,
+      "fail_count": 16,
+      "scenario_total": 132,
+      "wall_human": "~51 min total",
+      "notes": "Cert criterion NOT satisfied: every run had 5-6 failed scenarios. overall_pass=false on r25 (5 fail), r26 (5 fail), r27 (6 fail incl. S40 flake). Failures concentrated on v0.6.3.1-NEW S-prefixed (S25 audit chain, S26 tamper detect, S28 agent_id immutability on import, S29 namespace standards endpoints, S30 inbox/webhook fanout) \u2014 known v0.6.3.1 gaps; carry-forward to Patch 2 (v0.6.3.2). Testbook v3.0.0 numerical subset DID pass on every run."
     },
     {
-      "cell": "hermes / DO 4-node",
-      "pass": true,
-      "pass_count": 35,
-      "fail_count": 0,
-      "scenario_total": 35,
-      "wall_human": "~17 min/run \u00d7 3 runs",
-      "notes": "Testbook v3.0.0 substrate green r12/r15/r16. v0.6.3.1-NEW S-prefixed scenarios tracked under substrate_verdict.matrix (PENDING)"
+      "cell": "hermes / DO 4-node \u2014 0 of 3 at 100% pass (r12/r15/r16)",
+      "pass": false,
+      "pass_count": 117,
+      "fail_count": 15,
+      "scenario_total": 132,
+      "wall_human": "~51 min total",
+      "notes": "Cert criterion NOT satisfied: every run had 5 failed scenarios. overall_pass=false on every run. Same v0.6.3.1-NEW S-prefixed RED set as IronClaw \u2014 framework-agnostic gap pattern. Testbook v3.0.0 numerical subset DID pass on every run. Carry-forward to Patch 2."
     }
   ],
   "evidence": {
