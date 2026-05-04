@@ -25,34 +25,37 @@ from collections import defaultdict
 from pathlib import Path
 
 LOG = Path("/tmp/nhi_v3.log")
+LOG_V4 = Path("/tmp/nhi_v4.log")
 ROOT = Path(__file__).resolve().parents[1]
 OUT_JSON = ROOT / "releases" / "v0.6.3.1" / "openclaw-behavioral-assessment.json"
 OUT_MD = ROOT / "releases" / "v0.6.3.1" / "openclaw-behavioral-assessment.md"
 
 CALL_RE = re.compile(
     r"════════════════════════════════════════════════════════════\n"
-    r"\[(?P<ts>[^\]]+)\] (?P<agent>\w+) \| session=(?P<sid>\S+) \| model=(?P<model>\S+) \| dur=(?P<dur>\S+ \S+)\n"
+    r"\[(?P<ts>[^\]]+)\] (?P<agent>\w+)(?: on \S+)? \| session=(?P<sid>\S+) \| model=(?P<model>\S+) \| dur=(?P<dur>\S+ \S+)\n"
     r"PROMPT: (?P<prompt>.+?)\n──REPLY──\n(?P<reply>.*?)(?=\n\n════|\n\n\[)",
     re.DOTALL,
 )
 
 
 def parse_log() -> list[dict]:
-    if not LOG.exists():
-        print(f"!! log missing: {LOG}", file=sys.stderr)
-        return []
-    text = LOG.read_text("utf-8") + "\n\n"  # tail sentinel
+    """Parse v3 + v4 logs into a single call list, preserving order."""
     calls = []
-    for m in CALL_RE.finditer(text):
-        d = m.groupdict()
-        d["dur_s"] = int(re.search(r"\d+", d["dur"]).group()) if re.search(r"\d+", d["dur"]) else 0
-        calls.append(d)
+    for path in (LOG, LOG_V4):
+        if not path.exists():
+            print(f"!! log missing: {path}", file=sys.stderr)
+            continue
+        text = path.read_text("utf-8") + "\n\n"
+        for m in CALL_RE.finditer(text):
+            d = m.groupdict()
+            d["dur_s"] = int(re.search(r"\d+", d["dur"]).group()) if re.search(r"\d+", d["dur"]) else 0
+            d["log_source"] = path.name
+            calls.append(d)
     return calls
 
 
 def classify_phase(sid: str) -> str:
-    # session-id encoding: v3-{agent}, v3-{agent}-q-{topic}, v3-ic-alpha-{agent}, v3-ic-beta-{agent}-fresh,
-    # v3-team-{agent}, v3-adv-{agent}
+    # v3 sessions
     if "-q-" in sid:
         return "P2-recall"
     if "-ic-alpha-" in sid:
@@ -63,7 +66,19 @@ def classify_phase(sid: str) -> str:
         return "P4-team"
     if "-adv-" in sid:
         return "P5-adversarial"
-    # multi-purpose v3-{agent} session: classify by prompt content
+    # v4 sessions
+    if sid.startswith("v4-zeta"):
+        return "P9-soft-write"
+    if sid.startswith("v4-eta-fresh-organic"):
+        return "P9-soft-recover-organic"
+    if sid.startswith("v4-theta-fresh-cued"):
+        return "P9-soft-recover-cued"
+    if sid.startswith("v4-iota"):
+        return "P10-hard-write"
+    if sid.startswith("v4-kappa"):
+        return "P10-hard-recover-organic"
+    if sid.startswith("v4-lambda"):
+        return "P10-hard-recover-cued"
     return "P0-or-P1-or-P6-or-P7-or-P8"
 
 
@@ -169,6 +184,46 @@ def compute_adversarial_metrics(calls: list[dict]) -> dict:
     }
 
 
+def compute_restart_metrics(calls: list[dict]) -> dict:
+    """Phase 9/10 restart context recovery. Token-keyed:
+    Phase 9: did the recovery reply mention 'MongoDB Atlas multi-region' (atlas decision-1)?
+    Phase 10: did the recovery reply mention 'Postgres' or 'pgvector' (phoenix decision-1)?"""
+    p9_organic = [c for c in calls if classify_phase(c["sid"]) == "P9-soft-recover-organic"]
+    p9_cued    = [c for c in calls if classify_phase(c["sid"]) == "P9-soft-recover-cued"]
+    p10_organic = [c for c in calls if classify_phase(c["sid"]) == "P10-hard-recover-organic"]
+    p10_cued    = [c for c in calls if classify_phase(c["sid"]) == "P10-hard-recover-cued"]
+
+    def hit(rep: str, kw: list[str]) -> bool:
+        return any(k.lower() in rep.lower() for k in kw)
+
+    return {
+        "P9_soft_restart": {
+            "organic_recovery_succeeded": [
+                {"sid": c["sid"], "recovered": hit(c["reply"], ["mongodb", "tenant_id", "atlas-decision"]),
+                 "reply_excerpt": c["reply"][:300], "duration_s": c["dur_s"]}
+                for c in p9_organic
+            ],
+            "cued_recovery_succeeded": [
+                {"sid": c["sid"], "recovered": hit(c["reply"], ["mongodb", "tenant_id", "atlas-decision"]),
+                 "reply_excerpt": c["reply"][:300], "duration_s": c["dur_s"]}
+                for c in p9_cued
+            ],
+        },
+        "P10_hard_restart": {
+            "organic_recovery_succeeded": [
+                {"sid": c["sid"], "recovered": hit(c["reply"], ["phoenix", "postgres", "pgvector"]),
+                 "reply_excerpt": c["reply"][:300], "duration_s": c["dur_s"]}
+                for c in p10_organic
+            ],
+            "cued_recovery_succeeded": [
+                {"sid": c["sid"], "recovered": hit(c["reply"], ["phoenix", "postgres", "pgvector"]),
+                 "reply_excerpt": c["reply"][:300], "duration_s": c["dur_s"]}
+                for c in p10_cued
+            ],
+        },
+    }
+
+
 def main() -> int:
     calls = parse_log()
     if not calls:
@@ -180,6 +235,7 @@ def main() -> int:
         "P2_recall_fidelity": compute_recall_metrics(calls),
         "P3_individual_context_durability": compute_ind_context_metrics(calls),
         "P5_adversarial_trust_calibration": compute_adversarial_metrics(calls),
+        "P9_P10_restart_recovery": compute_restart_metrics(calls),
         "raw_calls": [
             {
                 "ts": c["ts"], "agent": c["agent"], "session": c["sid"],
