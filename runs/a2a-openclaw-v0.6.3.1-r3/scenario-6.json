@@ -1,0 +1,1 @@
+{"agent_group": "openclaw", "alice_id": "dda8cefd-f8b3-4b43-80ea-0d904349161f", "bob_id": "ddc63892-6fa1-4605-acc4-c28909e533e8", "charlie_sees_both_memories": true, "charlie_sees_contradicts_link": true, "detect_http_code": 200, "pass": true, "reasons": [], "scenario": "6", "skipped": false, "tls_mode": "off", "topic": "sky-color-3bfaf7fb"}
