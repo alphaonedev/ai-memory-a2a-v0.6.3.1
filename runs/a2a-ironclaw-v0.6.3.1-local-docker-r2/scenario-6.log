@@ -1,0 +1,7 @@
+alice writes claim: "sky-color-30a0a96a is blue" on node-1
+bob writes contradicting claim: "sky-color-30a0a96a is red" on node-2
+  alice.id=7d6603bc-1af0-4f8d-acd9-15f7818ca463 bob.id=faeaf627-3aa3-4a5f-a8f4-ba0eebbaea7c
+settle 10s for quorum fanout + contradiction indexing
+charlie queries /api/v1/contradictions on node-3
+  HTTP 200
+  sees both memories: True; sees contradicts link: True
