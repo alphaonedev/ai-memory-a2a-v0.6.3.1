@@ -1,0 +1,1 @@
+{"agent_group": "hermes", "bob_inbox_count": 1, "bob_sees_marker": true, "charlie_inbox_count": 0, "charlie_sees_marker": false, "marker": "inb-d0ca4e4dd7134afb9e38fb5c1e89a31f", "notify_http_code": 201, "pass": true, "reasons": [], "scenario": "32", "skipped": false, "tls_mode": "off"}

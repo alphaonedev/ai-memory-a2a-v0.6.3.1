@@ -1,0 +1,1 @@
+{"agent_group": "ironclaw", "alice_id": "7d6603bc-1af0-4f8d-acd9-15f7818ca463", "bob_id": "faeaf627-3aa3-4a5f-a8f4-ba0eebbaea7c", "charlie_sees_both_memories": true, "charlie_sees_contradicts_link": true, "detect_http_code": 200, "pass": true, "reasons": [], "scenario": "6", "skipped": false, "tls_mode": "off", "topic": "sky-color-30a0a96a"}

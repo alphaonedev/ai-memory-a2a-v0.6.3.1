@@ -65,7 +65,7 @@ log "mesh 4/4 healthy"
 # The reliable reset is `docker compose down -v` (removes named
 # volumes) + `up -d` (recreates from scratch). The mesh comes up on
 # truly empty volumes, no quorum-resync source for stale data.
-COMPOSE_FILE="$HERE/docker-compose.openclaw.yml"
+COMPOSE_FILE="$HERE/docker-compose.${AGENT_GROUP:-openclaw}.yml"
 log "resetting database state across 4 nodes for a pristine round (tls_mode=$TLS_MODE_ARG)"
 log "  compose down -v + up -d (in-place rm leaves WAL-replayable / peer-resync state)"
 ( cd "$HERE" && docker compose -f "$COMPOSE_FILE" down -v ) >/dev/null 2>&1 \
@@ -114,12 +114,24 @@ for i in (1,2,3,4):
     agent_type = dx(c,"sh","-c","grep ^AGENT_TYPE= /etc/ai-memory-a2a/env | cut -d= -f2-") or ""
     agent_id = dx(c,"sh","-c","grep ^AGENT_ID= /etc/ai-memory-a2a/env | cut -d= -f2-") or ""
     fw_ver = ""
+    if agent_type in ("openclaw", "ironclaw", "hermes"):
+        fw_ver = dx(c,"sh","-c", f"{agent_type} --version 2>/dev/null | head -1") or ""
+    # Per-framework xAI provider config path differs:
+    #   openclaw → /root/.openclaw/openclaw.json (api.x.ai mention)
+    #   ironclaw → /root/.ironclaw/.env (LLM_BASE_URL=https://api.x.ai/v1)
+    #   hermes   → /etc/ai-memory-a2a/hermes.env (XAI_API_KEY=) + /root/.hermes/config.yaml (provider: xai)
     if agent_type == "openclaw":
-        fw_ver = dx(c,"sh","-c","openclaw --version 2>/dev/null | head -1") or ""
+        xai_check = "grep -q api.x.ai /root/.openclaw/openclaw.json 2>/dev/null && echo yes"
+    elif agent_type == "ironclaw":
+        xai_check = "grep -q api.x.ai /root/.ironclaw/.env 2>/dev/null && echo yes"
+    elif agent_type == "hermes":
+        xai_check = "grep -q '^XAI_API_KEY=' /etc/ai-memory-a2a/hermes.env 2>/dev/null && echo yes"
+    else:
+        xai_check = "true"
     attestation = {
         "framework_is_authentic": bool(fw_ver) if role == "agent" else True,
         "mcp_server_ai_memory_registered": role == "memory-only" or bool(dx(c,"sh","-c","test -s /etc/ai-memory-a2a/mcp-config/config.json && echo yes")),
-        "llm_backend_is_xai_grok": role == "memory-only" or bool(dx(c,"sh","-c","grep -q api.x.ai /root/.openclaw/openclaw.json 2>/dev/null && echo yes")),
+        "llm_backend_is_xai_grok": role == "memory-only" or bool(dx(c,"sh","-c", xai_check)),
         "llm_is_default_provider": True,
         "mcp_command_is_ai_memory": True,
         "agent_id_stamped": role == "memory-only" or bool(agent_id),
@@ -245,11 +257,22 @@ export NODE2_IP="a2a-node-2"
 export NODE3_IP="a2a-node-3"
 export NODE4_IP="a2a-node-4"
 export MEMORY_NODE_IP="a2a-node-4"
-export NODE1_PRIV="10.88.1.11"
-export NODE2_PRIV="10.88.1.12"
-export NODE3_PRIV="10.88.1.13"
-export MEMORY_PRIV="10.88.1.14"
-export AGENT_GROUP="openclaw"
+# AGENT_GROUP and bridge subnet depend on which framework is active.
+# Default to openclaw (10.88.1.x). Caller can override via env or by
+# passing AGENT_GROUP=ironclaw / hermes inline. The harness uses
+# NODE*_IP (container names) for docker exec; PRIV IPs are only
+# rendered in baseline attestation metadata.
+export AGENT_GROUP="${AGENT_GROUP:-openclaw}"
+case "$AGENT_GROUP" in
+  openclaw) BRIDGE_OCTET=1 ;;
+  ironclaw) BRIDGE_OCTET=2 ;;
+  hermes)   BRIDGE_OCTET=3 ;;
+  *)        BRIDGE_OCTET=1 ;;
+esac
+export NODE1_PRIV="10.88.${BRIDGE_OCTET}.11"
+export NODE2_PRIV="10.88.${BRIDGE_OCTET}.12"
+export NODE3_PRIV="10.88.${BRIDGE_OCTET}.13"
+export MEMORY_PRIV="10.88.${BRIDGE_OCTET}.14"
 export TLS_MODE="$TLS_MODE_ARG"
 
 SCENARIOS_RUN=()
@@ -271,12 +294,14 @@ END_TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 # --- Aggregate a2a-summary.json -------------------------------------
 log "aggregating $RUN_DIR/a2a-summary.json"
-python3 - "$RUN_DIR" "$CAMPAIGN_ID" "$START_TS" "$END_TS" <<'PY'
+python3 - "$RUN_DIR" "$CAMPAIGN_ID" "$START_TS" "$END_TS" "$AGENT_GROUP" "$BRIDGE_OCTET" <<'PY'
 import json, sys, os, pathlib
 
 run_dir = pathlib.Path(sys.argv[1])
 campaign = sys.argv[2]
 start_ts, end_ts = sys.argv[3], sys.argv[4]
+agent_group = sys.argv[5] if len(sys.argv) > 5 else "openclaw"
+bridge_octet = int(sys.argv[6]) if len(sys.argv) > 6 else 1
 
 scenarios = []
 skipped_reports = []
@@ -302,9 +327,13 @@ if skipped_reports:
     overall_pass = False
     reasons.extend(skipped_reports)
 
+# Per-framework memory budget label (matches docker-compose.<framework>.yml mem_limit).
+mem_label = {"openclaw": "16g", "ironclaw": "8g", "hermes": "16g"}.get(agent_group, "8g")
+bridge_subnet = f"10.88.{bridge_octet}.0/24"
+
 summary = {
     "campaign_id": campaign,
-    "agent_group": "openclaw",
+    "agent_group": agent_group,
     "ai_memory_git_ref": "release/v0.6.3.1",
     "completed_at": end_ts,
     "overall_pass": overall_pass,
@@ -313,31 +342,31 @@ summary = {
     "skipped_reports": skipped_reports,
     "meta": {
         "campaign_id": campaign,
-        "agent_group": "openclaw",
+        "agent_group": agent_group,
         "ai_memory_git_ref": "release/v0.6.3.1",
         "topology": "local-docker",
         "infra": {
             "provider": "local-docker",
             "host": os.uname().nodename,
-            "mesh_topology": "4-node bridge (3 openclaw agents + 1 memory-only aggregator)",
+            "mesh_topology": f"4-node bridge (3 {agent_group} agents + 1 memory-only aggregator)",
             "region": "local-docker",
-            "droplet_size": "n/a (container mem_limit=16g per openclaw agent; 4g for aggregator)",
-            "topology": "4-node Docker bridge network (10.88.1.0/24) — 3 openclaw agent containers + 1 memory-only aggregator",
+            "droplet_size": f"n/a (container mem_limit={mem_label} per {agent_group} agent; {mem_label} for aggregator)",
+            "topology": f"4-node Docker bridge network ({bridge_subnet}) — 3 {agent_group} agent containers + 1 memory-only aggregator",
             "nodes": [
                 {"index": 1, "role": "agent", "agent_id": "ai:alice",
-                 "container": "a2a-node-1", "public_ip": "n/a (container)", "private_ip": "10.88.1.11"},
+                 "container": "a2a-node-1", "public_ip": "n/a (container)", "private_ip": f"10.88.{bridge_octet}.11"},
                 {"index": 2, "role": "agent", "agent_id": "ai:bob",
-                 "container": "a2a-node-2", "public_ip": "n/a (container)", "private_ip": "10.88.1.12"},
+                 "container": "a2a-node-2", "public_ip": "n/a (container)", "private_ip": f"10.88.{bridge_octet}.12"},
                 {"index": 3, "role": "agent", "agent_id": "ai:charlie",
-                 "container": "a2a-node-3", "public_ip": "n/a (container)", "private_ip": "10.88.1.13"},
+                 "container": "a2a-node-3", "public_ip": "n/a (container)", "private_ip": f"10.88.{bridge_octet}.13"},
                 {"index": 4, "role": "memory-only",
-                 "container": "a2a-node-4", "public_ip": "n/a (container)", "private_ip": "10.88.1.14"},
+                 "container": "a2a-node-4", "public_ip": "n/a (container)", "private_ip": f"10.88.{bridge_octet}.14"},
             ],
         },
         "scenarios_requested": [s.get("scenario") for s in scenarios],
         "timing": {"started_at": start_ts, "ended_at": end_ts, "start": start_ts, "end": end_ts},
         "ci": {"runner": "local-docker", "operator": "AI NHI (Claude Opus 4.7)"},
-        "notes": "Tested on a local Docker mesh (3 openclaw agents + 1 memory-only aggregator on a single workstation). NOT a DigitalOcean campaign — no DO infrastructure was provisioned. See docs/local-docker-mesh.md for full reproducibility. Every byte of config, build recipe, harness, and scenario is committed in this repo.",
+        "notes": f"Tested on a local Docker mesh (3 {agent_group} agents + 1 memory-only aggregator on a single workstation). NOT a DigitalOcean campaign — no DO infrastructure was provisioned. See docs/local-docker-mesh.md for full reproducibility. Every byte of config, build recipe, harness, and scenario is committed in this repo.",
     },
 }
 (run_dir / "a2a-summary.json").write_text(json.dumps(summary, indent=2))

@@ -1,0 +1,165 @@
+# Copyright 2026 AlphaOne LLC
+# SPDX-License-Identifier: Apache-2.0
+#
+# Local 4-node ironclaw + ai-memory mesh. 4 nodes × 8 GB per operator
+# directive 2026-05-04. Topology mirrors the OpenClaw mesh:
+#   3 ironclaw agent nodes + 1 memory-only aggregator
+#   Bridge subnet 10.88.2.0/24 (distinct from openclaw 10.88.1.0/24).
+#
+# Bring-up:
+#   cd docker/
+#   docker build --network host -t ai-memory-ironclaw:local \
+#     --build-arg AI_MEMORY_BASE=ai-memory-base:local \
+#     -f Dockerfile.ironclaw .
+#   XAI_API_KEY=$YOUR_KEY docker compose -f docker-compose.ironclaw.yml up -d
+#   ./smoke.sh   # verify mesh
+#   bash run-testbook.sh a2a-ironclaw-v0.6.3.1-local-docker-r1
+#
+# Memory budget: 4 × 8 GB = 32 GB allocated; real working set ~5-8 GB
+# under load (postgres + ironclaw + ai-memory + MiniLM in cache).
+
+name: a2a-ironclaw-local
+
+networks:
+  mesh:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.88.2.0/24
+          gateway: 10.88.2.1
+
+services:
+  node-1:
+    image: ai-memory-ironclaw:local
+    container_name: a2a-node-1
+    hostname: node-1
+    networks:
+      mesh:
+        ipv4_address: 10.88.2.11
+    environment:
+      NODE_INDEX: "1"
+      ROLE: "agent"
+      AGENT_TYPE: "ironclaw"
+      AGENT_ID: "ai:alice"
+      PEER_URLS: "http://node-2:9077,http://node-3:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 8g
+    memswap_limit: 8g
+    volumes:
+      - node-1-data:/var/lib/ai-memory
+      - node-1-pg:/var/lib/postgresql
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-1:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+
+  node-2:
+    image: ai-memory-ironclaw:local
+    container_name: a2a-node-2
+    hostname: node-2
+    networks:
+      mesh:
+        ipv4_address: 10.88.2.12
+    environment:
+      NODE_INDEX: "2"
+      ROLE: "agent"
+      AGENT_TYPE: "ironclaw"
+      AGENT_ID: "ai:bob"
+      PEER_URLS: "http://node-1:9077,http://node-3:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 8g
+    memswap_limit: 8g
+    volumes:
+      - node-2-data:/var/lib/ai-memory
+      - node-2-pg:/var/lib/postgresql
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-2:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+
+  node-3:
+    image: ai-memory-ironclaw:local
+    container_name: a2a-node-3
+    hostname: node-3
+    networks:
+      mesh:
+        ipv4_address: 10.88.2.13
+    environment:
+      NODE_INDEX: "3"
+      ROLE: "agent"
+      AGENT_TYPE: "ironclaw"
+      AGENT_ID: "ai:charlie"
+      PEER_URLS: "http://node-1:9077,http://node-2:9077,http://node-4:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+      XAI_API_KEY: "${XAI_API_KEY:?XAI_API_KEY env var required}"
+      A2A_GATE_LLM_MODEL: "${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}"
+    mem_limit: 8g
+    memswap_limit: 8g
+    volumes:
+      - node-3-data:/var/lib/ai-memory
+      - node-3-pg:/var/lib/postgresql
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./drive_agent.sh:/root/drive_agent.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-3:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+
+  node-4:
+    # Memory-only aggregator. No ironclaw, no postgres — just ai-memory
+    # serve as the 4th quorum peer. 8 GB per directive (matches openclaw
+    # mesh's pattern of leaving the aggregator slightly smaller than the
+    # agents would normally need; here all 4 nodes share the same budget).
+    image: ai-memory-base:local
+    container_name: a2a-node-4
+    hostname: node-4
+    networks:
+      mesh:
+        ipv4_address: 10.88.2.14
+    environment:
+      NODE_INDEX: "4"
+      ROLE: "memory-only"
+      PEER_URLS: "http://node-1:9077,http://node-2:9077,http://node-3:9077"
+      TLS_MODE: "${TLS_MODE:-off}"
+    mem_limit: 8g
+    memswap_limit: 8g
+    volumes:
+      - node-4-data:/var/lib/ai-memory
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh:ro
+      - ./healthcheck.sh:/usr/local/bin/healthcheck.sh:ro
+      - ./tls/node-4:/etc/ai-memory-a2a/tls:ro
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 60s
+
+volumes:
+  node-1-data:
+  node-2-data:
+  node-3-data:
+  node-4-data:
+  node-1-pg:
+  node-2-pg:
+  node-3-pg:

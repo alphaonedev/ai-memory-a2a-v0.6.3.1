@@ -1,0 +1,50 @@
+# Copyright 2026 AlphaOne LLC
+# SPDX-License-Identifier: Apache-2.0
+#
+# Hermes agent image on top of ai-memory-base:local.
+# Hermes is NousResearch's Python agent runtime — install via upstream
+# install.sh from main, plus pinned python-dotenv + httpx that the
+# upstream installer doesn't pull in but hermes_cli imports at top of
+# module (surfaced by a2a-hermes-v0.6.0-r6 + v0.6.2-rc.0-r3).
+#
+# Build:
+#   docker build --network host -t ai-memory-hermes:local \
+#     --build-arg AI_MEMORY_BASE=ai-memory-base:local \
+#     -f Dockerfile.hermes .
+#
+# Per-container memory budget: 16 GB (per operator directive 2026-05-04).
+
+ARG AI_MEMORY_BASE=ai-memory-base:local
+FROM ${AI_MEMORY_BASE}
+
+# ---- Python toolchain prerequisites ---------------------------------
+RUN set -eux; \
+    DEBIAN_FRONTEND=noninteractive apt-get update; \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        python3-pip python3-venv git ca-certificates; \
+    rm -rf /var/lib/apt/lists/*
+
+# ---- Hermes Agent (NousResearch) ------------------------------------
+# Pinned ref = main per setup_node.sh:hermes branch. install.sh exits
+# non-zero on the post-install setup wizard (--skip-setup is provided);
+# we tolerate the wizard exit and assert `hermes --version` as the real
+# completion gate. PEP 668 on Ubuntu 24.04 requires --break-system-packages.
+ENV HERMES_INSTALL_REF=main \
+    PYTHON_DOTENV_PIN=1.0.1 \
+    HTTPX_PIN=0.27.2
+
+RUN set -eux; \
+    ( curl -fsSL --max-time 60 \
+        "https://raw.githubusercontent.com/NousResearch/hermes-agent/${HERMES_INSTALL_REF}/scripts/install.sh" \
+        | bash -s -- --skip-setup ) \
+      || echo "[hermes-install] install.sh exit non-zero (expected — post-install wizard fails non-TTY)"; \
+    python3 -m pip install --break-system-packages --quiet \
+        "python-dotenv==${PYTHON_DOTENV_PIN}" "httpx==${HTTPX_PIN}"; \
+    if [ ! -x /usr/local/bin/hermes ]; then \
+      HERMES_BIN=$(command -v hermes || find /root/.hermes -maxdepth 4 -name hermes -type f -executable 2>/dev/null | head -1); \
+      [ -n "$HERMES_BIN" ] && [ -x "$HERMES_BIN" ] && ln -sf "$HERMES_BIN" /usr/local/bin/hermes; \
+    fi; \
+    /usr/local/bin/hermes --version 2>&1 | head -1
+
+# Hermes config (~/.hermes/config.yaml) + xAI env (/etc/ai-memory-a2a/hermes.env)
+# are written at entrypoint.sh runtime — needs AGENT_ID + XAI_API_KEY.

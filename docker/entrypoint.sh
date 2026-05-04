@@ -221,6 +221,114 @@ EOF
       log "openclaw mcp set returned non-zero (likely already registered via config file)"
     log "openclaw configured with agent_id=$AGENT_ID"
     ;;
+
+  ironclaw)
+    : "${XAI_API_KEY:?XAI_API_KEY required for ironclaw agents}"
+
+    # ---- Postgres bring-up (ironclaw's OWN memory; separate from ai-memory) ----
+    # The ironclaw runtime requires PostgreSQL 15 + pgvector for its
+    # internal memory store. ai-memory remains the substrate-under-test
+    # over MCP — Postgres is just ironclaw's per-node working state.
+    # `runuser` (util-linux) replaces sudo (not in base image) for the
+    # postgres-user invocations.
+    log "starting per-node postgres for ironclaw"
+    # `pg_ctlcluster 15 main start` is Ubuntu's canonical wrapper —
+    # handles the /etc/postgresql/15/main config + /var/lib/postgresql/15/main
+    # data + correct user-switching automatically. Replaces the manual
+    # pg_ctl + initdb + runuser dance.
+    if [ ! -s /var/lib/postgresql/15/main/PG_VERSION ]; then
+      pg_createcluster 15 main 2>&1 | sed 's/^/[pg-create] /' || log "pg createcluster non-zero; continuing"
+    fi
+    pg_ctlcluster 15 main start 2>&1 | sed 's/^/[pg-ctl] /' \
+      || log "pg start non-zero; continuing (may already be up)"
+    # Wait for postgres ready
+    for attempt in $(seq 1 30); do
+      pg_isready -h localhost >/dev/null 2>&1 && break
+      sleep 1
+    done
+    runuser -u postgres -- psql -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
+    runuser -u postgres -- psql -c "CREATE DATABASE ironclaw" >/dev/null 2>&1 || true
+    runuser -u postgres -- psql -d ironclaw -c 'CREATE EXTENSION IF NOT EXISTS vector' >/dev/null 2>&1 || true
+    log "postgres + pgvector ready for ironclaw"
+
+    # ---- IronClaw config (.env + mcp registration) ----
+    mkdir -p /root/.ironclaw
+    # .env carries LLM backend wiring per setup_node.sh:ironclaw conventions.
+    cat > /root/.ironclaw/.env <<EOF
+LLM_BACKEND=openai_compatible
+LLM_BASE_URL=https://api.x.ai/v1
+LLM_MODEL=${A2A_GATE_LLM_MODEL}
+LLM_API_KEY=${XAI_API_KEY}
+AI_MEMORY_AGENT_ID=${AGENT_ID}
+DATABASE_URL=postgresql://postgres@localhost:5432/ironclaw
+EOF
+    chmod 600 /root/.ironclaw/.env
+
+    # Register ai-memory MCP. ironclaw 0.27.0's clap parser rejects
+    # flag-shaped values without `=` form (e.g. `--arg --db` errors with
+    # "unexpected argument '--db' found"). Equals form passes the value
+    # literally through clap.
+    ironclaw mcp add memory \
+      --transport=stdio \
+      --command=ai-memory \
+      --arg=--db \
+      --arg=/var/lib/ai-memory/a2a.db \
+      --arg=mcp \
+      --arg=--tier \
+      --arg=semantic \
+      --env=AI_MEMORY_AGENT_ID=${AGENT_ID} 2>&1 | sed 's/^/[ironclaw-mcp] /' \
+      || log "ironclaw mcp add non-zero (may already be registered)"
+
+    # Pin all peer A2A channels OFF — only ai-memory MCP path is
+    # allowed. Same thesis-integrity stance as openclaw.
+    # ironclaw config set <PATH> <VALUE> per the 0.27.0 CLI surface.
+    for ch in telegram discord slack matrix; do
+      ironclaw config set "channels.${ch}.enabled" false 2>/dev/null || true
+    done
+    ironclaw config set gateway.mode local 2>/dev/null || true
+    ironclaw config set a2a_gate_profile shared-memory-only 2>/dev/null || true
+    log "ironclaw configured with agent_id=$AGENT_ID"
+    ;;
+
+  hermes)
+    : "${XAI_API_KEY:?XAI_API_KEY required for hermes agents}"
+
+    # ---- Hermes env (xAI key) per setup_node.sh:hermes branch ----
+    # Hermes reads XAI_API_KEY from /etc/ai-memory-a2a/hermes.env at
+    # invocation time (drive_agent.sh sources it). Scope the secret
+    # to the file so we never echo it back in logs.
+    cat > /etc/ai-memory-a2a/hermes.env <<EOF
+XAI_API_KEY=${XAI_API_KEY}
+HERMES_PROVIDER=xai
+A2A_GATE_LLM_MODEL=${A2A_GATE_LLM_MODEL}
+EOF
+    chmod 600 /etc/ai-memory-a2a/hermes.env
+
+    # ---- Hermes config (~/.hermes/config.yaml) ----
+    # mcp_servers.memory is the substrate-under-test contract. All other
+    # channels off (negative-invariants per the gate's thesis).
+    mkdir -p /root/.hermes
+    cat > /root/.hermes/config.yaml <<EOF
+provider: xai
+model: ${A2A_GATE_LLM_MODEL}
+mcp_servers:
+  memory:
+    command: ai-memory
+    args: ["--db", "/var/lib/ai-memory/a2a.db", "mcp", "--tier", "semantic"]
+    env:
+      AI_MEMORY_AGENT_ID: "${AGENT_ID}"
+channels:
+  telegram: { enabled: false }
+  discord:  { enabled: false }
+  slack:    { enabled: false }
+  matrix:   { enabled: false }
+gateway: { mode: local }
+a2a_gate_profile: shared-memory-only
+EOF
+    chmod 600 /root/.hermes/config.yaml
+    log "hermes configured with agent_id=$AGENT_ID"
+    ;;
+
   *)
     log "FATAL: AGENT_TYPE=$AGENT_TYPE not yet supported in local-docker topology"
     exit 2
