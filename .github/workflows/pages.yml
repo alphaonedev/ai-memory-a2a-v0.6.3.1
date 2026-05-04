@@ -109,24 +109,21 @@ jobs:
               sv=$(jq -r '.per_node[0].spec_version // empty' "$baseline" 2>/dev/null)
               [ -n "$sv" ] && spec_cell="$sv"
             fi
-            evidence="[offline HTML](../evidence/${name}/index.html)"
             # ---------- NHI verdict cell (Phase 3 + 4 evidence) ----------
             nhi_cell="—"
             if [ -f "$dir/phase4-analysis.json" ]; then
-              nhi_cell="[phase4](../evidence/${name}/phase4-analysis.json)"
+              nhi_cell="[NHI](../evidence/${name}/phase4-analysis.json)"
             fi
-            # ---------- Artifact links cell (every JSON / log surface) ----------
-            artifact_cell="[summary](../evidence/${name}/a2a-summary.json)"
-            if [ -f "$dir/a2a-baseline.json" ]; then artifact_cell="${artifact_cell} · [baseline](../evidence/${name}/a2a-baseline.json)"; fi
-            if [ -f "$dir/f3-peer-a2a.json" ]; then artifact_cell="${artifact_cell} · [f3](../evidence/${name}/f3-peer-a2a.json)"; fi
-            if [ -f "$dir/phase2-orchestration.json" ]; then artifact_cell="${artifact_cell} · [phase2](../evidence/${name}/phase2-orchestration.json)"; fi
-            if [ -f "$dir/phase3-summary.json" ]; then artifact_cell="${artifact_cell} · [phase3](../evidence/${name}/phase3-summary.json)"; fi
-            if [ -f "$dir/phase4-analysis.json" ]; then artifact_cell="${artifact_cell} · [phase4](../evidence/${name}/phase4-analysis.json)"; fi
-            # All-artifacts directory link
-            artifact_cell="${artifact_cell} · [all](../evidence/${name}/)"
-            # Note: the per-section tables drop the Group column since it's
-            # implied by the section heading. Keep the column count at 12.
-            row="| ${name} | ${outcome} | ${base_cell} | ${f3_cell} | ${scen_cell} | ${nhi_cell} | ${ref} | ${spec_cell} | ${completed} | ${actor_cell} | ${evidence} | ${artifact_cell} |"
+            # ---------- Combined artifact deep-link cell (compact, scannable) ----------
+            # Single cell with one HTML link + dot-separated JSON deep-links.
+            # Drops the spec-version + dispatched-by columns from the table to
+            # keep total at 7 — fits a laptop viewport without horizontal scroll.
+            evidence_links="[HTML](../evidence/${name}/index.html) · [json](../evidence/${name}/a2a-summary.json)"
+            if [ -f "$dir/a2a-baseline.json" ]; then evidence_links="${evidence_links} · [baseline](../evidence/${name}/a2a-baseline.json)"; fi
+            if [ -f "$dir/phase4-analysis.json" ]; then evidence_links="${evidence_links} · [phase4](../evidence/${name}/phase4-analysis.json)"; fi
+            evidence_links="${evidence_links} · [all](../evidence/${name}/)"
+            # Compact 7-column row: campaign, verdict, baseline, F3, scenarios, NHI, links
+            row="| ${name} | ${outcome} | ${base_cell} | ${f3_cell} | ${scen_cell} | ${nhi_cell} | ${evidence_links} |"
             # Bucket by campaign_id prefix (authoritative — matches terraform
             # naming + campaign.meta.json), fall back to $group if prefix
             # doesn't match a known framework.
@@ -151,8 +148,8 @@ jobs:
             echo "${subtitle}"
             echo
             if [ -s "$file" ]; then
-              echo "| Campaign | Verdict | Baseline | F3 peer A2A | Scenarios | NHI (P3/P4) | ai-memory ref | Baseline spec | Completed | Dispatched by | Evidence | All test artifacts |"
-              echo "|---|---|---|---|---|---|---|---|---|---|---|---|"
+              echo "| Campaign | Verdict | Baseline | F3 | Scenarios | NHI | Artifacts |"
+              echo "|---|---|---|---|---|---|---|"
               cat "$file"
             else
               echo "*No campaigns in this section yet.*"
