@@ -1,0 +1,1 @@
+{"agent_group": "openclaw", "delete_http_code": 200, "m1_id": "e0902f62-b8c8-4e45-bbf1-4d034be21879", "pass": true, "post_delete_hits": {"node-2": 0, "node-3": 0, "node-4": 0}, "post_delete_still_visible_peers": 0, "pre_delete_visible_peers": 3, "reasons": [], "scenario": "10", "skipped": false, "tls_mode": "off", "uuid": "d-9ef915befce444ac8b77e94571b7b447"}

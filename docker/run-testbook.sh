@@ -51,32 +51,39 @@ log "mesh 4/4 healthy"
 # --- Reset DB state across the mesh ---------------------------------
 # Each round must start from a pristine database to match the DO
 # behavior where every campaign provisions a fresh 4-droplet VPC.
-# Without this, state from the previous round (e.g. scenario-5's
-# fixed-namespace scenario5-consolidate) accumulates and scenarios
-# that assume a clean slate fail on the second run.
 #
-# Sequence (mesh stays up — we only restart containers):
-#   1) Delete the SQLite files in the volume (unlink only — serve
-#      keeps its open file handles until restart)
-#   2) docker restart each container in parallel → serve exits,
-#      handles close, files truly gone, entrypoint re-runs and
-#      brings serve up on a fresh DB
-#   3) Poll for /health on each node
+# The previous approach — `docker exec rm -f a2a.db*` then `docker
+# restart` — does NOT actually clean. v0.6.3.1's serve holds open file
+# handles on the WAL; rm only unlinks directory entries, leaving the
+# data live as anonymous files. After restart, SQLite finds the empty
+# directory and creates fresh DB files, but the docker volume itself
+# was never wiped — and any peer that received quorum-fanned writes
+# during the prior round retains them, so a peer-resync on startup can
+# repopulate. Result: a 1050-row "fresh" DB carrying expired v0.6.2
+# memories that conflict 409 every new write with the same title.
+#
+# The reliable reset is `docker compose down -v` (removes named
+# volumes) + `up -d` (recreates from scratch). The mesh comes up on
+# truly empty volumes, no quorum-resync source for stale data.
+COMPOSE_FILE="$HERE/docker-compose.openclaw.yml"
 log "resetting database state across 4 nodes for a pristine round (tls_mode=$TLS_MODE_ARG)"
-for i in 1 2 3 4; do
-  docker exec "a2a-node-$i" rm -f /var/lib/ai-memory/a2a.db /var/lib/ai-memory/a2a.db-wal /var/lib/ai-memory/a2a.db-shm 2>/dev/null || true
-done
-docker restart a2a-node-1 a2a-node-2 a2a-node-3 a2a-node-4 >/dev/null
-log "containers restarted — waiting for health (scheme based on tls_mode)"
+log "  compose down -v + up -d (in-place rm leaves WAL-replayable / peer-resync state)"
+( cd "$HERE" && docker compose -f "$COMPOSE_FILE" down -v ) >/dev/null 2>&1 \
+  || fail "docker compose down -v failed"
+TLS_MODE="$TLS_MODE_ARG" \
+  XAI_API_KEY="${XAI_API_KEY:?XAI_API_KEY required for state reset}" \
+  A2A_GATE_LLM_MODEL="${A2A_GATE_LLM_MODEL:-grok-4-fast-non-reasoning}" \
+  docker compose -f "$COMPOSE_FILE" up -d >/dev/null 2>&1 \
+  || fail "docker compose up -d failed after volume wipe"
+log "  mesh recreated; waiting for health"
 for i in 1 2 3 4; do
   for attempt in $(seq 1 90); do
-    if docker exec "a2a-node-$i" /usr/local/bin/healthcheck.sh 2>/dev/null; then
-      break
-    fi
+    state=$(docker inspect -f '{{.State.Status}}/{{if .State.Health}}{{.State.Health.Status}}{{else}}no-health{{end}}' "a2a-node-$i" 2>&1 || echo "missing")
+    [ "$state" = "running/healthy" ] && break
     sleep 1
   done
-  docker exec "a2a-node-$i" /usr/local/bin/healthcheck.sh 2>/dev/null \
-    || fail "a2a-node-$i did not return /health after state reset (tls_mode=$TLS_MODE_ARG)"
+  [ "$state" = "running/healthy" ] \
+    || fail "a2a-node-$i not healthy after state reset ($state) (tls_mode=$TLS_MODE_ARG)"
 done
 log "state reset done — all 4 nodes fresh + healthy"
 
@@ -298,7 +305,7 @@ if skipped_reports:
 summary = {
     "campaign_id": campaign,
     "agent_group": "openclaw",
-    "ai_memory_git_ref": "release/v0.6.2",
+    "ai_memory_git_ref": "release/v0.6.3.1",
     "completed_at": end_ts,
     "overall_pass": overall_pass,
     "scenarios": scenarios,
@@ -307,7 +314,7 @@ summary = {
     "meta": {
         "campaign_id": campaign,
         "agent_group": "openclaw",
-        "ai_memory_git_ref": "release/v0.6.2",
+        "ai_memory_git_ref": "release/v0.6.3.1",
         "topology": "local-docker",
         "infra": {
             "provider": "local-docker",

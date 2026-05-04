@@ -8,3 +8,6 @@ terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terraform/*.tfvars
 site/
+
+# Local docker build context — staged ai-memory binary (build artifact)
+docker/bin/

@@ -214,9 +214,23 @@ Auto-appended conditionally by the workflow's *Compute scenarios list* step:
 
 ---
 
-## 7. Read next
+## 9. Behavioral assessments (Tier 1–4, agent-side evidence)
+
+Substrate scenarios above prove ai-memory **functions correctly under load**. They do not prove ai-memory **is useful to working LLMs in the loop** — that is the agent-side question, and it requires a different instrument.
+
+| Assessment | Tier | Subject | Methodology | Output |
+|---|---|---|---|---|
+| **Phase 3 NHI playbook** (A–J) | 2–4 | IronClaw / Hermes | 4-arm × 4-scenario × n=3 = 48 runs, grounding-rate metrics, treatment-vs-control attribution | `runs/<id>/phase3-*.json` + `phase4-analysis.json`; rendered on [Per-run NHI matrix](nhi/index.md) |
+| **OpenClaw behavioral assessment** | 1–4 | OpenClaw 2026.5.x on `xai/grok-4.3` | 8-phase suite: bootstrap → qualitative → recall@k → cross-session durability → team chain → adversarial → tool-surface discovery → roadmap | [`docs/nhi/openclaw-behavioral-v0.6.3.1.md`](nhi/openclaw-behavioral-v0.6.3.1.md) + [`releases/v0.6.3.1/openclaw-behavioral-assessment.json`](../releases/v0.6.3.1/openclaw-behavioral-assessment.json) |
+
+Both assessments are scope-tagged (`scope=ironclaw`, `scope=hermes`, `scope=openclaw`) and joined to the umbrella v0.6.3.1 release via the `release=v0.6.3.1` linkage at the verdict layer per Principle 6 — they never collapse cross-framework data.
+
+---
+
+## 10. Read next
 
 - [Baseline configuration](baseline.md) — every invariant this gate defends
 - [ai-memory integration (IronClaw + Hermes)](ai-memory-integration.md) — the authoritative config standard
 - [Reproducing](reproducing.md) — run it yourself
 - [Campaign runs](runs/) — live evidence dashboard
+- [OpenClaw v0.6.3.1 behavioral assessment](nhi/openclaw-behavioral-v0.6.3.1.md) — Tier 1–4 agent-side evidence
