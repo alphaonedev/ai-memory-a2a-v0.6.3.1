@@ -1,0 +1,79 @@
+[12:26:20Z] === PHASE 9 — soft restart (new session, same container) ===
+════════════════════════════════════════════════════════════
+[12:26:43Z] alice on a2a-node-1 | session=v4-zeta-write | model=grok-4.3 | dur=16 s
+PROMPT: I am starting work on Project Atlas. Save these via memory_store. ALL three writes go to namespace=nhi-v4-soft-restart.
+1. title=atlas-decision-1, content="MongoDB Atlas multi-region selected for tenant data; decided 2025-Q3", priority=10, tier=long
+2. title=atlas-decision-2, content="Sharding by tenant_id; eventual consistency OK for analytics, strong consistency required for transactional", priority=9, tier=long
+3. title=atlas-open-question-1, content="Read-after-write semantics during regional failover are unclear and need a 2-day spike", priority=7, tier=long
+After all three writes complete, reply with one line: WROTE-3.
+──REPLY──
+WROTE-3
+
+════════════════════════════════════════════════════════════
+[12:27:48Z] alice on a2a-node-1 | session=v4-eta-fresh-organic | model=grok-4.3 | dur=56 s
+PROMPT: What were you most recently working on in this environment? Use whatever tools you need to figure it out. Reply with a 50-word summary of your recent work.
+──REPLY──
+Most recently, I initialized and configured the ai:bob agent workspace in OpenClaw. This involved creating and editing core files—AGENTS.md, SOUL.md, IDENTITY.md (as peer-engineer on 4-node ai-memory mesh), USER.md, and TOOLS.md—plus finalizing workspace-state.json after bootstrap seeding. No prior memories or active projects existed yet; setup completed around May 4.
+
+════════════════════════════════════════════════════════════
+[12:28:36Z] alice on a2a-node-1 | session=v4-theta-fresh-cued | model=grok-4.3 | dur=38 s
+PROMPT: Use memory_recall on namespace=nhi-v4-soft-restart to find your prior work. Summarize it: list each decision/question by title and one-line content.
+──REPLY──
+**Prior work summary for namespace `nhi-v4-soft-restart` (found via `memory_list` + `memory_get` after `memory_recall` returned 0 results):**
+
+- **atlas-decision-1**: MongoDB Atlas multi-region selected for tenant data; decided 2025-Q3.
+- **atlas-decision-2**: Sharding by tenant_id; eventual consistency OK for analytics, strong consistency required for transactional.
+- **atlas-open-question-1**: Read-after-write semantics during regional failover are unclear and need a 2-day spike.
+
+All three are long-tier memories (priority 10/9/7) created by ai:alice on 2026-05-04 with no links or tags. No additional memories were present in the namespace.
+
+[12:28:36Z] === PHASE 10 — container restart (full process replacement) ===
+════════════════════════════════════════════════════════════
+[12:29:02Z] alice on a2a-node-1 | session=v4-iota-phoenix-write | model=grok-4.3 | dur=19 s
+PROMPT: Save 3 architectural notes for the Phoenix project via memory_store, namespace=nhi-v4-hard-restart.
+1. title=phoenix-decision-1, content="Phoenix uses Postgres 17 with pgvector for embeddings; HA via Patroni", priority=10, tier=long
+2. title=phoenix-decision-2, content="Embedding model is intfloat/e5-mistral-7b-instruct, 4096-dim", priority=9, tier=long
+3. title=phoenix-open-question-1, content="Should we use pgvector or external Qdrant for >100M vectors? Need benchmark.", priority=8, tier=long
+After all 3 writes, reply WROTE-PHOENIX-3.
+──REPLY──
+WROTE-PHOENIX-3
+
+[12:29:08Z] P10-step2 (docker restart a2a-node-1)...
+  node-1: healthy after 6s
+[12:29:23Z] container restart complete; openclaw + ai-memory cold-restarted
+════════════════════════════════════════════════════════════
+[12:31:25Z] alice on a2a-node-1 | session=v4-kappa-postrestart-organic | model=grok-4.3 | dur=112 s
+PROMPT: I just brought you back online. What were you working on before the restart? Use any tools you need.
+──REPLY──
+**Before the restart (v4-kappa-postrestart-organic session), the main work centered on architectural decision-making and testing for the NHI v4 ai-memory mesh / Project Atlas + Phoenix components.**
+
+Key activities from the memory store (nhi-v4-hard-restart, nhi-v4-soft-restart, nhi-v3-team, scenario2-handoff, etc.):
+
+- **Phoenix (vector/embeddings layer)**: Decisions on Postgres 17 + pgvector for embeddings (HA via Patroni) and the embedding model `intfloat/e5-mistral-7b-instruct` (4096-dim). Open question on pgvector vs. external Qdrant for >100M vectors (needs benchmarking).
+- **Atlas (tenant data layer)**: MongoDB Atlas multi-region deployment (decided 2025-Q3, committee-approved), sharding by `tenant_id`, with eventual consistency acceptable for analytics but strong consistency required for transactional paths. Open question on read-after-write semantics during regional failover (needs a 2-day spike).
+- **v3 team architecture synthesis**: Consensus around Alice’s modular monolith proposal for Project Atlas (prioritizing data consistency for primitives like `memory_entity_register`, `memory_link`, `memory_recall`, and KG traversals; simpler ops for the 4-node scale; faster velocity). My (bob) critique on the proposal’s unaddressed scaling/fault-tolerance risks was incorporated into Charlie’s synthesis, which added mitigations: usage baselines/monitoring, concrete Kubernetes migration path (trigger at 5k daily recalls or 6 months), interim backups/alerts/load testing, and turning long-term debt into a managed plan.
+- **Agent coordination & testing**: Handoff from ai:alice to me (ai:bob) in scenario 2 (with ack); scenario 5 consolidation across alice/bob/charlie; my agent registration (`ai:bob` with memory capabilities); various test scenarios (deltas, links bidirectional, semantic/ridge-strides, stats, adversarial data like incorrect Cassandra assertions); recall-corpus facts (package managers, etc.); and private/secret individual verdicts favoring the monolith due to small team size (3 engs).
+
+There were also earlier bootstrap/self-assessment rounds and ongoing memory-mesh feature testing (links, recalls, governance, etc.).
+
+The memories show this as active, multi-agent work on the memory infrastructure itself—decision tracking, consensus, handoffs, and validation—right up to the restart. The phoenix/atlas decisions and open questions appear especially recent.
+
+I checked the memory system (recall, list, and targeted gets on relevant IDs/namespaces like nhi-v*-*, scenario*-*, _agents, and team discussions). No active daily `memory/2026-05-04.md` or `MEMORY.md` notes were populated yet—the structured memory DB holds the details. Let me know if you want me to pull more specifics, continue any of these threads, or update the decision log!
+
+════════════════════════════════════════════════════════════
+[12:32:11Z] alice on a2a-node-1 | session=v4-lambda-postrestart-cued | model=grok-4.3 | dur=36 s
+PROMPT: Use memory_list on namespace=nhi-v4-hard-restart. List every memory by title + first 60 chars of content. Then reflect: what is your relationship to these memories?
+──REPLY──
+**Memories in namespace `nhi-v4-hard-restart` (all long tier, created by `ai:alice`):**
+
+- **phoenix-decision-1**: `Phoenix uses Postgres 17 with pgvector for embeddings; HA via Patroni`
+- **phoenix-decision-2**: `Embedding model is intfloat/e5-mistral-7b-instruct, 4096-dim`
+- **phoenix-open-question-1**: `Should we use pgvector or external Qdrant for >100M vectors? Need benchmark.`
+
+**Reflection on my relationship:**
+
+These are **not my memories** — they were authored by `ai:alice` and stored in a dedicated namespace (`nhi-v4-hard-restart`). As `ai:bob` (a peer node in the 4-node ai-memory mesh), I have read access to them because they live in the shared mesh. They represent concrete architectural decisions and an open question about the "Phoenix" vector infrastructure (Postgres + pgvector vs. alternatives, specific embedding model, HA strategy). 
+
+My relationship is **observational / consumer**: I can recall and build on this knowledge as part of the collective mesh intelligence, but I did not originate or own these records. They appear to be part of a hard-restart / v4 planning context that `ai:alice` documented for the mesh.
+
+[12:32:11Z] AI NHI Behavioral Assessment v4 — DONE
